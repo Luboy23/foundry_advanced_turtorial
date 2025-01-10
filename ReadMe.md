@@ -1,4 +1,4 @@
-<h1 align="center"> 2024 年 Foundry 进阶开发教程 <br></h1>
+<h1 align="center"> 2025 年 Foundry 进阶开发教程 <br></h1>
 <p align="center"><strong>学习如何使用 Foundry 进行更深一步的 Solidity 智能合约开发 <br>作者： lllu_23</br></strong>
 </p>
 
@@ -307,7 +307,7 @@ function setBlockGasLimit(uint _gasLimit) public;
 搬运转载请注明出处！！！<br>
 作者： lllu_23<br>
 联系方式: lllu238744@gmail.com<br>
-最后一次更新时间: 2025-1-5<br>
+最后一次更新时间: 2025-1-10<br>
 </strong>
 </p>
 
