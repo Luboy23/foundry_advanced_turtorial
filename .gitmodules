@@ -1,6 +1,0 @@
-[submodule "02_faucet/lib/forge-std"]
-	path = 02_faucet/lib/forge-std
-	url = https://github.com/foundry-rs/forge-std
-[submodule "02_faucet/lib/openzeppelin-contracts"]
-	path = 02_faucet/lib/openzeppelin-contracts
-	url = https://github.com/Openzeppelin/openzeppelin-contracts
