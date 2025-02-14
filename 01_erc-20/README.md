@@ -63,4 +63,3 @@
 * 查看合约中的代币余额
 ` cast call ${LLC_CONTRACT} "balanceOf(address)" ${OWNER_ADDRESS}`
 
-

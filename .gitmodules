@@ -1,6 +1,0 @@
-[submodule "03_merkleAirDrop/contracts/lib/forge-std"]
-	path = 03_merkleAirDrop/contracts/lib/forge-std
-	url = https://github.com/foundry-rs/forge-std
-[submodule "03_merkleAirDrop/contracts/lib/openzeppelin-contracts"]
-	path = 03_merkleAirDrop/contracts/lib/openzeppelin-contracts
-	url = https://github.com/OpenZeppelin/openzeppelin-contracts

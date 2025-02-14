@@ -57,6 +57,7 @@
 
 ## 3. 免费的 AI 助手
 ### 如何使用这一类的人工智能工信就不用我多说了，需要注意的是，一般来说不需要开通会员，也能够帮你解决大部分问题了，按自己的喜好选择适合的工具即可，我个人更加偏爱 ChatGPT 和 Phind。
+  - [DeepSeek](https://chat.deepseek.com/)
   - [ChatGPT](https://chat.openai.com/)
   - [Phind](https://www.phind.com/)：与 ChatGPT 类似，但是可以结合提问内容进行网页搜索
   - [Bard](https://bard.google.com/)
@@ -176,15 +177,17 @@ https://abetterweb3.notion.site/abetterweb3-7ce334dcf8524cb79a5894bdd784ddb4<br>
         - 安装成功后可以运行 `forge --version` ，如果安装成功则显示 `forge x.x.x`，截止 2025 年 1 月，当前我使用的版本为 `forge 0.3.0 (5a8bd89 2024-12-20T08:45:53.204298000Z)`
 
 ## 前端项目的环境配置
-1. 安装[Next.js](https://nextjs.org/): 作为项目的前端框架，当然你也可以选择 React, Vue,因人而已，选择自己用的顺手的即可,截止 2025 年 1 月，当前我使用的版本为 `15.0.1`。
+1. 安装[Next.js](https://nextjs.org/): 作为项目的前端框架，当然你也可以选择 React, Vue,因人而已，选择自己用的顺手的即可,截止 2025 年 1 月，当前我使用的版本为 `15.1.7`。
   - 在终端运行`npx create-next-app@latest` 初始化一个 Nextjs 项目，并根据自己的需求选择所需要的附加插件
   
 2. 安装[tailwindcss](https://tailwindcss.com/docs/installation)
   - 在终端运行`npm install -D tailwindcss npx tailwindcss init`,然后根据官网文档进行配置
 
-3. 安装[Wagmi](https://wagmi.sh/): 用于前端与合约之间的交互
+3. 安装[Ethers](https://docs.ethers.org/v6/): 用于前端与合约之间的交互(新手更推荐 Ethers)
 
-4. 安装[RainbowKit](https://www.rainbowkit.com/zh-CN): 主要用于前端和钱包交互
+4. 安装[Wagmi](https://wagmi.sh/): 用于前端与合约之间的交互
+
+5. 安装[RainbowKit](https://www.rainbowkit.com/zh-CN): 主要用于前端和钱包交互
   - 在终端运行`npm init @rainbow-me/rainbowkit@latest`
 
 # 常见的 Foundry 指令
@@ -293,11 +296,12 @@ function setBlockGasLimit(uint _gasLimit) public;
 
 
 # 未来计划录制的视频教程
-1. 使用 `Foundry` 框架编写一份通用的 `ERC-20` 代币合约，并编写一份 `Faucet.sol ` 合约供测试账户通过水龙头领取代币。在未来所有的合约编写过程中，我们都将不再使用 `Amoy` 测试网代码，统一使用我们自己构建的 ERC-20 代币。
-2. 从零开始构建 UniswapV2 的完整合约，并为其构建一个简易的前端。
-3. 使用 MerkleTree (默克尔树)构建一个代币空投合约
-4. 使用 `Foundry`, `Circom`, `Snarkjs`编写一份类似 Tornado Cash 的混币器合约，主要目的是真切的让大家感受到 `零知识证明` 在具体项目中的应用，而不仅仅只停留在理论层面。
-5. 未完待续...
+1. 使用 `Foundry` 框架编写一份通用的 `ERC-20` 代币合约。
+   - 教程链接：https://www.bilibili.com/video/BV1LkcHemEnv
+2. 为上节课编写好的 `LuLuCoin` 合约编译写一个 `Faucet` 水龙头合约，用于用户领取代币。
+   - 教程链接：https://www.bilibili.com/video/BV1hyw2ejE6a
+3. 使用 `MerkleTree` (默克尔树)构建一个代币空投合约。
+4. 未完待续...
 
 
 <br><br><br><br><br>
@@ -307,7 +311,7 @@ function setBlockGasLimit(uint _gasLimit) public;
 搬运转载请注明出处！！！<br>
 作者： lllu_23<br>
 联系方式: lllu238744@gmail.com<br>
-最后一次更新时间: 2025-1-10<br>
+最后一次更新时间: 2025-2-15<br>
 </strong>
 </p>
 
