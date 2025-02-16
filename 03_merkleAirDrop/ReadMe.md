@@ -30,6 +30,10 @@
    - 初始化项目的指令: `forge init`, 如果项目不为空文件夹这需要加上`--force`,初始化项目时，不进行 Git 提交需要加上`--no-commit`
    - 安装 `OpenZeppelin` 的指令为: `forge install OpenZeppelin/openzeppelin-contracts` 
 
+## 本节课程还需要按照`OpenZeppelin`的`MerkleTree`库
+   - 安装指令：`npm install @openzeppelin/merkle-tree`
+   - github 链接：https://github.com/OpenZeppelin/merkle-tree
+
 # 代码展示
 ## `LLCAirDrop` 默克尔树合约
 ![LLCAirDrop.sol](./docs-assets/contract.png)
