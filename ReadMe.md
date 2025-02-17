@@ -26,7 +26,7 @@
 
 4. 如果你已经了解了 `Solidity` 的相关基本知识，接下来应该开始学习框架从而进入到实际开发中，目前主流的 `Solidity` 开发框架有两个： `Hardhat` 与 `Foundry`，这两个课程都是由 `Patrick Collins` 老师讲授的，
 - Hardhat 框架的课程链接：[（32 小时最全课程）区块链，智能合约 & 全栈 Web3 开发](https://www.bilibili.com/video/BV1Ca411n7ta)
-- Foundry 框架的课程链接：[【人工精翻】B站最新Solidity智能合约Foundry框架零基础教程1-12课（已完结)](https://www.bilibili.com/video/BV13a4y1F7V3)
+- Foundry 框架的课程链接：[【人工精翻】B站最新Solidity智能合约Foundry框架零基础教程1-12课（已完结)](https://www.bilibili.com/video/BV13a4y1F7V3)（这个链接经常会出现点不进去的问题，遇到稿件消失可以去我的B站主页置顶视频找到这个课程）
 **这个课程也是我在 2023 年断断续续花了 100 多个小时翻译的，我个人认为在视频教程里面非常优质的课程了，学完这个 Foundry 课程基本就不用再看其他任何教程了！！！**
 
 5. 学完长达 21 小时的框架课程之后，你就应该已经完全具备独立开发基本的 DeFi、NFT 相关智能合约的能力了，这个时候我会建议你补充一下智能合约审计相关的知识，同样是由 `Patrick Collins` 老师讲授，此外，还有更为详细的智能合约审计相关课程由 `Owen` 老师讲授。
