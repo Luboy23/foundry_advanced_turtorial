@@ -9,6 +9,9 @@ export default function Footer() {
             <br/>
             如果这个视频对你有所帮助，欢迎 github 给个星星或者 b站 三连支持一下 up 主，非常感谢！
         </h2>
+        <p className="mt-2 text-base">
+          © 2026 lllu_23 • Merkle AirDrop Turtorial
+        </p>
       </footer>
     );
   }

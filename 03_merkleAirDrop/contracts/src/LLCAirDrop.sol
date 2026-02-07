@@ -4,6 +4,8 @@ pragma solidity ^0.8.20;
 import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+/// @title LLCAirDrop
+/// @notice Merkle-based airdrop for LuLuCoin.
 contract LLCAirDrop {
     using SafeERC20 for IERC20;
 
@@ -22,6 +24,11 @@ contract LLCAirDrop {
         lulucoin = _tokenAddress;
     }
 
+    /// @notice Claim airdropped tokens for an account using a Merkle proof.
+    /// @dev The account can differ from msg.sender to allow third-party claims.
+    /// @param account Recipient address included in the Merkle tree.
+    /// @param amount Token amount in the smallest unit.
+    /// @param merkleProof Proof for the (account, amount) leaf; must match off-chain tree generation.
     function claim(address account, uint256 amount, bytes32[] calldata merkleProof) external {
         if (amount == 0 || lulucoin.balanceOf(address(this)) < amount) {
             revert LLCAirDrop__InvaildAmount();
@@ -31,6 +38,7 @@ contract LLCAirDrop {
             revert LLCAirDrop__AlreadyClaimed();
         }
 
+        // Keep leaf hashing consistent with the off-chain Merkle tree scripts.
         bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(account, amount))));
 
         if (!MerkleProof.verify(merkleProof, merkleRoot, leaf)) {

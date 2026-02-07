@@ -25,7 +25,7 @@ export default function Faucet() {
     setError,
     dripInterval,
     dripLimit,
-  } = useContractContext(); // 使用 useContractContext hook 获取地址
+  } = useContractContext(); // 从上下文读取合约状态与操作方法
   const [showConnectionInfo, setShowConnectionInfo] = useState(false);
   const isConnected = Boolean(accounts[0]);
 

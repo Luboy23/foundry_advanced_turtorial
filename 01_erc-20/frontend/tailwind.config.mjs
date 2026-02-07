@@ -15,18 +15,18 @@ module.exports = {
         'erc20mint': "url('/assets/erc20mint.gif')",
       },
       fontFamily: {
-        wq: ['wq'],  // 使用刚才定义的字体名称
+        wq: ['wq'],
       },
       animation: {
-        'marquee': 'marquee 10s linear infinite', // 设置动画
+        'marquee': 'marquee 10s linear infinite',
       },
       keyframes: {
         marquee: {
           '0%': {
-            transform: 'translateX(100%)', // 从右往左
+            transform: 'translateX(100%)',
           },
           '100%': {
-            transform: 'translateX(-100%)', // 到达左边
+            transform: 'translateX(-100%)',
           },
         },
       },

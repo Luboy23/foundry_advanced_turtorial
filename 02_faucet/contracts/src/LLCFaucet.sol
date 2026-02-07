@@ -1,135 +1,127 @@
 // SPDX-License-Identifier: MIT
-// 许可证声明：指定合约的版权许可为 MIT，允许代码的自由使用和修改。
 
 pragma solidity ^0.8.20;
-// 指定 Solidity 编译器的版本。这里选择的是 0.8.20，确保合约在这一版本下编译通过。
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-// 导入 OpenZeppelin 的 IERC20 接口，用于操作 ERC20 标准的代币。
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-// 导入 OpenZeppelin 的 Ownable 合约，用于提供所有者控制权限。
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-// 导入 OpenZeppelin 的 SafeERC20 库，用于安全地进行 ERC20 代币的转账操作。
 
+/// @title LLCFaucet
+/// @notice ERC20 水龙头：按地址限频 + 单次限额发放代币
+/// @dev 使用 Ownable 做权限控制，SafeERC20 做安全转账
 contract LLCFaucet is Ownable {
     using SafeERC20 for IERC20;
-    // 使用 SafeERC20 库来增强 ERC20 代币的安全性。
 
+    /// @notice 水龙头发放的 ERC20 代币实例
     IERC20 public token;
-    // 定义一个 IERC20 类型的变量 token，用于存储要发放的代币合约。
 
+    /// @notice 代币合约地址（与 token 对应）
     address public tokenAddress;
-    // 定义一个地址类型的变量 tokenAddress，用于存储代币合约的地址。
 
+    /// @notice 每个地址最小领取间隔（秒）
     uint256 public dripInterval;
-    // 定义一个 uint256 类型的变量 dripInterval，用于设置用户请求代币的最小间隔时间。
 
+    /// @notice 单次领取上限（按代币最小单位计）
     uint256 public dripLimit;
-    // 定义一个 uint256 类型的变量 dripLimit，用于设置用户每次最多可以领取的代币数量。
 
+    /// @dev 记录每个地址上次领取的时间戳（秒）
     mapping(address => uint256) dripTime;
-    // 定义一个映射，将用户地址映射到他们上次领取代币的时间戳。
 
     error LLCFaucet__IntervalHasNotPassed();
-    // 定义一个错误类型，当用户请求代币的间隔时间未过时抛出此错误。
-
     error LLCFaucet__ExceedLimit();
-    // 定义一个错误类型，当用户请求领取的代币数量超过最大限制时抛出此错误。
-
     error LLCFaucet__FaucetEmpty();
-    // 定义一个错误类型，当水龙头中没有足够代币时抛出此错误。
-
     error LLCFaucet__InvalidAmount();
-    // 定义一个错误类型，当存入的代币数量无效时抛出此错误。
 
+    /// @notice 用户成功领取时触发
     event LLCFaucet__Drip(address indexed Receiver, uint256 indexed Amount);
-    // 定义一个事件，当用户成功领取代币时触发，记录接收者地址和领取的代币数量。
 
+    /// @notice 管理员存入代币时触发
     event LLCFaucet__OwnerDeposit(uint256 indexed amount);
-    // 定义一个事件，当合约所有者存入代币时触发，记录存入的代币数量。
 
-    constructor(address _tokenAddress, uint256 _dripInterval, uint256 _dripLimit, address _owner) Ownable(_owner) {
-        // 合约构造函数，初始化代币合约地址、领取间隔、领取限制以及合约所有者地址。
+    /// @notice 初始化代币、领取间隔、领取上限与所有者
+    /// @param _tokenAddress 代币合约地址
+    /// @param _dripInterval 领取间隔（秒）
+    /// @param _dripLimit 单次领取上限（代币最小单位）
+    /// @param _owner 合约所有者
+    constructor(
+        address _tokenAddress,
+        uint256 _dripInterval,
+        uint256 _dripLimit,
+        address _owner
+    ) Ownable(_owner) {
         tokenAddress = _tokenAddress;
         dripInterval = _dripInterval;
         dripLimit = _dripLimit;
         token = IERC20(_tokenAddress);
-        // 使用传入的代币地址初始化 token 变量为 ERC20 代币合约的实例。
     }
 
+    /// @notice 领取代币
+    /// @param _amount 领取数量（代币最小单位）
+    /// @dev 可能因间隔未到、超额或水龙头余额不足而 revert
     function drip(uint256 _amount) external {
-        // 定义 drip 函数，允许用户请求领取代币。
-
         uint256 targetAmount = _amount;
-        // 设置目标领取的代币数量。
 
         if (block.timestamp < dripTime[_msgSender()] + dripInterval) {
-            // 如果当前时间戳小于用户上次领取代币时间加上领取间隔，则抛出错误。
             revert LLCFaucet__IntervalHasNotPassed();
         }
 
         if (targetAmount > dripLimit) {
-            // 如果请求的代币数量大于最大领取限制，则抛出错误。
             revert LLCFaucet__ExceedLimit();
         }
 
         if (token.balanceOf(address(this)) < targetAmount) {
-            // 如果合约中代币余额不足以满足请求的代币数量，则抛出错误。
             revert LLCFaucet__FaucetEmpty();
         }
 
         dripTime[_msgSender()] = block.timestamp;
-        // 更新用户的上次领取代币时间为当前时间戳。
-
         token.safeTransfer(_msgSender(), targetAmount);
-        // 安全地将目标数量的代币转账到请求者地址。
-
         emit LLCFaucet__Drip(_msgSender(), targetAmount);
-        // 触发事件，记录领取代币的用户和领取数量。
-    } 
+    }
 
+    /// @notice 管理员向水龙头存入代币
+    /// @param _amount 存入数量（代币最小单位）
+    /// @dev 需要先对水龙头合约进行 approve
     function deposit(uint256 _amount) external onlyOwner {
-        // 定义 deposit 函数，允许合约所有者存入代币。
-
         if (_amount > token.balanceOf(_msgSender())) {
-            // 如果合约所有者存入的代币数量大于其账户余额，则抛出错误。
             revert LLCFaucet__InvalidAmount();
         }
 
         token.safeTransferFrom(_msgSender(), address(this), _amount);
-        // 安全地从合约所有者地址转账代币到合约地址。
-
         emit LLCFaucet__OwnerDeposit(_amount);
-        // 触发事件，记录存入的代币数量。
     }
 
+    /// @notice 更新领取间隔
+    /// @param _newDripInterval 新的间隔（秒）
     function setDripInterval(uint256 _newDripInterval) public onlyOwner {
-        // 定义 setDripInterval 函数，允许合约所有者设置新的领取间隔。
         dripInterval = _newDripInterval;
     }
 
+    /// @notice 更新单次领取上限
+    /// @param _newDripLimit 新上限（代币最小单位）
     function setDripLimit(uint256 _newDripLimit) public onlyOwner {
-        // 定义 setDripLimit 函数，允许合约所有者设置新的领取限制。
         dripLimit = _newDripLimit;
     }
 
+    /// @notice 更新代币合约地址
+    /// @param _newTokenAddress 新的代币地址
+    /// @dev 当前仅更新 tokenAddress，若更换代币需同步更新 token 实例
     function setTokenAddress(address _newTokenAddress) public onlyOwner {
-        // 定义 setTokenAddress 函数，允许合约所有者设置新的代币合约地址。
         tokenAddress = _newTokenAddress;
     }
 
+    /// @notice 获取指定地址上次领取时间戳（秒）
+    /// @param _user 查询地址
     function getDripTime(address _user) external view returns (uint256) {
-        // 定义 getDripTime 函数，返回指定用户的上次领取代币时间。
         return dripTime[_user];
     }
 
+    /// @notice 获取当前领取间隔（秒）
     function getDripInterval() external view returns (uint256) {
-        // 定义 getDripInterval 函数，返回当前的领取间隔。
         return dripInterval;
     }
 
+    /// @notice 获取当前单次领取上限（代币最小单位）
     function getDripLimit() external view returns (uint256) {
-        // 定义 getDripLimit 函数，返回当前的领取限制。
         return dripLimit;
     }
 }

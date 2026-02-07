@@ -75,4 +75,20 @@
 `make deposit`: 使用 `Owner` 账户向水龙头合约中进行转账
 
 
+# 根目录 Makefile 使用说明（新增）
+- 使用根目录 Makefile 一键运行项目
+`make start`: 一键部署合约并启动前端开发服务器
+`make` 或 `make run`: 仅启动前端开发服务器（默认目标）
+`make dev`: 同上，开发模式启动
+`make contracts-setup`: 合约端初始化流程（部署/铸币/授权/存入）
+`make frontend-build`: 构建前端生产包
+`make frontend-start`: 启动前端生产服务器
+`make frontend-lint`: 前端代码检查
+`make clean-frontend`: 清理前端依赖
+`make help`: 查看全部指令说明
+
+- 注意事项
+`contracts/.env` 为必需文件，需配置私钥/地址/RPC 等环境变量
+`make start` 会触发链上交易（部署/铸币/授权/存入），请确认使用测试网或准备好 Gas
+
 

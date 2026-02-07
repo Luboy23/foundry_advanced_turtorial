@@ -1,4 +1,4 @@
-// SPDX_License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.20;
 
@@ -14,10 +14,12 @@ contract LLCAirDropTest is Test {
     address user1;
     address user2;
 
-    uint256 user1_airdrop_amount = 10 * 1e18;
-    uint256 user2_airdrop_amount = 100 * 1e18;
-    uint256 totalAmount = 1000 * 1e18;
+    uint256 user1_airdrop_amount = 10 * 1e18; // 10 LLC (18 decimals)
+    uint256 user2_airdrop_amount = 100 * 1e18; // 100 LLC (18 decimals)
+    uint256 totalAmount = 1000 * 1e18; // Total seeded balance
 
+    // Generated via `node contracts/script/generate_test_merkle.js`.
+    // Proofs correspond to test_claimers indices 0 (user1) and 1 (user2).
     bytes32 merkleRoot =0x6850843d6919baad9651497d3e155c499a0f4659816bc1835a75a9cf84c17387;
     bytes32[] user1_proof = [bytes32(0x687416b9620fdfffbc03f1d9ed74447f5385b296239ae04fd587ec81529e3742)];
     bytes32[] user2_proof = [bytes32(0x50b63efa26465f52c21d33bcaef779d44fc14fa2876d72b749cfde3e959244cc)];

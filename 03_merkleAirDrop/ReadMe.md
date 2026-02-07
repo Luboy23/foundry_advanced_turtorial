@@ -34,6 +34,17 @@
    - 安装指令：`npm install @openzeppelin/merkle-tree`
    - github 链接：https://github.com/OpenZeppelin/merkle-tree
 
+# 一键启动
+在根目录执行：
+- `make start`：同时启动合约本地链（anvil）与前端开发服务器
+
+前置条件：
+- 已安装 Foundry 且 `anvil` 可在命令行直接运行
+- 前端依赖已安装：`cd frontend && npm install`
+
+退出方式：
+- 在运行终端中按 `Ctrl + C` 结束对应进程
+
 # 代码展示
 ## `LLCAirDrop` 默克尔树合约
 ![LLCAirDrop.sol](./docs-assets/contract.png)
@@ -70,6 +81,5 @@
 `make user1_airdrop`: 使用`user1`领取空投
 `make user1_balance`: 查看 `user1` 的账户余额
 `make user1_claim_status`: 查看 `user1` 的空投领取状态
-
 
 

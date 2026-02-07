@@ -15,18 +15,18 @@ module.exports = {
         'faucet': "url('/assets/faucet.gif')",
       },
       fontFamily: {
-        wq: ['wq'],  // 使用刚才定义的字体名称
+        wq: ['wq'], // 供 className="font-wq" 使用的自定义字体族
       },
       animation: {
-        'marquee': 'marquee 10s linear infinite', // 设置动画
+        'marquee': 'marquee 10s linear infinite', // 用于“连接钱包…”提示的跑马灯动画
       },
       keyframes: {
         marquee: {
           '0%': {
-            transform: 'translateX(100%)', // 从右往左
+            transform: 'translateX(100%)',
           },
           '100%': {
-            transform: 'translateX(-100%)', // 到达左边
+            transform: 'translateX(-100%)',
           },
         },
       },

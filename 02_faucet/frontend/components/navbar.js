@@ -69,7 +69,7 @@ export default function Navbar() {
     }
   };
 
-  // 连接钱包
+  // 通过 EIP-1193 provider 请求连接钱包
   async function connectAccount() {
     try {
       if (window.ethereum) {
@@ -120,7 +120,7 @@ export default function Navbar() {
           BigInt(newLimit * 1e18)
         );
         console.log("Drip interval updated", response);
-        fetchDripLimit(); // 更新前端显示的时间间隔
+        fetchDripLimit(); // 刷新前端显示的领取间隔
       } catch (err) {
         console.log("Error updating drip interval", err);
       }
@@ -151,9 +151,8 @@ export default function Navbar() {
     setDripInterval(dripInterval);
   }
 
-  // 断开连接
+  // 仅清空本地连接状态，不会断开钱包本身
   function disconnectAccount() {
-    // 清空已连接的账户
     setAccounts([]);
     console.log("Disconnected from wallet.");
   }
@@ -189,7 +188,7 @@ export default function Navbar() {
   }, [LuLuCoinAddress, FaucetAddress]);
   return (
     <div className="flex justify-between items-center text-2xl px-8 py-6 font-wq text-white">
-      {/* 左侧 - 社交媒体图标 */}
+      {/* 左侧：Bilibili / GitHub 外链 */}
       <div className="flex">
         <Link
           href="https://space.bilibili.com/3493288753498847"
@@ -213,13 +212,13 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* 右侧 - 社交部分和连接 */}
+      {/* 右侧：连接状态与管理入口 */}
       <div className="flex items-center space-x-6 text-2xl">
         {isConnected && (
           <p
             className="cursor-pointer"
             onClick={() => {
-              setShowManagementTable(true); // 显示连接信息
+              setShowManagementTable(true); // 打开管理信息弹窗
             }}
           >
             管理页面
@@ -227,7 +226,6 @@ export default function Navbar() {
         )}
         {isConnected ? (
           <div className="flex items-center space-x-4">
-            {/* 断开连接按钮 */}
             <button
               className="bg-pink-600 text-white px-6 py-2 rounded-md shadow-lg hover:bg-pink-700 transition duration-300"
               onClick={disconnectAccount}
@@ -279,7 +277,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* 模态框 */}
+      {/* 管理项编辑弹窗 */}
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-md shadow-lg w-1/3 text-center">

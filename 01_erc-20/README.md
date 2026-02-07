@@ -63,3 +63,16 @@
 * 查看合约中的代币余额
 ` cast call ${LLC_CONTRACT} "balanceOf(address)" ${OWNER_ADDRESS}`
 
+# Makefile 一键启动（推荐）
+* 一键启动（启动 Anvil → 部署合约 → 启动前端）
+`make`
+`make dev`
+`make run`
+
+* 分步启动
+`make anvil`
+`make deploy_anvil`
+`make frontend`
+
+* 覆盖本地 Anvil 端口
+`ANVIL_PORT=9545 make`
