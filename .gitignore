@@ -1,0 +1,12 @@
+.DS_Store
+/*.zip
+node_modules/
+.next/
+out/
+cache/
+broadcast/
+coverage/
+.anvil.log
+.env
+.env.*
+!.env.example

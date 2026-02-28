@@ -1,0 +1,10 @@
+# Env
+.env
+.env*.local
+
+# Local chain logs
+.anvil.log
+.anvil.pid
+
+# Misc
+.DS_Store

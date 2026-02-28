@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body {
+    @apply bg-rose-50 text-rose-900 antialiased;
+    font-family: 'Space Grotesk', 'Noto Sans SC', 'PingFang SC',
+      'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Arial,
+      sans-serif;
+  }
+
+  a {
+    @apply text-rose-600 transition hover:text-rose-500;
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "erc20",
+  "version": "0.1.0",
+  "description": "ERC20 mint demo frontend (Next.js + Foundry).",
+  "private": true,
+  "packageManager": "npm@11.5.2",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "ethers": "^5.7.0",
+    "next": "15.1.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.4",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.17"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luboy23/foundry_advanced_turtorial.git",
+    "directory": "01_Erc20/frontend"
+  },
+  "bugs": {
+    "url": "https://github.com/Luboy23/foundry_advanced_turtorial/issues"
+  },
+  "homepage": "https://github.com/Luboy23/foundry_advanced_turtorial/tree/main/01_Erc20/frontend"
+}
