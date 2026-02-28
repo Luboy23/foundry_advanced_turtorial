@@ -1,0 +1,14 @@
+.vscode
+.idea
+.next/*
+.husky/*
+node_modules/*
+public/*
+*/**/*.md
+*/**/*.yml
+
+coverage/*
+storybook-static/*
+
+schema.graphql
+.graphqlconfig

@@ -1,0 +1,66 @@
+# Next.js
+.next
+
+# private keys
+key.json
+keys.json
+*-key.json
+*-keys.json
+grant-config.json
+
+# dependencies
+node_modules
+package-lock.json
+yarn.lock
+!/yarn.lock
+test/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+firebase-debug.log*
+
+# Firebase cache
+.firebase/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# production
+build
+
+# binaries
+bin
+dist
+
+#testing
+coverage
+
+# misc
+.DS_Store
+.env
+.env*.local
+
+# editors
+*.swp
+.idea
+.vs
+.vscode
+**/.idea
+
+# Vercel
+.vercel
+.now
+# Env
+.env
+.env*.local
+
+# Local chain logs
+.anvil.log
+.anvil.pid

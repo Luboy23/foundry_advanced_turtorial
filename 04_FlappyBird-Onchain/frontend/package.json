@@ -1,0 +1,45 @@
+{
+  "name": "flappy-bird-onchain",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Flappy Bird on-chain frontend (React + Phaser + Vite).",
+  "packageManager": "npm@11.5.2",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.2.4",
+    "@tailwindcss/vite": "^4.1.5",
+    "@tanstack/react-query": "^5.75.4",
+    "phaser": "^3.88.2",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "tailwindcss": "^4.1.5",
+    "viem": "^2.29.0",
+    "wagmi": "^2.15.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.0",
+    "@types/react": "^18.0.2",
+    "@types/react-dom": "^18.0.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "eslint": "^9.25.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "vite": "^6.3.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luboy23/foundry_advanced_turtorial.git",
+    "directory": "04_FlappyBird-Onchain/frontend"
+  },
+  "bugs": {
+    "url": "https://github.com/Luboy23/foundry_advanced_turtorial/issues"
+  },
+  "homepage": "https://github.com/Luboy23/foundry_advanced_turtorial/tree/main/04_FlappyBird-Onchain/frontend"
+}
