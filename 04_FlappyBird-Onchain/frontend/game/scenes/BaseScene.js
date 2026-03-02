@@ -1,7 +1,7 @@
 // 场景基类：统一处理背景、缩放、菜单按钮、钱包状态显示与音频解锁。
 import Phaser from "phaser";
 import { syncBgm } from "../audio/audioManager";
-import { loadSettings } from "../state/settings";
+import { getBackgroundKey, loadSettings } from "../state/settings";
 import { getConnectedAccount, onAccountChanged } from "../chain/accountClient";
 
 // 将地址缩短显示（例如 0x1234...abcd）
@@ -42,15 +42,21 @@ class BaseScene extends Phaser.Scene {
 
   // 选择并缓存随机背景
   createBG() {
-    if (!this.scene.manager.getScene("PreloadScene").selectedBG) {
-      const backgrounds = ["bg1", "bg2", "bg3"];
+    const preloadScene = this.scene.manager.getScene("PreloadScene");
+    const settings = loadSettings();
+    const mode = getBackgroundKey(settings);
+    const backgrounds = ["bg1", "bg2", "bg3"];
 
-      const randomIndex = Phaser.Math.Between(0, backgrounds.length - 1);
-      this.scene.manager.getScene("PreloadScene").selectedBG =
-        backgrounds[randomIndex];
+    if (mode === "random") {
+      if (!preloadScene.selectedBG) {
+        const randomIndex = Phaser.Math.Between(0, backgrounds.length - 1);
+        preloadScene.selectedBG = backgrounds[randomIndex];
+      }
+    } else {
+      preloadScene.selectedBG = mode;
     }
 
-    this.selectedBG = this.scene.manager.getScene("PreloadScene").selectedBG;
+    this.selectedBG = preloadScene.selectedBG;
   }
 
   // 场景通用初始化：背景、缩放、返回按钮、钱包状态显示

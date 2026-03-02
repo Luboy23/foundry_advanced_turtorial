@@ -157,6 +157,11 @@ npm run preview
 npm run lint
 ```
 
+## 素材
+
+- 本项目中使用的像素游戏素材：https://bongseng.itch.io/low-effort-flappy-bird
+- 本项目中使用的 BGM 素材：https://pixabay.com/music/video-games-8bit-theme-loop-chiptune-symphony-387749/
+
 ## 排错指南
 
 - **提示“请设置 VITE_FLAPPY_SCORE_ADDRESS”**
