@@ -16,6 +16,9 @@ class ScoreScene extends BaseScene {
 
   // 场景创建入口
   create() {
+    this.isShuttingDown = false;
+    this.isRefreshing = false;
+    this.refreshQueued = false;
     super.create();
     this.createLeaderboardPanel();
     // 监听外部刷新事件（例如游戏结束上链后）
@@ -34,6 +37,8 @@ class ScoreScene extends BaseScene {
     const lineHeight = 22;
     const paddingX = 18;
     const headerY = panelY + 16;
+    const centerX = panelX + panelWidth / 2;
+    const centerY = panelY + panelHeight / 2;
 
     // 面板背景
     const panel = this.add
@@ -61,6 +66,16 @@ class ScoreScene extends BaseScene {
         padding: this.textPadding,
       })
       .setOrigin(0);
+
+    this.emptyHint = this.add
+      .text(centerX, centerY, "暂无玩家进行游戏", {
+        fontSize: "16px",
+        fill: "#fff",
+        fontFamily: this.fontFamily,
+        padding: this.textPadding,
+      })
+      .setOrigin(0.5)
+      .setVisible(false);
 
     // 排行榜条目
     this.leaderboardEntries = [];
@@ -120,6 +135,7 @@ class ScoreScene extends BaseScene {
     this.isRefreshing = true;
     if (!isContractReady) {
       this.leaderboardStatus.setText("请设置 VITE_FLAPPY_SCORE_ADDRESS");
+      this.emptyHint.setVisible(false);
       this.leaderboardEntries.forEach((text) => text.setText(""));
       this.bestText.setText("最高分：-");
       this.isRefreshing = false;
@@ -136,13 +152,15 @@ class ScoreScene extends BaseScene {
       const entries = leaderboard.slice(0, MAX_ENTRIES);
 
       if (entries.length === 0) {
-        this.leaderboardStatus.setText("暂无链上分数。");
+        this.leaderboardStatus.setText("");
+        this.emptyHint.setVisible(true);
         this.leaderboardEntries.forEach((text) => text.setText(""));
         this.bestText.setText("最高分：-");
         return;
       }
 
       this.leaderboardStatus.setText("");
+      this.emptyHint.setVisible(false);
       entries.forEach((entry, index) => {
         const address = entry.player
           ? `${entry.player.slice(0, 6)}...${entry.player.slice(-4)}`
@@ -165,6 +183,7 @@ class ScoreScene extends BaseScene {
       this.bestText.setText(`最高分：${bestScore}`);
     } catch (error) {
       this.leaderboardStatus.setText("链上分数加载失败。");
+      this.emptyHint.setVisible(false);
     } finally {
       this.isRefreshing = false;
       if (this.refreshQueued) {

@@ -6,6 +6,7 @@ const DEFAULT_SETTINGS = {
   soundEnabled: true,
   musicEnabled: true,
   difficulty: "auto",
+  background: "random",
 };
 
 // 读取设置（合并默认值，容错异常）
@@ -38,4 +39,13 @@ export const getDifficultyMode = (settings) => {
     return value;
   }
   return "auto";
+};
+
+// 规范化背景字段，非法值回退为 random
+export const getBackgroundKey = (settings) => {
+  const value = settings?.background;
+  if (value === "bg1" || value === "bg2" || value === "bg3") {
+    return value;
+  }
+  return "random";
 };

@@ -44,6 +44,18 @@ class MenuScene extends BaseScene {
       return;
     }
 
+    if (menuItem.scene === "ScoreScene") {
+      this.scoreButton = button;
+      button.hitZone.on("pointerup", () => {
+        if (!this.isWalletConnected) {
+          this.showWalletHint("请先连接钱包后开始游戏");
+          return;
+        }
+        this.scene.start(menuItem.scene);
+      });
+      return;
+    }
+
     // 其他按钮直接切场景
     button.hitZone.on("pointerup", () => {
       menuItem.scene && this.scene.start(menuItem.scene);
@@ -71,6 +83,13 @@ class MenuScene extends BaseScene {
         // 未连接时降低按钮透明度
         const alpha = this.isWalletConnected ? 1 : 0.7;
         this.startButton.container.setAlpha(alpha);
+      }
+      if (this.scoreButton) {
+        const alpha = this.isWalletConnected ? 1 : 0.7;
+        this.scoreButton.container.setAlpha(alpha);
+        this.scoreButton.hitZone.setInteractive({
+          useHandCursor: this.isWalletConnected,
+        });
       }
       if (this.isWalletConnected && this.walletHint?.visible) {
         this.walletHint.setVisible(false);

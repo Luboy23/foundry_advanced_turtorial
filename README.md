@@ -10,6 +10,15 @@
 <br>
 <br>
 
+# 项目总览
+
+| 项目名称 | 代表性页面 | 功能简介 |
+| --- | --- | --- |
+| [01_Erc20](01_Erc20/) | ![01_Erc20](01_Erc20/docs-assets/ui-mint-home.png) | ERC20 代币铸造 Demo，提供前端铸造页面与 Foundry 合约。 |
+| [02_Faucet](02_Faucet/) | ![02_Faucet](02_Faucet/docs-assets/ui-faucet-home.png) | ERC20 代币水龙头，支持管理员配置与用户领取。 |
+| [03_MerkleAirDrop](03_MerkleAirDrop/) | ![03_MerkleAirDrop](03_MerkleAirDrop/docs-assets/ui-airdrop-home.png) | 基于 MerkleTree 的空投领取系统，包含白名单配置与领取流程。 |
+| [04_FlappyBird-Onchain](04_FlappyBird-Onchain/) | ![04_FlappyBird-Onchain](04_FlappyBird-Onchain/docs-assets/gameplay.png) | Flappy Bird 上链版，集成钱包与链上排行榜。 |
+
 # 推荐的学习资料
 1. [Solidity 官方文档](https://docs.soliditylang.org/): 如果你有一定的编程基础，对一些 `Solidity` 基础变量的定义或语法的使用还不太了解，又不想花太多的时间去看视频教程，那么结合文档进行学习会是一个更不错的选择
 2. [Foundry 官方文档](https://book.getfoundry.sh/): 这是使用 `Foundry` 框架进行 `Solidity` 智能合约开发必须要阅读的资料，同时当你真正开始构建生产级别应用时，可以在其中找到很多我并未在提及到的开发技巧和解决错误的方法
@@ -311,6 +320,6 @@ function setBlockGasLimit(uint _gasLimit) public;
 搬运转载请注明出处！！！<br>
 作者： lllu_23<br>
 联系方式: lllu238744@gmail.com<br>
-最后一次更新时间: 2026-2-7<br>
+最后一次更新时间: 2026-3-2<br>
 </strong>
 </p>

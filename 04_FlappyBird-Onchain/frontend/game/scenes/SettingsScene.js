@@ -1,7 +1,12 @@
 // 设置场景：提供音效/音乐开关与难度选择。
 import BaseScene from "./BaseScene";
 import { syncBgm } from "../audio/audioManager";
-import { getDifficultyMode, loadSettings, saveSettings } from "../state/settings";
+import {
+  getBackgroundKey,
+  getDifficultyMode,
+  loadSettings,
+  saveSettings,
+} from "../state/settings";
 
 // 难度标签显示
 const DIFFICULTY_LABELS = {
@@ -29,6 +34,7 @@ class SettingsScene extends BaseScene {
     this.settings = loadSettings();
     this.createTitle();
     this.createSettingsMenu();
+    this.createBackgroundSelector();
   }
 
   // 标题与提示文字
@@ -111,6 +117,120 @@ class SettingsScene extends BaseScene {
       // 更新按钮文字
       button.text.setText(this.getMenuText(menuItem));
     });
+  }
+
+  // 背景选择模块（缩略图 + 随机）
+  createBackgroundSelector() {
+    const options = [
+      { key: "random", label: "随机", texture: null },
+      { key: "bg1", label: "bg1", texture: "bg1" },
+      { key: "bg2", label: "bg2", texture: "bg2" },
+      { key: "bg3", label: "bg3", texture: "bg3" },
+    ];
+
+    const lastButton =
+      this.menuButtons?.[this.menuButtons.length - 1] ?? null;
+    const baseY = lastButton ? lastButton.y + 70 : this.screenCenter[1] + 60;
+
+    this.add
+      .text(this.screenCenter[0], baseY, "背景选择", {
+        fontSize: "18px",
+        fill: "#fff",
+        fontFamily: this.fontFamily,
+        padding: this.textPadding,
+      })
+      .setOrigin(0.5);
+
+    const cardWidth = 90;
+    const cardHeight = 60;
+    const gap = 14;
+    const rowWidth =
+      options.length * cardWidth + (options.length - 1) * gap;
+    const startX =
+      this.screenCenter[0] - rowWidth / 2 + cardWidth / 2;
+    const rowY = baseY + 48;
+
+    this.bgOptionNodes = options.map((option, index) => {
+      const x = startX + index * (cardWidth + gap);
+
+      const background = this.add
+        .rectangle(x, rowY, cardWidth, cardHeight, 0x111111, 0.75)
+        .setOrigin(0.5)
+        .setStrokeStyle(2, 0xffffff, 0.3);
+
+      let content = null;
+      if (option.texture) {
+        content = this.add
+          .image(x, rowY, option.texture)
+          .setDisplaySize(cardWidth - 6, cardHeight - 6);
+      } else {
+        content = this.add
+          .text(x, rowY, option.label, {
+            fontSize: "16px",
+            fill: "#fff",
+            fontFamily: this.fontFamily,
+            padding: this.textPadding,
+          })
+          .setOrigin(0.5);
+      }
+
+      const hitZone = this.add
+        .zone(x, rowY, cardWidth + 8, cardHeight + 8)
+        .setOrigin(0.5)
+        .setInteractive({ useHandCursor: true });
+
+      hitZone.on("pointerup", () => {
+        this.applyBackgroundSelection(option.key);
+      });
+
+      return {
+        key: option.key,
+        background,
+        content,
+        hitZone,
+      };
+    });
+
+    this.updateBackgroundSelector();
+  }
+
+  updateBackgroundSelector() {
+    const selected = getBackgroundKey(this.settings);
+    if (!this.bgOptionNodes) return;
+    this.bgOptionNodes.forEach((node) => {
+      const isActive = node.key === selected;
+      node.background.setStrokeStyle(
+        2,
+        isActive ? 0xfff58a : 0xffffff,
+        isActive ? 0.95 : 0.3
+      );
+    });
+  }
+
+  applyBackgroundSelection(key) {
+    this.settings.background = key;
+    this.settings = saveSettings(this.settings);
+
+    const preloadScene = this.scene.manager.getScene("PreloadScene");
+    if (key === "random") {
+      if (preloadScene) {
+        preloadScene.selectedBG = null;
+      }
+      this.createBG();
+      if (this.background && this.selectedBG) {
+        this.background.setTexture(this.selectedBG);
+      }
+    } else {
+      if (preloadScene) {
+        preloadScene.selectedBG = key;
+      }
+      this.selectedBG = key;
+      if (this.background) {
+        this.background.setTexture(key);
+      }
+    }
+
+    this.updateBackgroundSelector();
   }
 }
 
