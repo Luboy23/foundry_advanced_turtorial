@@ -130,12 +130,14 @@ export const useSnakeAudio = ({
     resumeAudioContext()
   }, [resumeAudioContext])
 
+  // 倒计时 3/2/1 时播放滴答提示音，帮助用户感知恢复时机
   useEffect(() => {
     if (countDown > 0 && countDown < 4) {
       playSfx('countdown')
     }
   }, [countDown, playSfx])
 
+  // 首次加载时从 localStorage 恢复音乐/音效开关
   useEffect(() => {
     if (typeof window === 'undefined') return
     const stored = localStorage.getItem('audio-settings')
@@ -153,6 +155,7 @@ export const useSnakeAudio = ({
     }
   }, [])
 
+  // 设置变更后立即持久化，刷新页面后保持用户偏好
   useEffect(() => {
     if (typeof window === 'undefined') return
     localStorage.setItem(
@@ -172,10 +175,12 @@ export const useSnakeAudio = ({
     if (shouldPlayMusic) {
       startMusicLoop()
     } else {
+      // 只要不满足播放条件（暂停/倒计时/结束），就停止循环
       stopMusicLoop()
     }
   }, [countDown, isLost, isPaused, musicEnabled, running, startMusicLoop, stopMusicLoop])
 
+  // 组件卸载时兜底清理定时器，防止残留背景音乐继续播放
   useEffect(() => {
     return () => {
       stopMusicLoop()

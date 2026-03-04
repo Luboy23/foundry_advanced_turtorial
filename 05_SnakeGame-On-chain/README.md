@@ -3,6 +3,26 @@ Next.js + Foundry
 
 一个以 Next.js 作为前端宿主、集成 wagmi 钱包连接与链上排行榜的贪吃蛇游戏。前端位于 `frontend/`，合约工程独立在 `contracts/`（Foundry）。
 
+## Demo 展示
+
+**游戏进行中**
+![游戏进行中](./docs-assets/gameplay.png)
+
+**排行榜弹窗**
+![排行榜弹窗](./docs-assets/leaderboard.png)
+
+**历史成绩弹窗**
+![历史成绩弹窗](./docs-assets/history.png)
+
+**设置弹窗**
+![设置弹窗](./docs-assets/settings.png)
+
+**游戏结束（上链等待）**
+![游戏结束（上链等待）](./docs-assets/game-over-pending.png)
+
+**游戏结束（上链成功）**
+![游戏结束（上链成功）](./docs-assets/game-over-success.png)
+
 ## 技术栈
 
 - 前端：Next.js + React

@@ -121,8 +121,9 @@ export default function SnakeGame() {
   const [isPaused, setIsPaused] = useState(false)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [speedPeak, setSpeedPeak] = useState(minGameSpeed)
-  const [gameDelay, setGameDelay] = useState<number>(1000 / minGameSpeed)
-  const [targetDelay, setTargetDelay] = useState<number>(1000 / minGameSpeed)
+  const [gameDelay, setGameDelay] = useState<number>(
+    Math.round(1000 / minGameSpeed)
+  )
   const [countDown, setCountDown] = useState<number>(4)
   const [running, setRunning] = useState(false)
   const [isLost, setIsLost] = useState(false)
@@ -157,6 +158,7 @@ export default function SnakeGame() {
   const pauseBeforeGateRef = useRef(false)
   const overlayPausedRef = useRef(false)
 
+  // 监听提交流水线交易确认状态（签名后 -> pending -> success/error）
   const {
     isLoading: isConfirming,
     isSuccess: isConfirmed,
@@ -166,19 +168,23 @@ export default function SnakeGame() {
     query: { enabled: Boolean(submitHash) },
   })
 
+  // 标记客户端已挂载，避免首屏直接读取浏览器对象
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  // 交易哈希变化时重置“已复制”提示状态
   useEffect(() => {
     setCopiedHash(false)
   }, [submitHash])
 
+  // 连接器列表中提取注入式钱包（MetaMask/OKX 等）
   const injectedConnector = useMemo(
     () => connectors.find((connector) => connector.id === 'injected'),
     [connectors]
   )
 
+  // 钱包可用性判定：浏览器 provider + 已连接 + 网络正确
   const hasProvider =
     mounted &&
     typeof window !== 'undefined' &&
@@ -209,6 +215,7 @@ export default function SnakeGame() {
     countDown,
   })
 
+  // 链上排行榜与个人历史数据
   const [globalEntries, setGlobalEntries] = useState<GlobalEntry[]>([])
   const [globalLoading, setGlobalLoading] = useState(false)
   const [globalError, setGlobalError] = useState<string | null>(null)
@@ -216,6 +223,8 @@ export default function SnakeGame() {
   const [userEntries, setUserEntries] = useState<UserEntry[]>([])
   const [userLoading, setUserLoading] = useState(false)
   const [userError, setUserError] = useState<string | null>(null)
+
+  // 棋盘视觉状态：未开始/暂停/倒计时（用于遮罩展示）
   const isCountdownActive = countDown > 0 && countDown < 4
   const isBoardIdle = !running && !isLost
   const isBoardPaused =
@@ -561,8 +570,7 @@ export default function SnakeGame() {
     resetSubmissionState()
     overlayPausedRef.current = false
     setIsResumePromptActive(false)
-    setGameDelay(1000 / minGameSpeed)
-    setTargetDelay(1000 / minGameSpeed)
+    setGameDelay(Math.round(1000 / minGameSpeed))
     setIsLost(false)
     setIsPaused(false)
     setScore(0)
@@ -633,8 +641,7 @@ export default function SnakeGame() {
     setRunning(false)
     setIsPaused(false)
     setIsResumePromptActive(false)
-    setGameDelay(1000 / minGameSpeed)
-    setTargetDelay(1000 / minGameSpeed)
+    setGameDelay(Math.round(1000 / minGameSpeed))
     setScore(0)
     setElapsedSeconds(0)
     setSpeedPeak(minGameSpeed)
@@ -866,8 +873,9 @@ export default function SnakeGame() {
     }
 
     // 检查是否吃到苹果
+    let nextScore = score
     if (nextHeadPosition.x === apple.x && nextHeadPosition.y === apple.y) {
-      const eatenApple = { ...apple }
+      nextScore = score + 1
       setScore((prevScore) => prevScore + 1)
       setApple(generateApplePosition())
       playSfx('eat')
@@ -875,7 +883,9 @@ export default function SnakeGame() {
 
     const updatedSnakeTrail = [...snake.trail, { ...snake.head }]
     // 移除超出蛇身长度的轨迹（分数 + 2）
-    while (updatedSnakeTrail.length > score + 2) updatedSnakeTrail.shift()
+    while (updatedSnakeTrail.length > nextScore + 2) {
+      updatedSnakeTrail.shift()
+    }
     // 检查蛇身自撞
     if (
       updatedSnakeTrail.some(
@@ -924,6 +934,7 @@ export default function SnakeGame() {
     countDown > 0 && countDown < 4 && !isPaused ? 800 : null
   )
 
+  // 交易确认回调：成功后刷新榜单，失败则写入错误状态
   useEffect(() => {
     if (!submitHash) return
     if (isConfirmed) {
@@ -947,6 +958,7 @@ export default function SnakeGame() {
     submitHash,
   ])
 
+  // 自动提交流程：仅在“游戏结束 + 条件满足”时触发一次，避免重复发交易
   useEffect(() => {
     if (!isLost || !submitPayload) return
     if (submitPayload.score <= 0) {
@@ -979,6 +991,7 @@ export default function SnakeGame() {
     submitScoreToChain,
   ])
 
+  // 钱包门禁：运行中若断连/切错链则强制暂停，恢复后弹继续提示
   useEffect(() => {
     if (!running || isLost) {
       setIsWalletGateActive(false)
@@ -1000,49 +1013,41 @@ export default function SnakeGame() {
     }
   }, [isLost, isPaused, isWalletGateActive, isWalletReady, running])
 
+  // 打开排行榜弹窗时即时刷新链上全局数据
   useEffect(() => {
     if (!isLeaderboardOpen) return
     void refreshGlobal()
   }, [isLeaderboardOpen, refreshGlobal])
 
+  // 打开历史弹窗时即时刷新当前钱包成绩
   useEffect(() => {
     if (!isHistoryOpen) return
     void refreshUser()
   }, [isHistoryOpen, refreshUser])
 
-  // 分数 Hook：平滑速度变化
+  // 分数变化后直接更新速度，避免 interval delay 高频重建导致卡顿
   useEffect(() => {
     const clampedSpeed = Math.min(
       maxGameSpeed,
       Math.max(minGameSpeed, score)
     )
-    setTargetDelay(1000 / clampedSpeed)
+    setGameDelay(Math.round(1000 / clampedSpeed))
   }, [maxGameSpeed, minGameSpeed, score])
 
-  useInterval(
-    () => {
-      setGameDelay((prevDelay) => {
-        const diff = targetDelay - prevDelay
-        if (Math.abs(diff) < 0.5) return targetDelay
-        return prevDelay + diff * 0.2
-      })
-    },
-    running && countDown === 0 && !isPaused ? 80 : null
-  )
-
+  // 记录历史最高速度（用于结算上链）
   useEffect(() => {
     if (!running) return
     const currentSpeed = Math.round(1000 / gameDelay)
     setSpeedPeak((prevPeak) => Math.max(prevPeak, currentSpeed))
   }, [gameDelay, running])
 
+  // 对局计时器：仅在真实运行阶段计时（倒计时/暂停/结束不计入）
   useInterval(
     () => {
       setElapsedSeconds((prevSeconds) => prevSeconds + 1)
     },
     running && countDown === 0 && !isPaused && !isLost ? 1000 : null
   )
-
 
   // 事件监听：按键
   useEffect(() => {

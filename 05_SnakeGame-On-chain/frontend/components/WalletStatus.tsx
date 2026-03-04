@@ -17,17 +17,21 @@ export default function WalletStatus() {
   const { connect, connectors, isPending } = useConnect()
   const { disconnect } = useDisconnect()
 
+  // 挂载后再渲染真实钱包状态，避免 SSR/CSR 水合不一致
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  // 优先选择浏览器注入钱包（MetaMask/OKX 等）
   const injectedConnector = useMemo(
     () => connectors.find((connector) => connector.id === 'injected'),
     [connectors]
   )
 
+  // 只接受 Anvil 网络，其他网络显示 Wrong 提示
   const isAnvil = chainId === ANVIL_CHAIN_ID
 
+  // 未挂载时输出稳定占位 UI，防止首屏闪烁
   if (!mounted) {
     return (
       <div className="fixed right-4 top-4 z-50 flex flex-wrap items-center justify-end gap-2 rounded-2xl border border-rose-200 bg-white/95 px-3 py-2 text-xs font-semibold text-rose-600 shadow-lg shadow-rose-200/40 backdrop-blur">
