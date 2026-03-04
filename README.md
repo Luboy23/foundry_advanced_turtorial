@@ -18,12 +18,81 @@
 | [02_Faucet](02_Faucet/) | ![02_Faucet](02_Faucet/docs-assets/ui-faucet-home.png) | ERC20 代币水龙头，支持管理员配置与用户领取。 |
 | [03_MerkleAirDrop](03_MerkleAirDrop/) | ![03_MerkleAirDrop](03_MerkleAirDrop/docs-assets/ui-airdrop-home.png) | 基于 MerkleTree 的空投领取系统，包含白名单配置与领取流程。 |
 | [04_FlappyBird-Onchain](04_FlappyBird-Onchain/) | ![04_FlappyBird-Onchain](04_FlappyBird-Onchain/docs-assets/gameplay.png) | Flappy Bird 上链版，集成钱包与链上排行榜。 |
+| [05_SnakeGame-On-chain](05_SnakeGame-On-chain/) | ![05_SnakeGame-On-chain](05_SnakeGame-On-chain/docs-assets/gameplay.png) | 贪吃蛇上链版，支持游戏结束自动提交成绩、链上排行榜与历史成绩。 |
+
+# 开发建议（工程实践清单）
+
+## 1. 环境与版本基线
+1. 统一记录核心版本：`solc`、Foundry、Node、npm，并在 README 中同步更新，避免“你能跑我不能跑”。
+2. 每个项目提供 `.env.example` 与最小启动命令（如 `make dev`），保证新同学可以一键复现开发环境。
+3. 开发前先执行一次环境体检：`forge --version`、`node -v`、`npm -v`，不满足版本再开始编码。
+
+## 2. 合约设计基线
+1. 先写权限矩阵和状态迁移：谁可以调用、什么时候必须 revert、状态如何变化。
+2. 每个核心动作至少定义一个事件（Event）和一个失败分支（`require` 或 custom error）。
+3. 排行榜/缓冲区/排序类逻辑先定义不变量，再落地实现，减少后期返工。
+4. 涉及资金或关键状态更新时，优先采用“检查-更新-外部调用”顺序。
+
+## 3. 测试基线（强烈建议）
+1. 单元测试至少覆盖：成功路径、参数非法、权限错误、边界值（如 0、最大值、容量上限）。
+2. 每个核心合约增加 1-2 个 fuzz/invariant 用例，验证排序稳定性与状态不变量。
+3. 合约提交前固定执行：`forge test` + `forge coverage`，先补关键盲区再合并。
+4. 事件必须验证参数正确性，而不只是“事件被触发”。
+
+## 4. 前端链交互基线
+1. 交易流程至少区分四态：`signing -> pending -> success/error`，让用户知道当前阶段。
+2. 常见异常要显式提示：未连接钱包、网络错误、RPC 超时、地址无效、用户拒签。
+3. 关键按钮增加门禁：钱包未连接或链错误时禁止操作，并提供可执行引导。
+4. 前端提交前执行 `npm run build`，确保类型检查与构建完整通过。
+
+## 5. 安全基线（学习项目也建议）
+1. 每个项目至少做一次静态扫描（如 Slither），并将结果转化为测试补洞清单。
+2. 人工复核高风险点：权限控制、外部调用、重入风险、签名验证、DoS 路径。
+3. 每发现一个问题，必须补“复现测试 + 修复后测试”，形成可追踪闭环。
+4. 不提交私钥、助记词、真实生产配置，统一用示例配置与占位符。
+
+## 6. PR / 提交前 Checklist
+1. 合约：`forge fmt && forge test && forge coverage`。
+2. 前端：`npm run build`（必要时补 `npm run lint`）。
+3. 文档：新功能必须同步 README（启动命令、交互说明、截图或示例）。
+4. 提交粒度：功能改动、测试改动、文档改动尽量分离，便于回滚和 Code Review。
 
 # 推荐的学习资料
-1. [Solidity 官方文档](https://docs.soliditylang.org/): 如果你有一定的编程基础，对一些 `Solidity` 基础变量的定义或语法的使用还不太了解，又不想花太多的时间去看视频教程，那么结合文档进行学习会是一个更不错的选择
-2. [Foundry 官方文档](https://book.getfoundry.sh/): 这是使用 `Foundry` 框架进行 `Solidity` 智能合约开发必须要阅读的资料，同时当你真正开始构建生产级别应用时，可以在其中找到很多我并未在提及到的开发技巧和解决错误的方法
-3. [以太坊官网](https://ethereum.org/zh/): 这是以太坊的官方网站，页面大都进行了中文翻译，对中文开发者非常友好，你可以在这里了解到以太坊生态相关的基础知识，路线图和资讯。如果你对以太坊白皮书感兴趣的话，在导航栏中你也能找到 Vitalik 在 2014 年撰写的白皮书
-4. [WTF 学院](https://www.wtf.academy/): 由 0XAA 大佬创建的 Web3 开源大学，里面涵盖了很多教程: Solidity 的基础课程，ethers.js，甚至还有 ZK 相关的课程，强烈推荐新入门 Web3 的开发者通过这个社区进行课程学习
+
+## 1. Solidity 与 EVM 基础
+- [Solidity Docs](https://docs.soliditylang.org/en/latest/)
+- [Solidity Security Considerations](https://docs.soliditylang.org/en/latest/security-considerations.html)
+- [Ethereum Developers](https://ethereum.org/zh/developers/docs/)
+- 建议产出/学习目标：能独立解释交易生命周期、`msg.sender`/`msg.value`、事件日志与 Gas 开销关系。
+
+## 2. Foundry 工程化
+- [Foundry Docs](https://getfoundry.sh/)
+- [Forge Tests](https://getfoundry.sh/forge/tests/overview/)
+- [Fuzz Testing](https://getfoundry.sh/forge/advanced-testing/fuzz-testing/)
+- [Invariant Testing](https://getfoundry.sh/forge/invariant-testing)
+- [Cheatcodes](https://getfoundry.sh/reference/cheatcodes/overview/)
+- [Coverage](https://getfoundry.sh/forge/reference/coverage/)
+- 建议产出/学习目标：能为核心合约写出成功/失败路径单测，并补 1-2 个 fuzz 或 invariant 测试。
+
+## 3. 标准库与协议规范
+- [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts)
+- [EIP-20](https://eips.ethereum.org/EIPS/eip-20)
+- [EIP-721](https://eips.ethereum.org/EIPS/eip-721)
+- [EIP-1155](https://eips.ethereum.org/EIPS/eip-1155)
+- [EIP-4626](https://eips.ethereum.org/EIPS/eip-4626)
+- 建议产出/学习目标：开发时优先复用标准接口与实现，减少非必要的自定义协议设计。
+
+## 4. 前端链交互
+- [wagmi](https://wagmi.sh/)
+- [viem](https://viem.sh/)
+- [Next.js Installation](https://nextjs.org/docs/app/getting-started/installation)
+- 建议产出/学习目标：能实现钱包连接、网络校验、合约读写、错误提示四件套。
+
+## 5. 安全与审计进阶
+- [OWASP SCSVS](https://scs.owasp.org/SCSVS/)
+- [Slither Wiki](https://github.com/crytic/slither/wiki)
+- [Echidna Docs](https://secure-contracts.com/program-analysis/echidna/index.html)
+- 建议产出/学习目标：能输出“风险清单 + 复现步骤 + 修复建议 + 回归测试”四段式审计结果。
 
 # 推荐的视频教程（中文）
 
@@ -304,14 +373,6 @@ function setBlockGasLimit(uint _gasLimit) public;
 ## 一般使用 `cast send` 和  `cast call` 与智能合约进行交互，详细用法可以在[ Foundry 官方文档](https://book.getfoundry.sh/cast/?highlight=cast#how-to-use-cast)  - cast 概览中找到
 
 
-# 未来计划录制的视频教程
-1. 使用 `Foundry` 框架编写一份通用的 `ERC-20` 代币合约。
-   - 教程链接：https://www.bilibili.com/video/BV1LkcHemEnv
-2. 为上节课编写好的 `LuLuCoin` 合约编译写一个 `Faucet` 水龙头合约，用于用户领取代币。
-   - 教程链接：https://www.bilibili.com/video/BV1hyw2ejE6a
-3. 使用 `MerkleTree` (默克尔树)构建一个代币空投合约。
-4. 未完待续...
-
 
 <br><br><br><br><br>
 <p align="center">
@@ -320,6 +381,6 @@ function setBlockGasLimit(uint _gasLimit) public;
 搬运转载请注明出处！！！<br>
 作者： lllu_23<br>
 联系方式: lllu238744@gmail.com<br>
-最后一次更新时间: 2026-3-2<br>
+最后一次更新时间: 2026-3-4<br>
 </strong>
 </p>
