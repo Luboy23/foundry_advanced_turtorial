@@ -3,6 +3,7 @@ import Head from 'next/head'
 // 页面头信息组件：SEO 与社交卡片配置
 export const HeadComponent = () => (
   <Head>
+    {/* 基础站点信息与主题色 */}
     <title>Snake Game On-chain</title>
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link
@@ -23,7 +24,7 @@ export const HeadComponent = () => (
       content="贪吃蛇, 贪吃蛇游戏, 浏览器游戏, nextjs, react"
     />
 
-    {/* OG Meta Tags */}
+    {/* Open Graph：用于微信/飞书/社交平台链接预览 */}
     <meta property="og:url" content="https://snake-on-chian.vercel.app/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="snake-on-chian" />
@@ -39,7 +40,7 @@ export const HeadComponent = () => (
     <meta property="og:image:width" content="512" />
     <meta property="og:image:height" content="512" />
 
-    {/* Twitter Card */}
+    {/* Twitter Card：用于 X(Twitter) 分享卡片 */}
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:url" content="https://snake-on-chian.vercel.app/" />
     <meta name="twitter:site" content="@lllu_23" />

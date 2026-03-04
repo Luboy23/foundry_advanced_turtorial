@@ -57,7 +57,7 @@ const resolveRpcUrlValue = (override?: string) =>
   process.env.NEXT_PUBLIC_ANVIL_RPC_URL ||
   DEFAULT_RPC_URL
 
-// 解析合约地址并校验格式
+// 解析合约地址并校验格式（override > env > address.json）
 const resolveAddressValue = (override?: string | null) => {
   const candidate =
     override ||
@@ -98,7 +98,11 @@ const withTimeout = async <T>(promise: Promise<T>, ms = 8000) => {
   }
 }
 
-// 对外暴露的地址解析方法
+// 兼容不同 ABI 推导下的 number/bigint 字段
+const toBigIntValue = (value: number | bigint) =>
+  typeof value === 'bigint' ? value : BigInt(value)
+
+// 对外暴露的地址解析方法（便于 UI 在提交前做显式校验）
 export const resolveScoreboardAddress = (override?: string) =>
   resolveAddressValue(override)
 
@@ -147,6 +151,7 @@ export const fetchGlobalTop = async (
       })
     )
   } catch (error) {
+    // 新 ABI 读取失败时回退旧 ABI，兼容历史部署版本
     try {
       const legacyEntries = (await withTimeout(
         getClient(rpcUrl).readContract({
@@ -154,19 +159,20 @@ export const fetchGlobalTop = async (
           abi: legacyReadAbi,
           functionName: 'getGlobalTop',
         })
-      )) as Array<{
+      )) as ReadonlyArray<{
         player: `0x${string}`
-        score: bigint
-        durationSec: bigint
-        speedPeak: bigint
-        timestamp: bigint
+        score: number | bigint
+        durationSec: number | bigint
+        speedPeak: number | bigint
+        timestamp: number | bigint
       }>
       return legacyEntries.map((entry) => ({
         player: entry.player,
-        score: entry.score,
-        durationSec: entry.durationSec,
-        speedPeak: entry.speedPeak,
-        timestamp: entry.timestamp,
+        // 统一转为 bigint，避免 UI 排序/格式化出现 number 精度差异
+        score: toBigIntValue(entry.score),
+        durationSec: toBigIntValue(entry.durationSec),
+        speedPeak: toBigIntValue(entry.speedPeak),
+        timestamp: toBigIntValue(entry.timestamp),
       }))
     } catch {
       throw error
@@ -194,6 +200,7 @@ export const fetchUserRecent = async (
       })
     )
   } catch (error) {
+    // 用户历史同样提供旧 ABI 兜底，保持页面在旧链上可读
     try {
       const legacyEntries = (await withTimeout(
         getClient(rpcUrl).readContract({
@@ -202,17 +209,17 @@ export const fetchUserRecent = async (
           functionName: 'getUserRecent',
           args: [user],
         })
-      )) as Array<{
-        score: bigint
-        durationSec: bigint
-        speedPeak: bigint
-        timestamp: bigint
+      )) as ReadonlyArray<{
+        score: number | bigint
+        durationSec: number | bigint
+        speedPeak: number | bigint
+        timestamp: number | bigint
       }>
       return legacyEntries.map((entry) => ({
-        score: entry.score,
-        durationSec: entry.durationSec,
-        speedPeak: entry.speedPeak,
-        timestamp: entry.timestamp,
+        score: toBigIntValue(entry.score),
+        durationSec: toBigIntValue(entry.durationSec),
+        speedPeak: toBigIntValue(entry.speedPeak),
+        timestamp: toBigIntValue(entry.timestamp),
       }))
     } catch {
       throw error
