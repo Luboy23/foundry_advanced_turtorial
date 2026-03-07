@@ -1,0 +1,26 @@
+# Compiler files (Foundry)
+contracts/cache/
+contracts/out/
+
+# Ignores development broadcast logs
+contracts/broadcast/
+!/contracts/broadcast
+/contracts/broadcast/*/31337/
+/contracts/broadcast/**/dry-run/
+
+# Docs
+docs/
+
+# Dotenv file
+.env
+
+# Misc
+.DS_Store
+
+# Env
+.env
+.env*.local
+
+# Local chain logs
+.anvil.log
+.anvil.pid

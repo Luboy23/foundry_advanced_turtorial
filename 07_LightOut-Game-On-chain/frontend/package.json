@@ -1,0 +1,42 @@
+{
+  "name": "lightout-game-on-chain",
+  "version": "0.1.0",
+  "description": "LightOut (0n0FF) puzzle frontend (Next.js + Zustand).",
+  "private": true,
+  "packageManager": "npm@11.5.2",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "16.1.6",
+    "@tanstack/react-query": "^5.59.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "viem": "^2.24.3",
+    "wagmi": "^2.12.2",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luboy23/foundry_advanced_turtorial.git",
+    "directory": "07_LightOut-Game-On-chain/frontend"
+  },
+  "bugs": {
+    "url": "https://github.com/Luboy23/foundry_advanced_turtorial/issues"
+  },
+  "homepage": "https://github.com/Luboy23/foundry_advanced_turtorial/tree/main/07_LightOut-Game-On-chain/frontend"
+}

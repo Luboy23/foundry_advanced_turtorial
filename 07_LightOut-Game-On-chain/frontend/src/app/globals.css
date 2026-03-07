@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    @apply bg-rose-50 text-rose-900 antialiased;
+  }
+
+  a {
+    @apply text-rose-600 transition hover:text-rose-500;
+  }
+}
+
+@keyframes winFade {
+  to {
+    background: rgba(255, 255, 255, 0.88);
+  }
+}
