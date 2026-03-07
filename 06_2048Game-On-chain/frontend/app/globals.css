@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+:root {
+  /* Backgrounds */
+  --primary-background: #faf8ef;
+  --secondary-background: #b59d87;
+  --cell-background: #cebda6;
+  --tile-background: #eee4da;
+  --button-background: #8f7a66;
+
+  /* Colors */
+  --primary-text-color: #776e65;
+  --secondary-text-color: #f9f6f2;
+
+  background: var(--primary-background);
+  color: var(--primary-text-color);
+}

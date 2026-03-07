@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --text-10: 10px;
+  --text-11: 11px;
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+}
+
+@theme inline {
+  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Heiti SC", "Noto Sans CJK SC", "Source Han Sans SC", system-ui,
+    sans-serif;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    @apply bg-white text-slate-900 antialiased;
+  }
+
+  a {
+    @apply text-rose-600 transition hover:text-rose-500;
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatSlow {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@layer utilities {
+  .animate-rise {
+    animation: riseIn 0.6s ease-out both;
+  }
+
+  .animate-float {
+    animation: floatSlow 10s ease-in-out infinite;
+  }
+
+  .u-stack-2 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .u-stack-1 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .u-stack-3 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .u-stack-4 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .u-stack-6 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .u-stack-8 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .u-gap-1 {
+    gap: var(--space-1);
+  }
+
+  .u-gap-2 {
+    gap: var(--space-2);
+  }
+
+  .u-gap-3 {
+    gap: var(--space-3);
+  }
+
+  .u-gap-4 {
+    gap: var(--space-4);
+  }
+
+  .u-gap-5 {
+    gap: var(--space-5);
+  }
+
+  .u-gap-6 {
+    gap: var(--space-6);
+  }
+
+  .u-gap-8 {
+    gap: var(--space-8);
+  }
+
+  .u-text-mini {
+    font-size: var(--text-10);
+    line-height: 1.4;
+  }
+
+  .u-text-meta {
+    font-size: var(--text-11);
+    line-height: 1.4;
+  }
+
+  .u-text-body {
+    font-size: var(--text-14);
+    line-height: 1.6;
+  }
+}

@@ -19,6 +19,9 @@
 | [03_MerkleAirDrop](03_MerkleAirDrop/) | ![03_MerkleAirDrop](03_MerkleAirDrop/docs-assets/ui-airdrop-home.png) | 基于 MerkleTree 的空投领取系统，包含白名单配置与领取流程。 |
 | [04_FlappyBird-Onchain](04_FlappyBird-Onchain/) | ![04_FlappyBird-Onchain](04_FlappyBird-Onchain/docs-assets/gameplay.png) | Flappy Bird 上链版，集成钱包与链上排行榜。 |
 | [05_SnakeGame-On-chain](05_SnakeGame-On-chain/) | ![05_SnakeGame-On-chain](05_SnakeGame-On-chain/docs-assets/gameplay.png) | 贪吃蛇上链版，支持游戏结束自动提交成绩、链上排行榜与历史成绩。 |
+| [06_2048Game-On-chain](06_2048Game-On-chain/) | ![06_2048Game-On-chain](06_2048Game-On-chain/docs-assets/game-over-pending.png) | 2048 上链版，支持游戏结束自动提交成绩、链上排行榜与链上记录。 |
+| [07_LightOut-Game-On-chain](07_LightOut-Game-On-chain/) | ![07_LightOut-Game-On-chain](07_LightOut-Game-On-chain/docs-assets/game-over-pending.png) | 关灯游戏上链版，支持通关后链上提交、链上排行榜与对局记录。 |
+| [08_LuLuNFT-Minter](08_LuLuNFT-Minter/) | ![08_LuLuNFT-Minter](08_LuLuNFT-Minter/docs-assets/market-listings.png) | NFT 铸造与固定价交易示例，支持上架、购买与二次售卖闭环。 |
 
 # 开发建议（工程实践清单）
 
