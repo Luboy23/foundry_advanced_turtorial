@@ -260,7 +260,7 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     const runSolve = () => {
       const moves = solve(grid);
-      set((state) =>
+      set(() =>
         requestId === solverRequestId
           ? { solution: moves, solverStatus: "idle" }
           : {},

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   useAccount,
   useConnect,
@@ -25,10 +25,6 @@ export const SubmitOnchainButton = () => {
   const settings = useGameStore((state) => state.settings);
   const hasWon = useGameStore((state) => state.hasWon);
   const movesCount = useGameStore((state) => state.movesCount);
-  const startedAt = useGameStore((state) => state.startedAt);
-  const isPaused = useGameStore((state) => state.isPaused);
-  const pausedAt = useGameStore((state) => state.pausedAt);
-  const pausedTotalMs = useGameStore((state) => state.pausedTotalMs);
   const usedHint = useGameStore((state) => state.usedHint);
   const lastResult = useGameStore((state) => state.lastResult);
 
@@ -43,18 +39,9 @@ export const SubmitOnchainButton = () => {
     hash: txHash ?? undefined,
   });
 
-  const durationMs = useMemo(() => {
-    if (lastResult?.durationMs) return lastResult.durationMs;
-    const now = Date.now();
-    const pauseMs =
-      pausedTotalMs + (isPaused ? Math.max(0, now - pausedAt) : 0);
-    return Math.max(0, now - startedAt - pauseMs);
-  }, [isPaused, lastResult, pausedAt, pausedTotalMs, startedAt]);
-
-  const moves = useMemo(() => {
-    if (lastResult?.moves) return lastResult.moves;
-    return movesCount;
-  }, [lastResult, movesCount]);
+  // 通关后仅提交快照，避免渲染阶段使用 Date.now() 触发不稳定值
+  const durationMs = lastResult?.durationMs ?? 0;
+  const moves = lastResult?.moves ?? movesCount;
 
   const gridSize = lastResult?.gridSize ?? settings.gridSize;
   const density = lastResult?.density ?? settings.density;
@@ -67,6 +54,10 @@ export const SubmitOnchainButton = () => {
 
     if (!hasWon) {
       setError("仅通关后可提交");
+      return;
+    }
+    if (!lastResult) {
+      setError("未找到通关快照，请重新开始一局");
       return;
     }
 
@@ -102,7 +93,7 @@ export const SubmitOnchainButton = () => {
         ],
       });
       setTxHash(hash);
-    } catch (err) {
+    } catch {
       setError("提交失败，请重试");
     }
   };

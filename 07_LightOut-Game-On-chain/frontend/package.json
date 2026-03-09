@@ -6,9 +6,11 @@
   "packageManager": "npm@11.5.2",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run lint && npm run typecheck",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.1.6",

@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { audioManager } from "@/lib/audio";
@@ -56,12 +56,17 @@ export const GameField = () => {
     (state) => state.setResumeCountdown,
   );
   const { isConnected } = useAccount();
+  const [viewportHeight, setViewportHeight] = useState(900);
   const gridSize = grid.length;
   const hintMove =
     showHint && solverStatus === "idle" ? solution[0] : undefined;
   const baseCell = gridSize <= 4 ? 100 : gridSize === 5 ? 84 : 72;
-  // 按盘面大小动态控制棋盘最大宽度，保证移动端与桌面端都可读
-  const boardMaxWidth = Math.min(540, gridSize * baseCell);
+  // 联合“棋盘尺寸 + 视口高度”限制最大宽度，确保常见桌面高度下一屏可见
+  const boardMaxWidth = Math.min(
+    540,
+    gridSize * baseCell,
+    Math.max(300, viewportHeight * 0.44),
+  );
   const handleToggle = useCallback(
     (row: number, column: number) => {
       // 锁定未连接、未开始、暂停中三种状态，避免非法操作
@@ -71,6 +76,17 @@ export const GameField = () => {
     },
     [hasManualStart, isConnected, isPaused, toggleCell],
   );
+
+  useEffect(() => {
+    const syncViewportHeight = () => {
+      setViewportHeight(window.innerHeight);
+    };
+    syncViewportHeight();
+    window.addEventListener("resize", syncViewportHeight);
+    return () => {
+      window.removeEventListener("resize", syncViewportHeight);
+    };
+  }, []);
 
   useEffect(() => {
     if (hasWon) {
@@ -114,7 +130,7 @@ export const GameField = () => {
     isPaused && !showCountdownOverlay && hasManualStart && !hasWon;
 
   return (
-    <div className="relative flex flex-col rounded-2xl border border-rose-200 bg-white p-3 shadow-lg shadow-rose-200/60 sm:p-4">
+    <div className="relative flex flex-col rounded-2xl border border-rose-200 bg-white p-3 shadow-lg shadow-rose-200/60 sm:p-4 md:p-3">
       <div
         className="mx-auto grid w-full gap-2 sm:gap-3"
         style={{

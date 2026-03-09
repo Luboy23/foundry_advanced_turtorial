@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   useAccount,
   useChainId,
@@ -30,9 +30,6 @@ export const GameOnchainGate = () => {
   const hasWon = useGameStore((state) => state.hasWon);
   const movesCount = useGameStore((state) => state.movesCount);
   const startedAt = useGameStore((state) => state.startedAt);
-  const isPaused = useGameStore((state) => state.isPaused);
-  const pausedAt = useGameStore((state) => state.pausedAt);
-  const pausedTotalMs = useGameStore((state) => state.pausedTotalMs);
   const usedHint = useGameStore((state) => state.usedHint);
   const lastResult = useGameStore((state) => state.lastResult);
   const newGame = useGameStore((state) => state.newGame);
@@ -53,50 +50,49 @@ export const GameOnchainGate = () => {
       hash: txHash ?? undefined,
     });
 
-  const durationMs = useMemo(() => {
-    // 若已有通关快照则优先使用快照，确保上链数据与面板展示一致
-    if (lastResult?.durationMs) return lastResult.durationMs;
-    const now = Date.now();
-    const pauseMs =
-      pausedTotalMs + (isPaused ? Math.max(0, now - pausedAt) : 0);
-    return Math.max(0, now - startedAt - pauseMs);
-  }, [isPaused, lastResult, pausedAt, pausedTotalMs, startedAt]);
-
-  const moves = useMemo(() => {
-    // 同理：通关后固定使用快照步数，避免后续 UI 状态变更影响上链参数
-    if (lastResult?.moves) return lastResult.moves;
-    return movesCount;
-  }, [lastResult, movesCount]);
+  // 通关快照用于上链参数，避免渲染阶段引入不稳定时间值
+  const durationMs = lastResult?.durationMs ?? 0;
+  const moves = lastResult?.moves ?? movesCount;
 
   const gridSize = lastResult?.gridSize ?? settings.gridSize;
   const density = lastResult?.density ?? settings.density;
   const usedHintSnapshot =
     typeof lastResult?.usedHint === "boolean" ? lastResult.usedHint : usedHint;
 
-  const resetState = useCallback(() => {
-    setTxHash(null);
-    setError(null);
-    attemptRef.current = false;
-  }, []);
-
   useEffect(() => {
+    const clearSubmissionState = () => {
+      setTxHash(null);
+      setError(null);
+      attemptRef.current = false;
+    };
+
     if (!hasWon) {
-      resetState();
+      const timerId = window.setTimeout(clearSubmissionState, 0);
+      return () => window.clearTimeout(timerId);
+    }
+
+    if (sessionRef.current === 0) {
+      sessionRef.current = startedAt;
       return;
     }
 
     // startedAt 变化视为新对局，重置一次上链流程状态
     if (sessionRef.current !== startedAt) {
       sessionRef.current = startedAt;
-      resetState();
+      const timerId = window.setTimeout(clearSubmissionState, 0);
+      return () => window.clearTimeout(timerId);
     }
-  }, [hasWon, resetState, startedAt]);
+  }, [hasWon, startedAt]);
 
   const handleSubmit = useCallback(async () => {
     setError(null);
 
     if (!hasWon) {
       setError("仅通关后可提交");
+      return;
+    }
+    if (!lastResult) {
+      setError("未找到通关快照，请重新开始一局");
       return;
     }
 
@@ -125,7 +121,7 @@ export const GameOnchainGate = () => {
         ],
       });
       setTxHash(hash);
-    } catch (err) {
+    } catch {
       attemptRef.current = false;
       setError("签名或提交失败，请重试");
     }
@@ -135,6 +131,7 @@ export const GameOnchainGate = () => {
     durationMs,
     gridSize,
     hasWon,
+    lastResult,
     moves,
     usedHintSnapshot,
     writeContractAsync,
@@ -150,7 +147,10 @@ export const GameOnchainGate = () => {
     if (isSubmitting || isConfirming || isSuccess) return;
 
     attemptRef.current = true;
-    handleSubmit();
+    const timerId = window.setTimeout(() => {
+      void handleSubmit();
+    }, 0);
+    return () => window.clearTimeout(timerId);
   }, [
     chainId,
     handleSubmit,
@@ -201,7 +201,7 @@ export const GameOnchainGate = () => {
       <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-6 text-center text-rose-700 shadow-2xl">
         <p className="text-2xl font-semibold text-rose-600">完美通关</p>
         <p className="mt-2 text-sm text-rose-400">
-          请签名并上传战绩后继续操作
+          可上链提交战绩，也可直接继续离线新局
         </p>
 
         <div className="mt-5 flex flex-col items-center gap-3">
@@ -249,6 +249,25 @@ export const GameOnchainGate = () => {
                   ? "链上确认中…"
                   : "重新签名并上链"}
             </button>
+          )}
+
+          {!isSuccess && (
+            <div className="flex w-full flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={handleReset}
+                className={`${primaryButtonClass} w-full justify-center`}
+              >
+                继续离线新局
+              </button>
+              <button
+                type="button"
+                onClick={handleReturnHome}
+                className={`${secondaryButtonClass} w-full justify-center`}
+              >
+                返回主页
+              </button>
+            </div>
           )}
 
           {error && <p className="text-xs text-rose-400">{error}</p>}
