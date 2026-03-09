@@ -19,6 +19,7 @@ import {
 import { primaryButtonClass, secondaryButtonClass } from "./buttonStyles";
 
 type ActiveModal = "records" | "settings" | "onchain" | null;
+type MobileAction = "records" | "onchain" | "settings";
 type HintFilter = "all" | "no" | "used";
 type GridFilter = number | "all";
 type DensityFilter = "all" | (typeof DENSITY_OPTIONS)[number]["value"];
@@ -97,7 +98,7 @@ const Modal = ({
       onClick={handleClose}
     >
       <div
-        className="w-full max-w-lg rounded-2xl border border-rose-200 bg-white p-5 text-left text-rose-700 shadow-2xl"
+        className="flex max-h-[86dvh] w-full max-w-lg flex-col rounded-2xl border border-rose-200 bg-white p-5 text-left text-rose-700 shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -110,7 +111,7 @@ const Modal = ({
             关闭
           </button>
         </div>
-        {children}
+        <div className="min-h-0 overflow-y-auto pr-1">{children}</div>
       </div>
     </div>
   );
@@ -204,6 +205,7 @@ const FilterBar = ({
 export const GameActions = () => {
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [showHintNotice, setShowHintNotice] = useState(false);
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
   const [chainRecords, setChainRecords] = useState<ChainRecord[]>([]);
   const [chainLoading, setChainLoading] = useState(false);
   const [chainError, setChainError] = useState<string | null>(null);
@@ -278,9 +280,6 @@ export const GameActions = () => {
         return true;
       })
       .sort((a, b) => {
-        const hintDiff =
-          Number(Boolean(a.usedHint)) - Number(Boolean(b.usedHint));
-        if (hintDiff !== 0) return hintDiff;
         const moveDiff = a.moves - b.moves;
         if (moveDiff !== 0) return moveDiff;
         const timeDiff = a.durationMs - b.durationMs;
@@ -374,7 +373,7 @@ export const GameActions = () => {
           fromBlock === 0n ? entries : [...prev, ...entries],
         );
         chainLastBlockRef.current = latestBlock;
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setChainError("链上数据加载失败");
         }
@@ -455,7 +454,7 @@ export const GameActions = () => {
           fromBlock === 0n ? entries : [...prev, ...entries],
         );
         selfLastBlockRef.current = latestBlock;
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setSelfError("链上记录加载失败");
         }
@@ -510,10 +509,12 @@ export const GameActions = () => {
     if (next === "records") {
       setRecordGrid("all");
       setRecordDensity("all");
+      setRecordHintFilter("all");
     }
     if (next === "onchain") {
       setOnchainGrid("all");
       setOnchainDensity("all");
+      setOnchainHintFilter("all");
     }
     setActiveModal(next);
   };
@@ -523,6 +524,22 @@ export const GameActions = () => {
     if (isPaused) {
       resumeGame("modal");
     }
+  };
+
+  const handleOpenActionSheet = () => {
+    if (resumeCountdown > 0) return;
+    audioManager.playSfx("click");
+    setActionSheetOpen(true);
+  };
+
+  const handleCloseActionSheet = () => {
+    audioManager.playSfx("click");
+    setActionSheetOpen(false);
+  };
+
+  const handleSelectMobileAction = (action: MobileAction) => {
+    setActionSheetOpen(false);
+    handleOpenModal(action);
   };
 
   useEffect(() => {
@@ -587,8 +604,8 @@ export const GameActions = () => {
 
   return (
     <>
-      <div className="mt-4 rounded-2xl border border-rose-200 bg-white/95 p-2.5 shadow-sm">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-1.5">
+      <div className="mt-2.5 rounded-2xl border border-rose-200 bg-white/95 p-2 shadow-sm md:mt-2 md:p-2.5">
+        <div className="hidden grid-cols-5 gap-1.5 lg:grid">
           <button
             className={`${primaryButtonClass} w-full ${
               !isConnected || isPaused ? "cursor-not-allowed opacity-70" : ""
@@ -637,7 +654,97 @@ export const GameActions = () => {
             设置
           </button>
         </div>
+
+        <div className="grid grid-cols-3 gap-2 lg:hidden">
+          <button
+            className={`${primaryButtonClass} w-full ${
+              !isConnected || isPaused ? "cursor-not-allowed opacity-70" : ""
+            }`}
+            onClick={handleNewGame}
+            disabled={!isConnected || isPaused}
+          >
+            新游戏
+          </button>
+          <button
+            className={`${secondaryButtonClass} w-full ${
+              showHint
+                ? "!border-rose-500 !bg-rose-500 !text-white shadow-md shadow-rose-500/30 hover:!bg-rose-600"
+                : ""
+            } ${isPaused ? "cursor-not-allowed opacity-70" : ""}`}
+            onClick={handleToggleHint}
+            disabled={isPaused}
+          >
+            {showHint ? "隐藏提示" : "提示"}
+          </button>
+          <button
+            className={`${secondaryButtonClass} w-full ${
+              isCountdownActive ? "cursor-not-allowed opacity-70" : ""
+            }`}
+            onClick={handleOpenActionSheet}
+            disabled={isCountdownActive}
+          >
+            更多操作
+          </button>
+        </div>
+
+        {isCountdownActive && (
+          <p className="mt-2 text-[11px] text-rose-400 lg:hidden">
+            倒计时进行中，更多操作暂不可用
+          </p>
+        )}
       </div>
+
+      {actionSheetOpen && (
+        <div className="fixed inset-0 z-[55] lg:hidden">
+          <button
+            type="button"
+            aria-label="关闭操作面板"
+            className="absolute inset-0 bg-rose-950/35"
+            onClick={handleCloseActionSheet}
+          />
+          <div className="absolute inset-x-0 bottom-0 rounded-t-3xl border border-rose-200 bg-white px-4 pb-[calc(env(safe-area-inset-bottom,0px)+0.75rem)] pt-3 shadow-2xl shadow-rose-200/40">
+            <button
+              type="button"
+              aria-label="拖拽关闭区"
+              onClick={handleCloseActionSheet}
+              className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-rose-200/80"
+            />
+            <p className="text-center text-sm font-semibold text-rose-600">
+              更多操作
+            </p>
+            <div className="mt-3 space-y-2">
+              <button
+                type="button"
+                onClick={() => handleSelectMobileAction("records")}
+                className={`${secondaryButtonClass} w-full justify-center`}
+              >
+                对局记录
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectMobileAction("onchain")}
+                className={`${secondaryButtonClass} w-full justify-center`}
+              >
+                链上榜
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectMobileAction("settings")}
+                className={`${secondaryButtonClass} w-full justify-center`}
+              >
+                设置
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={handleCloseActionSheet}
+              className="mt-3 w-full rounded-lg border border-rose-200 bg-rose-50 py-2 text-sm font-semibold text-rose-500 transition hover:bg-rose-100"
+            >
+              取消
+            </button>
+          </div>
+        </div>
+      )}
 
       {activeModal === "records" && (
         <Modal title="对局记录" onClose={handleCloseModal}>
