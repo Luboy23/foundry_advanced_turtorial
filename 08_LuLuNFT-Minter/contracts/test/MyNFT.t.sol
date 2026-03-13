@@ -13,7 +13,7 @@ contract MyNFTTest is TestBase {
         nft = new MyNFT("LuLuNFT", "LULU");
     }
 
-    function testOwnerAndContractURI() public {
+    function testOwnerAndContractURI() public view {
         // 部署者应自动成为 owner，且 contractURI 默认为空
         assertEq(nft.owner(), address(this), "owner mismatch");
         assertEq(
@@ -131,7 +131,7 @@ contract MyNFTTest is TestBase {
         nft.ownerOf(tokenId);
     }
 
-    function testSupportsInterface() public {
+    function testSupportsInterface() public view{
         // 接口支持声明是前端/市场兼容性的基础
         assertTrue(nft.supportsInterface(0x80ac58cd), "ERC721 not supported");
         assertTrue(nft.supportsInterface(0x5b5e139f), "ERC721Metadata not supported");
