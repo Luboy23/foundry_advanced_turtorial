@@ -22,6 +22,31 @@ const transferEvent = parseAbiItem(
   "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"
 );
 
+const readErrorText = (error: unknown): string => {
+  if (typeof error === "string") return error;
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === "object") {
+    const candidate = error as {
+      message?: unknown;
+      shortMessage?: unknown;
+      details?: unknown;
+    };
+    return [candidate.message, candidate.shortMessage, candidate.details]
+      .filter((part): part is string => typeof part === "string" && part.length > 0)
+      .join(" ");
+  }
+  return "";
+};
+
+const isInvalidTokenIdError = (error: unknown) => {
+  const message = readErrorText(error).toLowerCase();
+  return (
+    message.includes("erc721: invalid token id") ||
+    message.includes("erc721nonexistenttoken") ||
+    message.includes("invalid token id")
+  );
+};
+
 export type GalleryMode = "mine" | "community";
 
 export type NftMetadata = {
@@ -50,7 +75,7 @@ const decodeBase64Json = (base64: string) => {
     const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
     const decoded = new TextDecoder().decode(bytes);
     return JSON.parse(decoded) as NftMetadata;
-  } catch (error) {
+  } catch {
     return {};
   }
 };
@@ -82,7 +107,7 @@ export const resolveMetadata = async (uri: string) => {
     try {
       const json = decodeURIComponent(uri.split(",")[1] ?? "");
       return JSON.parse(json) as NftMetadata;
-    } catch (error) {
+    } catch {
       return {};
     }
   }
@@ -96,7 +121,7 @@ export const resolveMetadata = async (uri: string) => {
         metadataCache.set(uri, data);
         return data;
       }
-    } catch (error) {
+    } catch {
       // fallthrough to fallback
     }
   }
@@ -109,7 +134,7 @@ export const resolveMetadata = async (uri: string) => {
       const data = (await response.json()) as NftMetadata;
       metadataCache.set(uri, data);
       return data;
-    } catch (error) {
+    } catch {
       return {};
     }
   }
@@ -240,22 +265,37 @@ export const useGalleryData = ({
         })
       );
 
-      const entries = await Promise.all(
+      const entryResults = await Promise.all(
         tokenIds.map(async (tokenId) => {
-          const [owner, tokenUri] = await Promise.all([
-            publicClient.readContract({
+          let owner: string;
+          try {
+            owner = await (publicClient.readContract({
               address: NFT_ADDRESS as `0x${string}`,
               abi: nftAbi,
               functionName: "ownerOf",
               args: [tokenId]
-            }) as Promise<string>,
-            publicClient.readContract({
+            }) as Promise<string>);
+          } catch (ownerError) {
+            // 历史 mint 日志里可能包含已销毁 token；该 token 直接跳过，避免整批加载失败
+            if (isInvalidTokenIdError(ownerError)) {
+              return null;
+            }
+            throw ownerError;
+          }
+
+          let tokenUri = "";
+          try {
+            tokenUri = await (publicClient.readContract({
               address: NFT_ADDRESS as `0x${string}`,
               abi: nftAbi,
               functionName: "tokenURI",
               args: [tokenId]
-            }) as Promise<string>
-          ]);
+            }) as Promise<string>);
+          } catch (tokenUriError) {
+            if (isInvalidTokenIdError(tokenUriError)) {
+              return null;
+            }
+          }
 
           const meta = mintMeta.get(tokenId.toString());
           const mintedTimestamp = meta?.blockNumber
@@ -274,12 +314,15 @@ export const useGalleryData = ({
           } as NftItem;
         })
       );
+      const entries = entryResults.filter(
+        (item): item is NftItem => item !== null
+      );
 
       // 先写基础链上数据，再由 ensureMetadata 异步填充 metadata
       setItems(entries);
       setLastUpdated(Date.now());
       retryRef.current = 0;
-    } catch (loadError) {
+    } catch {
       setError("加载失败");
       if (retryRef.current < 1) {
         retryRef.current += 1;
@@ -320,9 +363,14 @@ export const useGalleryData = ({
         // 成功后重新拉链上数据，确保 owner 变化立即反映到 UI
         await loadItems();
       } catch (burnError) {
-        setActionError(
-          burnError instanceof Error ? burnError.message : "销毁失败"
-        );
+        if (isInvalidTokenIdError(burnError)) {
+          setActionError("NFT 在链上不存在（可能已销毁或链已重置），已自动刷新列表");
+          await loadItems();
+        } else {
+          setActionError(
+            burnError instanceof Error ? burnError.message : "销毁失败"
+          );
+        }
       } finally {
         setPendingTokenId(null);
       }

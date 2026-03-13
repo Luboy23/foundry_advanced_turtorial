@@ -37,7 +37,7 @@ contract FixedPriceMarketTest is TestBase {
         tokenId = nft.mint();
     }
 
-    function testConstructorBindsNft() public {
+    function testConstructorBindsNft() public view {
         // 部署时必须锁定唯一 NFT 地址
         assertEq(market.nft(), address(nft), "nft mismatch");
     }

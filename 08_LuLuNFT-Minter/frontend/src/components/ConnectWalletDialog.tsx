@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useAccount, useConnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 import { Button } from "@/components/ui/button";
 
@@ -18,7 +18,8 @@ export const ConnectWalletDialog = ({
   description?: string;
 }) => {
   const { isConnected } = useAccount();
-  const { connect, connectors, isPending, error } = useConnect();
+  const { connectAsync, connectors, isPending, error, reset } = useConnect();
+  const { disconnectAsync } = useDisconnect();
   const mounted = typeof document !== "undefined";
 
   useEffect(() => {
@@ -27,12 +28,35 @@ export const ConnectWalletDialog = ({
     }
   }, [open, isConnected, onClose]);
 
+  useEffect(() => {
+    if (open) {
+      reset();
+    }
+  }, [open, reset]);
+
   if (!open || !mounted) return null;
 
-  const handleConnect = () => {
+  const isAlreadyConnectedError = (error: unknown) =>
+    error instanceof Error &&
+    (error.name === "ConnectorAlreadyConnectedError" ||
+      error.message.includes("already connected"));
+
+  const handleConnect = async () => {
+    reset();
     const connector = connectors[0];
-    if (connector) {
-      connect({ connector });
+    if (!connector) return;
+    try {
+      await connectAsync({ connector });
+    } catch (error) {
+      if (isAlreadyConnectedError(error)) {
+        try {
+          await disconnectAsync({ connector });
+        } catch {
+          // ignore disconnect errors and retry connection
+        }
+        reset();
+        await connectAsync({ connector });
+      }
     }
   };
 
@@ -56,7 +80,7 @@ export const ConnectWalletDialog = ({
         <div className="mt-5 flex flex-wrap u-gap-2">
           <Button
             type="button"
-            onClick={handleConnect}
+            onClick={() => void handleConnect()}
             disabled={isPending || connectors.length === 0}
           >
             {isPending ? "连接中" : "连接"}

@@ -139,14 +139,31 @@ const IconMarket = ({
 
 const WalletBadge = () => {
   const { address, isConnected } = useAccount();
-  const { connect, connectors, isPending } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { connectAsync, connectors, isPending, reset } = useConnect();
+  const { disconnect, disconnectAsync } = useDisconnect();
   const chainId = useChainId();
 
-  const handleConnect = () => {
+  const isAlreadyConnectedError = (error: unknown) =>
+    error instanceof Error &&
+    (error.name === "ConnectorAlreadyConnectedError" ||
+      error.message.includes("already connected"));
+
+  const handleConnect = async () => {
+    reset();
     const connector = connectors[0];
-    if (connector) {
-      connect({ connector });
+    if (!connector) return;
+    try {
+      await connectAsync({ connector });
+    } catch (error) {
+      if (isAlreadyConnectedError(error)) {
+        try {
+          await disconnectAsync({ connector });
+        } catch {
+          // ignore disconnect errors and retry connection
+        }
+        reset();
+        await connectAsync({ connector });
+      }
     }
   };
 
@@ -170,7 +187,8 @@ const WalletBadge = () => {
       ) : (
         <button
           type="button"
-          onClick={handleConnect}
+          onClick={() => void handleConnect()}
+          disabled={isPending || connectors.length === 0}
           className="u-text-mini rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-rose-600 transition hover:bg-slate-50"
         >
           {isPending ? "连接中" : "连接"}
