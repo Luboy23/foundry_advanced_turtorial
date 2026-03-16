@@ -22,6 +22,7 @@
 | [06_2048Game-On-chain](06_2048Game-On-chain/) | ![06_2048Game-On-chain](06_2048Game-On-chain/docs-assets/game-over-pending.png) | 2048 上链版，支持游戏结束自动提交成绩、链上排行榜与链上记录。 |
 | [07_LightOut-Game-On-chain](07_LightOut-Game-On-chain/) | ![07_LightOut-Game-On-chain](07_LightOut-Game-On-chain/docs-assets/game-over-pending.png) | 关灯游戏上链版，支持通关后链上提交、链上排行榜与对局记录。 |
 | [08_LuLuNFT-Minter](08_LuLuNFT-Minter/) | ![08_LuLuNFT-Minter](08_LuLuNFT-Minter/docs-assets/market-listings.png) | NFT 铸造与固定价交易示例，支持上架、购买与二次售卖闭环。 |
+| [09_BookManagement-On-chain](09_BookManagement-On-chain/) | ![09_BookManagement-On-chain](09_BookManagement-On-chain/docs-assets/bm-home-landing.png) | 图书借阅管理平台，支持馆员端馆藏/借阅/读者管理与读者端注册查询。 |
 
 # 开发建议（工程实践清单）
 
@@ -384,6 +385,6 @@ function setBlockGasLimit(uint _gasLimit) public;
 搬运转载请注明出处！！！<br>
 作者： lllu_23<br>
 联系方式: lllu238744@gmail.com<br>
-最后一次更新时间: 2026-3-9<br>
+最后一次更新时间: 2026-3-17<br>
 </strong>
 </p>
