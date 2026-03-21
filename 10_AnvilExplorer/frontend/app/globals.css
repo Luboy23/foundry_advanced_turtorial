@@ -1,0 +1,235 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.9rem;
+  --background: oklch(0.975 0 0);
+  --foreground: oklch(0.22 0 0);
+  --card: oklch(0.99 0 0 / 0.76);
+  --card-foreground: oklch(0.22 0 0);
+  --popover: oklch(0.995 0 0 / 0.95);
+  --popover-foreground: oklch(0.22 0 0);
+  --primary: oklch(0.32 0 0);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.955 0 0);
+  --secondary-foreground: oklch(0.27 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.48 0 0);
+  --accent: oklch(0.94 0 0);
+  --accent-foreground: oklch(0.3 0 0);
+  --destructive: oklch(0.58 0.2 25);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.95 0 0);
+  --ring: oklch(0.44 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body), "Noto Sans SC", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display), "Space Grotesk", "Segoe UI", sans-serif;
+    letter-spacing: 0.01em;
+  }
+
+  h1 {
+    @apply text-3xl leading-tight font-semibold;
+  }
+
+  h2 {
+    @apply text-2xl leading-tight font-semibold;
+  }
+
+  h3 {
+    @apply text-xl leading-snug font-semibold;
+  }
+
+  code,
+  pre,
+  .font-mono {
+    font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+  }
+}
+
+@layer components {
+  .page-shell {
+    @apply min-h-screen bg-[radial-gradient(circle_at_15%_-10%,rgba(0,0,0,0.12),transparent_36%),radial-gradient(circle_at_85%_0%,rgba(16,16,16,0.1),transparent_34%),linear-gradient(180deg,#fafafa_0%,#f3f4f6_45%,#f8f8f8_100%)];
+  }
+
+  .panel {
+    @apply rounded-2xl border border-white/70 bg-white/60 backdrop-blur-md shadow-[0_20px_40px_-28px_rgba(0,0,0,0.24)];
+  }
+
+  .mono-break {
+    @apply font-mono text-xs break-all;
+  }
+
+  .value-wrap {
+    @apply min-w-0 break-all whitespace-normal;
+  }
+
+  .glass-panel {
+    @apply rounded-2xl border border-white/70 bg-white/62 backdrop-blur-md shadow-[0_22px_40px_-28px_rgba(0,0,0,0.24)];
+  }
+
+  .header-surface {
+    border-bottom: none;
+    background: transparent;
+  }
+
+  .header-panel {
+    @apply rounded-2xl;
+    border: 1px solid #d8dde5;
+    background: #ffffff;
+    box-shadow: 0 12px 22px -20px rgba(15, 23, 42, 0.18);
+  }
+
+  .metric-tile {
+    @apply relative overflow-hidden rounded-2xl border border-white/70 bg-white/62 p-4 backdrop-blur-md shadow-[0_22px_40px_-28px_rgba(0,0,0,0.24)];
+  }
+
+  .metric-tile::after {
+    content: "";
+    @apply pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-400/90 to-transparent;
+  }
+
+  .data-shell {
+    @apply rounded-2xl border border-zinc-200/85 bg-white/66 backdrop-blur-md shadow-[0_22px_40px_-28px_rgba(0,0,0,0.22)];
+  }
+
+  .data-shell [data-slot="table-container"] {
+    @apply rounded-xl border border-white/70 bg-white/75;
+  }
+
+  .section-kicker {
+    @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-700/90;
+    font-family: var(--font-display), "Space Grotesk", "Segoe UI", sans-serif;
+  }
+
+  .tech-grid {
+    @apply grid gap-4 md:grid-cols-2 xl:grid-cols-4;
+  }
+
+  .soft-glow {
+    @apply shadow-[0_20px_40px_-30px_rgba(0,0,0,0.34)];
+  }
+
+  .interactive-ring {
+    @apply transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/55;
+  }
+
+  .btn {
+    @apply inline-flex h-8 items-center justify-center rounded-md border border-zinc-700/60 bg-gradient-to-r from-zinc-900 to-zinc-700 px-3 text-xs font-medium text-white shadow-[0_8px_24px_-12px_rgba(0,0,0,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:from-zinc-800 hover:to-zinc-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/55 disabled:pointer-events-none disabled:border-zinc-300 disabled:bg-zinc-200 disabled:text-zinc-500;
+  }
+
+  .btn-secondary {
+    @apply border-zinc-300/90 bg-zinc-50/80 text-zinc-700 hover:bg-zinc-100/90;
+  }
+
+  .input,
+  .select {
+    @apply h-9 w-full rounded-md border border-zinc-300/90 bg-zinc-50 px-3 text-xs text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500/55;
+  }
+
+  .textarea {
+    @apply min-h-20 w-full rounded-md border border-zinc-300/90 bg-zinc-50 p-3 font-mono text-xs text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500/55;
+  }
+
+  .label {
+    @apply text-[11px] font-semibold tracking-wide text-slate-600;
+  }
+
+  .form-row {
+    @apply flex flex-wrap items-end gap-2;
+  }
+
+  .field {
+    @apply min-w-[140px] flex-1 space-y-1;
+  }
+
+  .checkbox-field {
+    @apply min-w-[120px] flex-initial;
+  }
+
+  .cast-console {
+    @apply space-y-4;
+  }
+
+  .cast-section {
+    @apply rounded-2xl border border-white/70 bg-white/62 p-4 backdrop-blur-md shadow-[0_22px_40px_-28px_rgba(0,0,0,0.24)];
+  }
+
+  .cast-section summary {
+    @apply cursor-pointer text-sm font-semibold text-slate-900;
+    font-family: var(--font-display), "Space Grotesk", "Segoe UI", sans-serif;
+  }
+
+  .cast-grid {
+    @apply mt-3 grid grid-cols-1 gap-3;
+  }
+
+  .cast-module {
+    @apply space-y-3 rounded-xl border border-white/70 bg-white/76 p-3 shadow-[0_18px_30px_-26px_rgba(0,0,0,0.3)];
+  }
+
+  .section-title {
+    @apply text-sm font-semibold tracking-wide text-slate-800;
+    font-family: var(--font-display), "Space Grotesk", "Segoe UI", sans-serif;
+  }
+
+  .empty-state {
+    @apply rounded-md border border-dashed border-zinc-300 bg-zinc-100/60 p-2 text-xs text-muted-foreground;
+  }
+
+  .notice {
+    @apply rounded-md border border-zinc-300 bg-zinc-100/85 p-2 text-xs text-slate-700;
+  }
+
+  .code-block {
+    @apply overflow-x-auto rounded-md border border-white/75 bg-white/82 p-2 font-mono text-xs;
+  }
+}
+
+@layer utilities {
+  .text-muted {
+    @apply text-muted-foreground;
+  }
+}

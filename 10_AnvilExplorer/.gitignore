@@ -1,0 +1,12 @@
+.env
+.env*.local
+.anvil.log
+.anvil.pid
+.DS_Store
+frontend/node_modules
+frontend/.next
+frontend/out
+services/indexer/node_modules
+services/indexer/dist
+.data
+**/.vscode/settings.json
