@@ -38,6 +38,7 @@ build
 # binaries
 bin
 dist
+frontend/public/scoreboard.json
 
 #testing
 coverage
@@ -52,6 +53,7 @@ coverage
 .idea
 .vs
 .vscode
+**/.vscode/settings.json
 **/.idea
 
 # Vercel

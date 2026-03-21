@@ -1,168 +1,72 @@
 # 05 Snake Game On-chain（snake-game-on-chain）
-Next.js + Foundry
 
-一个以 Next.js 作为前端宿主、集成 wagmi 钱包连接与链上排行榜的贪吃蛇游戏。前端位于 `frontend/`，合约工程独立在 `contracts/`（Foundry）。
+## 项目定位与边界
+- 本项目是 Next.js 宿主的链游教学模板：本地运行贪吃蛇，结算后提交链上成绩。
+- 边界：只上链最终局结果，不把移动过程逐步上链。
+- 教学重点：多维度成绩字段（`score/durationSec/speedPeak`）与链上排行榜/历史。
 
-## Demo 展示
+## 角色与核心对象
+| 角色 | 职责 | 核心对象 |
+| --- | --- | --- |
+| 玩家 | 游戏操作与成绩提交 | 钱包地址、局内分数 |
+| 前端 | 结算自动提交、历史分页展示 | `scoreboardClient.ts` |
+| 合约 `SnakeScoreboard` | 维护全局榜和个人历史 | `MAX_RECORDS=20`、环形历史 |
 
-**游戏进行中**
-![游戏进行中](./docs-assets/gameplay.png)
-
-**排行榜弹窗**
-![排行榜弹窗](./docs-assets/leaderboard.png)
-
-**历史成绩弹窗**
-![历史成绩弹窗](./docs-assets/history.png)
-
-**设置弹窗**
-![设置弹窗](./docs-assets/settings.png)
-
-**游戏结束（上链等待）**
-![游戏结束（上链等待）](./docs-assets/game-over-pending.png)
-
-**游戏结束（上链成功）**
-![游戏结束（上链成功）](./docs-assets/game-over-success.png)
-
-## 技术栈
-
-- 前端：Next.js + React
-- Web3：wagmi + viem
-- 合约：Foundry（`contracts/`）
-
-## 快速开始（推荐）
-
-确保已安装 Node.js、npm 以及 Foundry（forge/anvil）。
-
+## 5 分钟跑通
 ```bash
+cd 05_SnakeGame-On-chain
 make dev
 ```
+- `make dev` 会执行：`restart-anvil -> deploy -> frontend`。
+- 部署后自动同步 `frontend/public/scoreboard.json` 与 ABI。
+- 打开 `http://localhost:3000`，连接 Anvil 钱包即可游玩。
 
-`make dev` 会自动：
-- 启动本地 anvil（RPC `http://127.0.0.1:8545`）
-- 部署 `SnakeScoreboard`
-- 同步 ABI/地址到前端
-- 写入 `frontend/public/scoreboard.json`
-- 启动前端开发服务器
+## 业务主流程
+1. 前端启动时加载地址与 RPC 配置。
+2. 玩家连接钱包并开始游戏（未连接时前端门禁拦截）。
+3. 游戏本地实时计算 `score/durationSec/speedPeak`。
+4. 结算后自动调用 `submitScore(score, durationSec, speedPeak)`。
+5. 合约写入全局榜（Top20）和个人历史（环形缓冲）。
+6. 交易确认后前端刷新排行榜与个人历史。
+7. 用户可在弹窗中继续分页查看历史成绩。
 
-启动后访问 Next.js 默认地址（通常是 `http://localhost:3000`）。
+**分数字段语义**
+- `score`：本局得分，排行榜主排序字段。
+- `durationSec`：本局持续秒数，写入历史记录。
+- `speedPeak`：本局最高速度，用于教学展示多维指标。
 
-## 手动启动
+**自动提交与失败重试路径**
+- 自动触发：游戏结束后直接发交易。
+- 失败场景：拒签、链错误、RPC 异常。
+- 恢复方式：保持当前局结果，用户可重新触发提交。
 
-```bash
-make anvil
-make deploy
-make web
+## 合约接口与状态
+| 接口/事件 | 调用方 | 输入 | 状态变化 | 失败条件 | 前端触发入口 |
+| --- | --- | --- | --- | --- | --- |
+| `submitScore(uint32,uint32,uint16)` | 玩家 | 分数/时长/峰值速度 | 更新全局榜 + 个人历史 | `score=0` 回滚 | `pages/index.tsx` |
+| `getGlobalTop()` | 任意读 | 无 | 无 | 无 | 排行榜弹窗 |
+| `getUserRecent(address)` | 任意读 | 用户地址 | 无 | 无 | 历史弹窗 |
+| `getGlobalCount()/getUserCount()` | 任意读 | 可选地址 | 无 | 无 | 分页/状态判断 |
+| `ScoreSubmitted` | 合约发出 | 玩家与成绩结构 | 事件日志 | 无 | 交易后刷新依据 |
+
+## 代码架构与调用链
+| 页面/模块 | 主要职责 | 下游调用 |
+| --- | --- | --- |
+| `frontend/pages/index.tsx` | 游戏主页面与提交流程 | `lib/scoreboardClient.ts` |
+| `frontend/components/WalletStatus.tsx` | 钱包状态与门禁提示 | wagmi/viem |
+| `frontend/lib/scoreboardRuntime.ts` | 运行时地址读取 | `public/scoreboard.json` |
+| `frontend/lib/scoreboardClient.ts` | 合约读写封装 | `SnakeScoreboard` |
+| `contracts/src/SnakeScoreboard.sol` | 排行榜与历史存储逻辑 | 事件与环形缓冲 |
+
+**运行时地址优先级**
+```text
+frontend/public/scoreboard.json
+  > frontend/.env.local
+  > frontend/lib/scoreboard.address.json
 ```
 
-或仅前端：
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-## 环境变量
-
-复制示例文件后再填写实际值：
-`cp frontend/.env.local.example frontend/.env.local`
-
-- `NEXT_PUBLIC_SCOREBOARD_ADDRESS`：合约地址（`make deploy` 会写入）
-- `NEXT_PUBLIC_ANVIL_RPC_URL`（可选）：自定义 RPC URL（默认 `http://127.0.0.1:8545`）
-
-地址读取优先级：`frontend/public/scoreboard.json` > `.env.local` > `frontend/lib/scoreboard.address.json`。
-
-## 目录结构（核心）
-
-```
-.
-├─ frontend/
-│  ├─ pages/
-│  │  └─ index.tsx               # 游戏与 UI 主页面
-│  ├─ components/
-│  │  ├─ Head/                   # 页面 head 配置
-│  │  └─ WalletStatus.tsx        # 钱包状态浮层
-│  ├─ lib/
-│  │  ├─ scoreboardClient.ts     # 读链客户端（viem）
-│  │  └─ scoreboardRuntime.ts    # 运行时地址读取
-│  └─ public/
-│     └─ scoreboard.json         # 运行时配置（地址/RPC）
-├─ contracts/
-│  └─ src/SnakeScoreboard.sol    # 链上排行榜合约
-└─ scripts/
-   └─ sync-contract.js           # ABI/地址同步脚本
-```
-
-## 架构与流程
-
-### 启动与渲染
-1. Next.js 入口为 `pages/index.tsx`
-2. `Head` 设置页面 metadata 与 favicon
-3. `WalletStatus` 显示钱包状态与连接入口
-4. Canvas 负责游戏渲染与交互
-
-### 关键交互
-- 未连接钱包无法开始游戏（前端 gating）
-- 游戏结束自动提交成绩（钱包签名）
-- 排行榜/历史成绩在点击时强制刷新，并在交易确认后刷新
-
-## 核心逻辑
-
-- 游戏循环：蛇移动、吃星星加分、碰撞判定
-- 难度与速度：随分数提升速度峰值
-- 暂停/继续：支持手动暂停与弹窗触发暂停
-- 结算逻辑：游戏结束触发链上提交
-
-## 数据与持久化
-
-- 主要数据写入链上 `SnakeScoreboard`
-- 地址与 RPC 通过 `public/scoreboard.json` 运行时读取
-- 链上数据读取失败会提示明确错误（RPC/地址失效）
-
-## Web3 / 链上交互
-
-- 读取排行榜：`fetchGlobalTop()`  
-- 读取历史成绩：`fetchUserRecent(address)`  
-- 提交成绩：`submitScore(score, durationSec, speedPeak)`  
-
-合约概要（`contracts/src/SnakeScoreboard.sol`）：
-- `MAX_RECORDS = 20`
-- `getGlobalTop()` / `getUserRecent()` / `submitScore()`
-
-## 常用命令
-
-根目录（Makefile）：
-- `make dev`：一键启动（anvil + deploy + sync + frontend）
-- `make anvil` / `make deploy` / `make web`
-- `make build-contracts` / `make test` / `make clean`
-
-合约（Foundry）：
-```bash
-cd contracts
-forge build
-forge test
-```
-
-前端：
-```bash
-cd frontend
-npm run dev
-npm run build
-npm run start
-npm run lint
-```
-
-## 排错指南
-
-- **提示“合约未部署或地址失效”**
-  - 运行 `make deploy` 或 `make dev`
-  - 确认 `frontend/public/scoreboard.json` 地址正确
-- **RPC 无响应**
-  - 确认 anvil 是否运行（`make anvil`）
-- **链 ID 错误**
-  - 切换到本地链 `31337`
-
-## 标准化命令（统一模板）
+## 命令与环境变量
+**推荐命令（项目根目录）**
 ```bash
 make help
 make dev
@@ -173,3 +77,21 @@ make test
 make anvil
 make clean
 ```
+
+**关键环境变量（`frontend/.env.local`）**
+- `NEXT_PUBLIC_ANVIL_RPC_URL`：默认 `http://127.0.0.1:8545`。
+- `NEXT_PUBLIC_SCOREBOARD_ADDRESS`：部署后地址。
+
+## 验收与排错
+| 症状 | 可能原因 | 修复命令/动作 |
+| --- | --- | --- |
+| 游戏可玩但无法提交 | 钱包未连接或链不匹配 | 连接钱包并切到 `31337` |
+| 提示地址无效 | 地址未同步 | `make deploy` |
+| 排行榜为空 | 尚未有成功上链提交 | 完成一局并签名提交 |
+| 历史不更新 | 交易未确认或 RPC 波动 | 等待回执后重试查询 |
+| 启动失败 | 前端依赖缺失 | `cd frontend && npm install` |
+
+## Demo 展示
+![游戏进行中](./docs-assets/gameplay.png)
+![排行榜弹窗](./docs-assets/leaderboard.png)
+![游戏结束（上链成功）](./docs-assets/game-over-success.png)

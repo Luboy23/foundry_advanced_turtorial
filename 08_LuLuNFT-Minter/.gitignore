@@ -24,3 +24,6 @@ docs/
 # Local chain logs
 .anvil.log
 .anvil.pid
+
+# Editor
+**/.vscode/settings.json
