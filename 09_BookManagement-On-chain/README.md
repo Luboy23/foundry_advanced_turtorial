@@ -1,47 +1,70 @@
-# 09_BookManagement-On-chain
+# 09 BookManagement On-chain（book-management-on-chain）
 
-## 项目简介
-一个面向校内场景的链上图书借阅管理平台，已重构为无 ZK 架构：
-- 馆员端：馆藏管理、库存调整、借阅台账、读者管理
-- 读者端：钱包注册、书目查询、个人借阅历史查询
+## 项目定位与边界
+- 这是链上图书借阅管理教学项目，覆盖“馆员后台 + 读者中心”双端流程。
+- 数据边界：链上保存哈希摘要与借阅状态，不存图书明文全文。
+- 教学目标：把权限模型、库存约束、借还台账三类业务状态讲清楚。
 
-## 技术栈
-- Contracts: Foundry / Solidity 0.8.x
-- Frontend: Next.js 16 + React 19 + Tailwind 4
-- Web3: wagmi + viem
-- Local Chain: Anvil (chainId 31337)
+## 角色与核心对象
+**角色权限矩阵**
+| 角色 | 关键权限 | 典型函数 |
+| --- | --- | --- |
+| Owner | 管理操作员、转移 owner | `setOperator`、`transferOwnership` |
+| Operator（馆员） | 馆藏与读者管理、借还登记 | `registerBook`、`borrowBook`、`returnBook` |
+| Reader（读者） | 自助注册、查询记录 | `registerReader`、只读接口 |
 
-## 快速开始
+**核心实体模型**
+| 实体 | 关键字段 | 说明 |
+| --- | --- | --- |
+| `Book` | `contentHash/metaHash/policyHash/totalCopies/availableCopies` | 馆藏与库存状态 |
+| `ReaderState` | `registered/active/registeredAt` | 读者账号状态 |
+| `BorrowRecord` | `reader/bookId/isBorrow/timestamp/operator` | 借还流水日志 |
+
+## 5 分钟跑通
 ```bash
 cd 09_BookManagement-On-chain
+cp .env.example .env
+cp frontend/.env.local.example frontend/.env.local
 make dev
 ```
+- `make dev` 会执行：`restart-anvil -> deploy -> web`。
+- 部署后自动写入 `NEXT_PUBLIC_CONTRACT_ADDRESS` 并同步 ABI。
+- 打开 `http://localhost:3000`，连接 `31337`。
 
-`make dev` 会执行：
-1. 重启本地 Anvil（`chainId=31337`）
-2. 部署 `BookManagement` 合约
-3. 同步 ABI 到前端
-4. 写入 `frontend/.env.local` 的 `NEXT_PUBLIC_CONTRACT_ADDRESS`
-5. 启动前端开发服务器
+## 业务主流程
+**馆员链路**
+1. Owner 设置/维护 operator。
+2. Operator 上架图书并设置库存。
+3. Operator 启停读者状态。
+4. Operator 执行借阅登记 `borrowBook`。
+5. Operator 执行归还登记 `returnBook`。
+6. 前端台账页读取 `BorrowRecord` 并实时回显。
 
-## 目录结构（核心）
-```text
-09_BookManagement-On-chain/
-├── Makefile
-├── README.md
-├── .env.example
-├── docs-assets/                 # Demo 图片目录
-├── contracts/
-│   ├── src/
-│   ├── test/
-│   └── .env.example
-└── frontend/
-    ├── src/
-    ├── public/
-    └── .env.local.example
-```
+**读者链路**
+1. 读者钱包自助 `registerReader`。
+2. 读者在前端查询馆藏与个人借阅状态。
+3. 借还由馆员登记后，读者页自动读到链上最新数据。
 
-## 标准化命令（统一模板）
+## 合约接口与状态
+| 接口/事件 | 调用方 | 输入 | 状态变化 | 失败条件 | 前端触发入口 |
+| --- | --- | --- | --- | --- | --- |
+| `registerBook(...)` / `registerBooks(...)` | Operator | 哈希 + 库存 | 新增馆藏 | 哈希为空/库存为 0 | 管理端馆藏页 |
+| `setBookTotalCopies` | Operator | bookId, newTotal | 调整库存 | 新库存低于在借量 | 管理端馆藏页 |
+| `borrowBook(reader,bookId)` | Operator | 读者 + 图书 | 可借库存 -1、写借阅流水 | 读者未激活/无库存/重复借阅 | 借阅台账页 |
+| `returnBook(reader,bookId)` | Operator | 读者 + 图书 | 可借库存 +1、写归还流水 | 当前未在借 | 借阅台账页 |
+| `registerReader()` | Reader | 无 | 读者注册并激活 | 重复注册 | 读者端入口 |
+
+## 代码架构与调用链
+| 页面/模块 | 主要职责 | 下游调用 |
+| --- | --- | --- |
+| `frontend/src/app/(admin)/admin/page.tsx` | 馆员工作台入口 | `tabs/catalog/loans/readers` |
+| `frontend/src/app/(public)/reader/page.tsx` | 读者中心入口 | 借阅记录查询 hooks |
+| `frontend/src/hooks/use-borrow-records.ts` | 借阅流水读取 | `getBorrowRecordCount/getBorrowRecordAt` |
+| `frontend/src/hooks/use-admin-access.ts` | 权限门禁 | `owner/operators` 读链 |
+| `contracts/src/BookManagement.sol` | 权限、库存、借还状态核心 | 事件驱动前端刷新 |
+
+## 命令与环境变量
+**推荐命令（项目根目录）**
 ```bash
 make help
 make dev
@@ -54,72 +77,20 @@ make anvil
 make clean
 ```
 
-## 环境变量模板
-根目录 `.env.example`：
-- `RPC_URL=http://127.0.0.1:8545`
-- `PRIVATE_KEY=<anvil-account-private-key>`
-- `CHAIN_ID=31337`
-
-前端 `frontend/.env.local.example`：
-- `NEXT_PUBLIC_CHAIN_ID=31337`
-- `NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8545`
-- `NEXT_PUBLIC_CONTRACT_ADDRESS=0x0000000000000000000000000000000000000000`
-
-## 核心链路
-用户操作 -> 钱包签名 -> 链上事件 -> 前端回显
-
-业务主路径：
-1. 馆员上架书籍：`registerBook`（含库存）
-2. 馆员维护书籍状态：`setBookActive`
-3. 馆员维护库存：`setBookTotalCopies`
-4. 读者注册：`registerReader`
-5. 馆员启停读者：`setReaderActive`
-6. 馆员借阅登记：`borrowBook(reader, bookId)`
-7. 馆员归还登记：`returnBook(reader, bookId)`
-8. 查询链上借阅流水：`getBorrowRecordCount/getBorrowRecordAt`
+**关键环境变量**
+- 根目录 `.env`：`RPC_URL`、`PRIVATE_KEY`、`CHAIN_ID`。
+- 前端 `frontend/.env.local`：`NEXT_PUBLIC_CHAIN_ID`、`NEXT_PUBLIC_RPC_URL`、`NEXT_PUBLIC_CONTRACT_ADDRESS`。
 
 ## 验收与排错
-最低验收清单：
-```bash
-cd contracts && forge test
-cd frontend && npm run check
-cd frontend && npx tsc --noEmit
-cd frontend && npm run build
-```
-
-常见排错：
-1. 管理端提示“缺少 NEXT_PUBLIC_CONTRACT_ADDRESS”：先执行 `make deploy` 或 `make dev`。
-2. 管理端写操作失败：确认钱包网络为 `31337` 且地址是 owner/operator。
-3. 读者无法借阅：确认读者已注册且处于启用状态。
-4. 库存调整失败：新库存不能小于当前在借数量。
-5. 启动报 `EADDRINUSE ... :3000`：可使用 `make dev WEB_PORT=3001`。
-6. 前端 typecheck/build 卡住：清理 `frontend/.next` 后重试，并核对 Node/npm 与锁文件是否一致。
-
-更详细回归参考：[REGRESSION_CHECKLIST.md](./REGRESSION_CHECKLIST.md)。
-
-## UI 组件同步约定
-- 优先复用 `frontend/src/components/ui` 现有基础组件，不进行全库扫描式重拷贝。
-- 新增业务组件时，先在业务目录组合已有组件；仅在缺基础能力时再新增 `ui` 原子组件。
-- 样式变量与交互态保持与现有后台工作台一致，避免引入平行设计体系。
+| 症状 | 可能原因 | 修复命令/动作 |
+| --- | --- | --- |
+| 管理端写操作失败 | 当前钱包不是 owner/operator | 切换授权账号 |
+| 读者无法借阅 | 读者未注册或被停用 | 检查 `registerReader` 与 `setReaderActive` |
+| 库存调整报错 | 新库存小于当前在借量 | 先归还部分图书再调整 |
+| 页面提示缺少合约地址 | 未部署或 env 未写入 | `make deploy` |
+| 3000 端口占用 | 本地已有服务占用 | `make dev WEB_PORT=3001` |
 
 ## Demo 展示
-### 首页
-![首页](./docs-assets/bm-home-landing.png)
-
-### 读者中心总览
-![读者中心总览](./docs-assets/bm-reader-overview.png)
-
-### 读者借阅历史
-![读者借阅历史](./docs-assets/bm-reader-history.png)
-
-### 管理端 - 仪表盘
 ![管理端仪表盘](./docs-assets/bm-admin-dashboard.png)
-
-### 管理端 - 馆藏管理
-![管理端馆藏管理](./docs-assets/bm-admin-catalog.png)
-
-### 管理端 - 借阅台账
 ![管理端借阅台账](./docs-assets/bm-admin-ledger.png)
-
-### 管理端 - 读者管理
-![管理端读者管理](./docs-assets/bm-admin-readers.png)
+![读者借阅历史](./docs-assets/bm-reader-history.png)

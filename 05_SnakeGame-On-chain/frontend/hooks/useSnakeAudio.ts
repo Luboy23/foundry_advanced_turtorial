@@ -124,18 +124,40 @@ export const useSnakeAudio = ({
     [playTone, sfxEnabled]
   )
 
+  // 倒计时提示音：3/2/1 使用不同音高，增强时间感知
+  const playCountdownCue = useCallback(
+    (value: number) => {
+      if (!sfxEnabled) return
+
+      if (value === 3) {
+        playTone(680, 0.08, 'square', 0.06)
+        return
+      }
+
+      if (value === 2) {
+        playTone(760, 0.08, 'square', 0.06)
+        return
+      }
+
+      if (value === 1) {
+        playTone(860, 0.1, 'square', 0.065)
+      }
+    },
+    [playTone, sfxEnabled]
+  )
+
   // 标记用户交互并解锁音频播放
   const handleUserInteraction = useCallback(() => {
     hasInteractedRef.current = true
     resumeAudioContext()
   }, [resumeAudioContext])
 
-  // 倒计时 3/2/1 时播放滴答提示音，帮助用户感知恢复时机
+  // 倒计时 3/2/1 时播放分级提示音，帮助用户感知恢复时机
   useEffect(() => {
     if (countDown > 0 && countDown < 4) {
-      playSfx('countdown')
+      playCountdownCue(countDown)
     }
-  }, [countDown, playSfx])
+  }, [countDown, playCountdownCue])
 
   // 首次加载时从 localStorage 恢复音乐/音效开关
   useEffect(() => {

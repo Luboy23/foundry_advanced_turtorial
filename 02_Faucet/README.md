@@ -1,115 +1,70 @@
 # 02 ERC20 Faucet（faucet）
-## 项目介绍
-这是一个使用 `Nextjs15` 以及 `Foundry` 框架制作的ERC20代币水龙头领取网页
 
-**水龙头首页**
-![水龙头首页](./docs-assets/ui-faucet-home.png)
-**管理员编辑弹窗**
-![管理员编辑弹窗](./docs-assets/ui-admin-edit.png)
-**管理员详情弹窗**
-![管理员详情弹窗](./docs-assets/ui-admin-details.png)
+## 项目定位与边界
+- 本项目在 ERC20 基础上增加“可配置水龙头”业务：管理员存入代币，普通用户按规则领取。
+- 业务边界：只做本地链教学，不做生产级风控（黑名单、风控分层、限流服务端）。
+- 合约核心是“领取间隔 + 单次上限 + 资金池余额校验”。
 
+## 角色与核心对象
+| 角色 | 职责 | 核心对象 |
+| --- | --- | --- |
+| Owner/Admin | 部署、铸币、授权、向 Faucet 充值、调参数 | `LLCFaucet`、`LuLuCoin` |
+| User | 调用 `drip` 领取 | `dripTime[user]` |
+| Faucet 合约 | 执行领取策略和余额检查 | `dripInterval`、`dripLimit`、`token` |
 
+**水龙头策略矩阵**
+| 策略 | 合约字段/函数 | 谁配置 | 用户侧影响 |
+| --- | --- | --- | --- |
+| 领取间隔 | `dripInterval` / `setDripInterval` | Owner | 冷却期内不可重复领 |
+| 单次上限 | `dripLimit` / `setDripLimit` | Owner | 超限直接回滚 |
+| 资金池来源 | `deposit` + ERC20 `approve` | Owner | 余额不足时领取失败 |
+| 代币绑定 | `tokenAddress` / `setTokenAddress` | Owner | 切换 token 后领取对象变化 |
 
-# 文档汇总
-- 前端部分
-  1. [Nextjs15 官方文档](https://nextjs.org/)
-  2. [TailwindCSS 官方文档](https://tailwindcss.com/)
-  3. [ethers@6.13.5 官方文档](https://docs.ethers.org/v6/)
-   
-- 合约部分
-  1. [Foundry 官方文档](https://book.getfoundry.sh/)
-  2. [Solidity 官方文档](https://docs.soliditylang.org/en/latest/)
-  3. [以太坊单位转换器](https://eth-converter.com/)
+## 5 分钟跑通
+```bash
+cd 02_Faucet
+cp contracts/.env.example contracts/.env
+make dev
+```
+- `make dev` 会执行：`restart-anvil -> deploy -> frontend-dev`。
+- `deploy` 阶段自动完成：部署 `LuLuCoin + LLCFaucet`、`mint`、`approve`、`deposit`。
+- 打开 `http://localhost:3000`，连接 `Anvil 31337` 后即可测试领取。
 
-# 环境配置
-## 前端部分
-`NextJs`的版本为`15.1.4`
-   - 初始化项目的指令: `npx create-next-app@latest`
-`ethers.js`的版本为`6.13.5`
-   - 安装 `ethers v6`的指令: `npm install ethers@6.13.5`
+## 业务主流程
+1. 管理员部署代币与水龙头，前端拿到最新地址。
+2. 管理员 `mint` 代币并 `approve` 水龙头可扣款。
+3. 管理员执行 `deposit`，把代币注入 Faucet 资金池。
+4. 用户点击领取，前端提交 `drip(amount)`。
+5. 合约依次校验：冷却期、单次上限、资金池余额。
+6. 校验通过后更新 `dripTime[user]` 并转账。
+7. 前端刷新用户余额、Faucet 余额、下一次可领取时间。
 
+**失败场景（重点）**
+- `LLCFaucet__IntervalHasNotPassed`：冷却期未到。
+- `LLCFaucet__ExceedLimit`：超出单次上限。
+- `LLCFaucet__FaucetEmpty`：资金池余额不足。
+- `LLCFaucet__InvalidAmount`：管理员 `deposit` 数量非法。
 
-## 合约部分
-`Foundry` 版本为`0.3.0`
-   - 初始化项目的指令: `forge init`, 如果项目不为空文件夹这需要加上`--force`,初始化项目时，不进行 Git 提交需要加上`--no-commit`
-   - 安装 `OpenZeppelin` 的指令为: `forge install OpenZeppelin/openzeppelin-contracts` 
+## 合约接口与状态
+| 接口/事件 | 调用方 | 输入 | 状态变化 | 失败条件 | 前端触发入口 |
+| --- | --- | --- | --- | --- | --- |
+| `drip(uint256)` | User | 领取数量 | 更新 `dripTime`、转账给用户 | 冷却未到/超限/池子空 | `components/faucet.js` |
+| `deposit(uint256)` | Owner | 存入数量 | 增加 Faucet 代币余额 | 金额非法/未授权 | 管理端操作 |
+| `setDripInterval(uint256)` | Owner | 秒数 | 更新策略参数 | 非 Owner | 管理端设置 |
+| `setDripLimit(uint256)` | Owner | 上限 | 更新策略参数 | 非 Owner | 管理端设置 |
+| `LLCFaucet__Drip` | 合约发出 | 接收人、金额 | 事件日志 | 无 | 前端可监听刷新 |
 
-# 环境变量（contracts/.env）
-复制示例文件后再填写实际值：
-`cp contracts/.env.example contracts/.env`
+## 代码架构与调用链
+| 页面/模块 | 主要职责 | 下游调用 |
+| --- | --- | --- |
+| `frontend/app/page.js` | 首页与弹窗容器 | `components/faucet.js` 等 |
+| `frontend/components/context.js` | 全局钱包与链上状态共享 | `ethers` Provider |
+| `frontend/components/faucet.js` | 领取、余额查询、状态回显 | `LLCFaucet` 读写 |
+| `frontend/components/managementRow.js` | 管理员参数/充值入口 | `setDrip*`、`deposit` |
+| `contracts/src/LLCFaucet.sol` | 水龙头策略核心 | ERC20 `SafeERC20` |
 
-变量说明：
-- `OWNER_PRIVATE_KEY` / `OWNER_ADDRESS`：部署与管理合约账户（默认 Anvil Account #0）。
-- `USER_PRIVATE_KEY` / `USER_ADDRESS`：领取水龙头的普通用户（默认 Anvil Account #1）。
-- `LLC_CONTRACT` / `FAUCET_CONTRACT`：部署后填入的合约地址。
-- `MINT_AMOUNT` / `DEPOSIT_AMOUNT` / `DRIP_AMOUNT`：金额参数（建议用 wei）。
-- `DRIP_INTERVAL` / `DRIP_LIMIT`：领取间隔与单次上限。
-
-# 代码展示
-## `LLCFaucet` 代币水龙头合约
-**合约实现（LLCFaucet.sol）**
-![合约实现（LLCFaucet.sol）](./docs-assets/contract-faucet.png)
-
-## `LLCFaucetTest` 测试合约
-**测试合约（LLCFaucetTest.t.sol）**
-![测试合约（LLCFaucetTest.t.sol）](./docs-assets/test-faucet.png)
-
-## `Makefile`指令
-**Makefile 指令说明**
-![Makefile 指令说明](./docs-assets/makefile-commands.png)
-
-## 新增的`context`组件
-**前端 Context 组件**
-![前端 Context 组件](./docs-assets/frontend-context.png)
-
-
-## 使用 `ethers` 获取链上数据
-**ethers 链上交互代码**
-![ethers 链上交互代码](./docs-assets/web3-ethers-code.png)
-
-
-
-
-# 本次教程中使用到的和合约交互的指令
-* 编译合约
-`forge compile`
-
-* 测试合约
-`forge test`
-
-* 测试指定测试合约中过的函数
-`forge test --mt ${函数名称} -vvvvv `
-
-* 函数选择器
-`forge selectors find`
-
-
-- 使用 makefile指令完成与合约的交互
-`make deploy_lulucoin`: 部署 LuLuCoin ERC20 代币合约
-`make deploy_faucet`: 部署水龙头代币合约
-`make mint`: 使用 `Owner` 账户进行 ERC20 代币的铸造
-`make approve_faucet`: 使用 `Owner` 账户对 `LLCFaucet` 合约进行授权
-`make deposit`: 使用 `Owner` 账户向水龙头合约中进行转账
-
-
-# 根目录 Makefile 使用说明（新增）
-- 使用根目录 Makefile 一键运行项目
-`make start`: 一键部署合约并启动前端开发服务器
-`make` 或 `make run`: 仅启动前端开发服务器（默认目标）
-`make dev`: 同上，开发模式启动
-`make contracts-setup`: 合约端初始化流程（部署/铸币/授权/存入）
-`make frontend-build`: 构建前端生产包
-`make frontend-start`: 启动前端生产服务器
-`make frontend-lint`: 前端代码检查
-`make clean-frontend`: 清理前端依赖
-`make help`: 查看全部指令说明
-
-- 注意事项
-`contracts/.env` 为必需文件，请从 `contracts/.env.example` 复制后再填写
-`make start` 会触发链上交易（部署/铸币/授权/存入），请确认使用测试网或准备好 Gas
-
-## 标准化命令（统一模板）
+## 命令与环境变量
+**推荐命令（项目根目录）**
 ```bash
 make help
 make dev
@@ -120,3 +75,24 @@ make test
 make anvil
 make clean
 ```
+
+**关键环境变量（`contracts/.env`）**
+- `OWNER_PRIVATE_KEY` / `OWNER_ADDRESS`：管理员。
+- `USER_PRIVATE_KEY` / `USER_ADDRESS`：领取用户。
+- `LLC_CONTRACT` / `FAUCET_CONTRACT`：部署后地址。
+- `MINT_AMOUNT` / `DEPOSIT_AMOUNT` / `DRIP_AMOUNT`。
+- `DRIP_INTERVAL` / `DRIP_LIMIT`。
+
+## 验收与排错
+| 症状 | 可能原因 | 修复命令/动作 |
+| --- | --- | --- |
+| 领取按钮报冷却错误 | 上次领取间隔未到 | 等待或降低 `DRIP_INTERVAL` |
+| 领取失败提示余额不足 | Faucet 没有足够代币 | 重新 `make deploy` 或执行 `deposit` |
+| 管理员充值失败 | 未先 `approve` | 执行 `make approve_faucet` |
+| 页面地址为空 | 未写入前端 env | `make deploy` |
+| RPC/交易超时 | Anvil 未就绪 | `make restart-anvil` |
+
+## Demo 展示
+![水龙头首页](./docs-assets/ui-faucet-home.png)
+![管理员编辑弹窗](./docs-assets/ui-admin-edit.png)
+![ethers 链上交互代码](./docs-assets/web3-ethers-code.png)
