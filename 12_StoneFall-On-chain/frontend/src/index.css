@@ -1,0 +1,83 @@
+/*
+ * 模块职责：定义全局视觉变量、基础排版与页面背景纹理。
+ * 说明：该文件为样式入口与主题变量定义，注释用于解释视觉语义。
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+:root {
+  /* 墨色层级：正文/次级文案/弱文案 */
+  --ink-900: #101010;
+  --ink-700: #282828;
+  --ink-500: #535353;
+  /* 纸面底色层级：由浅到深用于背景和卡片过渡 */
+  --paper-50: #f7f4ed;
+  --paper-100: #efebe2;
+  --paper-200: #e6e1d7;
+  /* 线条与高亮色 */
+  --line-soft: rgba(16, 16, 16, 0.18);
+  --line-strong: rgba(16, 16, 16, 0.42);
+  --accent-vermilion: #b53922;
+  --fog-wash: rgba(16, 16, 16, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  /* 优先英文字体 + 中文 fallback，兼顾 UI 风格和中文可读性。 */
+  font-family: 'Space Grotesk', 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    'Helvetica Neue', Arial, sans-serif;
+  color: var(--ink-900);
+  background-color: var(--paper-50);
+  background-image:
+    radial-gradient(circle at 12% 10%, rgba(255, 255, 255, 0.74), transparent 36%),
+    radial-gradient(circle at 85% 18%, rgba(0, 0, 0, 0.04), transparent 38%),
+    radial-gradient(circle at 32% 84%, rgba(0, 0, 0, 0.035), transparent 40%),
+    linear-gradient(155deg, var(--paper-50), var(--paper-100));
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  /* 顶层噪点纹理，增强“宣纸+墨迹”的材质感。 */
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(16, 16, 16, 0.05) 0.45px, transparent 0.55px),
+    radial-gradient(rgba(16, 16, 16, 0.03) 0.4px, transparent 0.5px);
+  background-size: 4px 4px, 6px 6px;
+  background-position: 0 0, 1px 2px;
+  opacity: 0.22;
+}
+
+button {
+  font: inherit;
+  touch-action: manipulation;
+}
+
+::selection {
+  background: rgba(181, 57, 34, 0.2);
+  color: var(--ink-900);
+}
+
+@layer utilities {
+  .numeric-tabular {
+    /* 数字等宽，避免分数跳动导致布局抖动。 */
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+}
