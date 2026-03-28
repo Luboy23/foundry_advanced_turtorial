@@ -4,10 +4,19 @@
 .anvil.log
 .anvil.pid
 .DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 frontend/node_modules/
 frontend/.next/
 frontend/out/
+frontend/.runtime/
+frontend/coverage/
+frontend/.cache/
+frontend/.turbo/
+frontend/.eslintcache
 frontend/public/event-metadata/*
 !frontend/public/event-metadata/.gitkeep
 !frontend/public/event-metadata/assets/
