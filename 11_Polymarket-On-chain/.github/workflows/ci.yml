@@ -1,0 +1,112 @@
+name: 11-polymarket-ci
+
+on:
+  push:
+    paths:
+      - "11_Polymarket-On-chain/**"
+  pull_request:
+    paths:
+      - "11_Polymarket-On-chain/**"
+  schedule:
+    - cron: "0 2 * * *"
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./11_Polymarket-On-chain/contracts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+      - name: Forge Build
+        run: forge build
+      - name: Forge Test
+        run: forge test
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./11_Polymarket-On-chain/frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ./11_Polymarket-On-chain/frontend/package-lock.json
+      - name: Install Dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type Check
+        run: npm run typecheck
+
+  e2e-smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./11_Polymarket-On-chain/frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ./11_Polymarket-On-chain/frontend/package-lock.json
+      - name: Install Dependencies
+        run: npm ci
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run Smoke Tests
+        run: npm run test:smoke
+      - name: Upload Smoke Artifacts (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-artifacts
+          path: |
+            ./11_Polymarket-On-chain/frontend/playwright-report
+            ./11_Polymarket-On-chain/frontend/test-results
+
+  e2e-core:
+    if: github.event_name == 'schedule' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./11_Polymarket-On-chain/frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ./11_Polymarket-On-chain/frontend/package-lock.json
+      - name: Install Dependencies
+        run: npm ci
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run Core E2E
+        run: npm run test:e2e
+      - name: Upload E2E Artifacts (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-e2e-artifacts
+          path: |
+            ./11_Polymarket-On-chain/frontend/playwright-report
+            ./11_Polymarket-On-chain/frontend/test-results

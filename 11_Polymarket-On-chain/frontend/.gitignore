@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+.env.local
+public/contract-config.json
+public/event-metadata/*
+!public/event-metadata/.gitkeep
+!public/event-metadata/assets/
+public/event-metadata/assets/*
+!public/event-metadata/assets/.gitkeep
+*.tsbuildinfo
+.DS_Store
+playwright-report/
+test-results/
