@@ -23,6 +23,9 @@
 | [07_LightOut-Game-On-chain](07_LightOut-Game-On-chain/) | ![07_LightOut-Game-On-chain](07_LightOut-Game-On-chain/docs-assets/game-over-pending.png) | 关灯游戏上链版，支持通关后链上提交、链上排行榜与对局记录。 |
 | [08_LuLuNFT-Minter](08_LuLuNFT-Minter/) | ![08_LuLuNFT-Minter](08_LuLuNFT-Minter/docs-assets/market-listings.png) | NFT 铸造与固定价交易示例，支持上架、购买与二次售卖闭环。 |
 | [09_BookManagement-On-chain](09_BookManagement-On-chain/) | ![09_BookManagement-On-chain](09_BookManagement-On-chain/docs-assets/bm-home-landing.png) | 图书借阅管理平台，支持馆员端馆藏/借阅/读者管理与读者端注册查询。 |
+| [10_AnvilExplorer](10_AnvilExplorer/) | ![10_AnvilExplorer](10_AnvilExplorer/docs-assets/ui-home-dashboard.png) | 本地 Anvil 链浏览器，支持区块/交易/地址查询、链状态查看与 Cast 调试控制台。 |
+| [11_Polymarket-On-chain](11_Polymarket-On-chain/) | ![11_Polymarket-On-chain](11_Polymarket-On-chain/docs-assets/lulu-market-overview-card.png) | Polymarket 风格预测市场示例，支持市场创建、交易与结果结算流程。 |
+| [12_StoneFall-On-chain](12_StoneFall-On-chain/) | ![12_StoneFall-On-chain](12_StoneFall-On-chain/docs-assets/stonefall-idle-wallet-disconnected.png) | StoneFall 躲避上链版，支持结算自动提交成绩、链上排行榜与历史记录。 |
 
 # 开发建议（工程实践清单）
 
@@ -385,6 +388,6 @@ function setBlockGasLimit(uint _gasLimit) public;
 搬运转载请注明出处！！！<br>
 作者： lllu_23<br>
 联系方式: lllu238744@gmail.com<br>
-最后一次更新时间: 2026-3-17<br>
+最后一次更新时间: 2026-3-28<br>
 </strong>
 </p>
