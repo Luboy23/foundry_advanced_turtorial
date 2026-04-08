@@ -7,19 +7,28 @@ import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import './index.css'
-import App from './App.tsx'
-import { wagmiConfig } from './lib/wagmi'
+import { loadRuntimeConfig } from './lib/runtime-config'
 
 // 全局查询客户端：缓存链上读取结果并控制失效策略。
 const queryClient = new QueryClient()
 
-// Provider 顺序：
-// 1) WagmiProvider 提供钱包连接与链交互上下文
-// 2) QueryClientProvider 提供请求缓存与状态管理
-createRoot(document.getElementById('root')!).render(
-  <WagmiProvider config={wagmiConfig}>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </WagmiProvider>,
-)
+const bootstrap = async () => {
+  await loadRuntimeConfig()
+  const [{ default: App }, { wagmiConfig }] = await Promise.all([
+    import('./App.tsx'),
+    import('./lib/wagmi'),
+  ])
+
+  // Provider 顺序：
+  // 1) WagmiProvider 提供钱包连接与链交互上下文
+  // 2) QueryClientProvider 提供请求缓存与状态管理
+  createRoot(document.getElementById('root')!).render(
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </WagmiProvider>,
+  )
+}
+
+void bootstrap()

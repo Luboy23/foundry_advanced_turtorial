@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="TicTacToe On-chain favicon">
+  <defs>
+    <linearGradient id="bg" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff7c6c" />
+      <stop offset="1" stop-color="#f2555a" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)" />
+  <path
+    d="M20 20 L32 32 L44 44"
+    fill="none"
+    stroke="#ffd166"
+    stroke-linecap="round"
+    stroke-width="4"
+    opacity="0.94"
+  />
+  <g
+    fill="none"
+    stroke="#fff7f1"
+    stroke-linecap="round"
+    stroke-width="4"
+    opacity="0.96"
+  >
+    <path d="M26 14v36" />
+    <path d="M38 14v36" />
+    <path d="M14 26h36" />
+    <path d="M14 38h36" />
+  </g>
+  <g fill="none" stroke="#fff7f1" stroke-linecap="round" stroke-width="4.5">
+    <path d="M16.5 16.5 L23.5 23.5" />
+    <path d="M23.5 16.5 L16.5 23.5" />
+    <circle cx="44" cy="44" r="5.8" />
+  </g>
+  <rect x="27.5" y="27.5" width="9" height="9" rx="2.4" fill="#ffbf4d" />
+  <rect x="30.2" y="30.2" width="3.6" height="3.6" rx="1" fill="#8f4d16" opacity="0.8" />
+</svg>

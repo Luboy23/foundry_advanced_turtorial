@@ -92,14 +92,17 @@ contract FlappyScoreboard {
         } else {
             if (length < MAX_LEADERBOARD) {
                 // 未满：直接插入
-                leaderboard.push(LeaderboardEntry({player: player, score: score, timestamp: block.timestamp}));
+                leaderboard.push(
+                    LeaderboardEntry({player: player, score: score, timestamp: block.timestamp})
+                );
                 index = length;
             } else {
                 // 已满：低于榜尾则忽略，否则替换榜尾
                 if (score <= leaderboard[length - 1].score) {
                     return;
                 }
-                leaderboard[length - 1] = LeaderboardEntry({player: player, score: score, timestamp: block.timestamp});
+                leaderboard[length - 1] =
+                    LeaderboardEntry({player: player, score: score, timestamp: block.timestamp});
                 index = length - 1;
             }
         }

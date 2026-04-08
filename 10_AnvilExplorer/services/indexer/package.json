@@ -1,13 +1,16 @@
 {
   "name": "anvil-explorer-indexer",
   "version": "0.1.0",
+  "author": "lllu_23",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
-    "typecheck": "tsc --noEmit"
+    "lint": "npm run typecheck",
+    "typecheck": "tsc --noEmit",
+    "test:health": "node --import tsx src/health-smoke.ts"
   },
   "dependencies": {
     "better-sqlite3": "^11.8.1",
@@ -20,5 +23,13 @@
     "@types/node": "^22.10.2",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luboy23/foundry-advanced-10-anvil-explorer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Luboy23/foundry-advanced-10-anvil-explorer/issues"
+  },
+  "homepage": "https://github.com/Luboy23/foundry-advanced-10-anvil-explorer"
 }

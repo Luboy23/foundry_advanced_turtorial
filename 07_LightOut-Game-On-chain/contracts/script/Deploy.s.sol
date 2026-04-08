@@ -6,8 +6,7 @@ import { LightsOutResults } from "../src/LightsOutResults.sol";
 
 contract Deploy is Script {
     function run() external {
-        uint256 deployerKey = vm.envUint("PRIVATE_KEY");
-        vm.startBroadcast(deployerKey);
+        vm.startBroadcast();
         new LightsOutResults();
         vm.stopBroadcast();
     }

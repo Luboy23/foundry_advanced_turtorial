@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {PolymarketTypes} from "../src/PolymarketTypes.sol";
-import {TestBase} from "./TestBase.sol";
+import { PolymarketTypes } from "../src/PolymarketTypes.sol";
+import { TestBase } from "./TestBase.sol";
 
 contract PositionFlowTest is TestBase {
     event PositionBought(
@@ -20,7 +20,7 @@ contract PositionFlowTest is TestBase {
 
         vm.prank(alice);
         vm.expectRevert(bytes("ZERO_COLLATERAL"));
-        eventFactory.buyYes{value: 0}(eventId);
+        eventFactory.buyYes{ value: 0 }(eventId);
     }
 
     function test_BuyNo_SuccessAfterCloseTimeBeforeFinalize() public {
@@ -28,25 +28,22 @@ contract PositionFlowTest is TestBase {
 
         vm.warp(defaultCloseTime);
         vm.prank(alice);
-        eventFactory.buyNo{value: 1 ether}(eventId);
+        eventFactory.buyNo{ value: 1 ether }(eventId);
 
         (uint256 yesBal, uint256 noBal) = eventFactory.getUserPosition(eventId, alice);
         assertEq(yesBal, 0);
         assertEq(noBal, 1 ether);
     }
 
-    function test_BuyYes_SuccessDuringProposedCooldown() public {
+    function test_BuyYes_RevertWhenProposedCooldownStarted() public {
         uint256 eventId = createDefaultEvent();
 
         vm.warp(defaultCloseTime + 1);
         eventFactory.proposeResolution(eventId, PolymarketTypes.Outcome.Yes);
 
         vm.prank(alice);
-        eventFactory.buyYes{value: 1 ether}(eventId);
-
-        (uint256 yesBal, uint256 noBal) = eventFactory.getUserPosition(eventId, alice);
-        assertEq(yesBal, 1 ether);
-        assertEq(noBal, 0);
+        vm.expectRevert(bytes("EVENT_NOT_BUYABLE"));
+        eventFactory.buyYes{ value: 1 ether }(eventId);
     }
 
     function test_BuyYes_RevertWhenResolved() public {
@@ -59,14 +56,14 @@ contract PositionFlowTest is TestBase {
 
         vm.prank(alice);
         vm.expectRevert(bytes("EVENT_NOT_BUYABLE"));
-        eventFactory.buyYes{value: 1 ether}(eventId);
+        eventFactory.buyYes{ value: 1 ether }(eventId);
     }
 
     function test_BuyYes_MintsAndAccumulatesYesPool() public {
         uint256 eventId = createDefaultEvent();
 
         vm.prank(alice);
-        eventFactory.buyYes{value: 2 ether}(eventId);
+        eventFactory.buyYes{ value: 2 ether }(eventId);
 
         (uint256 yesBal, uint256 noBal) = eventFactory.getUserPosition(eventId, alice);
         assertEq(yesBal, 2 ether);
@@ -82,7 +79,7 @@ contract PositionFlowTest is TestBase {
         uint256 eventId = createDefaultEvent();
 
         vm.prank(alice);
-        eventFactory.buyNo{value: 1.5 ether}(eventId);
+        eventFactory.buyNo{ value: 1.5 ether }(eventId);
 
         (uint256 yesBal, uint256 noBal) = eventFactory.getUserPosition(eventId, alice);
         assertEq(yesBal, 0);
@@ -102,7 +99,7 @@ contract PositionFlowTest is TestBase {
         emit PositionBought(eventId, alice, PolymarketTypes.PositionSide.Yes, amount, amount, amount, 0);
 
         vm.prank(alice);
-        eventFactory.buyYes{value: amount}(eventId);
+        eventFactory.buyYes{ value: amount }(eventId);
     }
 
     function testFuzz_BuyYes_IncreasesYesOnly(uint96 raw) public {
@@ -110,7 +107,7 @@ contract PositionFlowTest is TestBase {
         uint256 amount = boundAmount(uint256(raw), 20 ether);
 
         vm.prank(alice);
-        eventFactory.buyYes{value: amount}(eventId);
+        eventFactory.buyYes{ value: amount }(eventId);
 
         (uint256 yesBal, uint256 noBal) = eventFactory.getUserPosition(eventId, alice);
         assertEq(yesBal, amount);

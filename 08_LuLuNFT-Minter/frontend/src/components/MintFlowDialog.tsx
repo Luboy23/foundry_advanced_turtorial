@@ -59,7 +59,7 @@ export const MintFlowDialog = ({
       setTimeout(() => {
         setCopied((prev) => (prev === key ? null : prev));
       }, 1500);
-    } catch (error) {
+    } catch {
       setCopied(null);
     }
   };

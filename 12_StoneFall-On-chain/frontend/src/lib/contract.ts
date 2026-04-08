@@ -5,20 +5,25 @@
 
 import { isAddress } from 'viem'
 import stonefallAbi from './stonefall.abi.json'
+import { getResolvedRuntimeConfig } from './runtime-config'
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const runtimeConfig = getResolvedRuntimeConfig()
 
 /**
- * 从环境变量读取合约地址。
- * 未配置时为 `undefined`，上层据此阻止开始和提交流程。
+ * 从 runtime config 读取合约地址。
+ * 若 runtime 文件缺失则自动回退 env/default；零地址视为未部署。
  */
 export const STONEFALL_ADDRESS =
-  (import.meta.env.VITE_STONEFALL_ADDRESS as `0x${string}` | undefined) ??
-  undefined
+  runtimeConfig.stoneFallScoreboardAddress ?? undefined
 
 /**
  * 地址格式校验结果（viem `isAddress`）。
  */
 export const STONEFALL_ADDRESS_VALID =
-  !!STONEFALL_ADDRESS && isAddress(STONEFALL_ADDRESS)
+  !!STONEFALL_ADDRESS &&
+  STONEFALL_ADDRESS !== ZERO_ADDRESS &&
+  isAddress(STONEFALL_ADDRESS)
 
 // ABI 由 scripts/sync-contract.js 从 Foundry 编译产物自动同步。
 export const STONEFALL_ABI = stonefallAbi

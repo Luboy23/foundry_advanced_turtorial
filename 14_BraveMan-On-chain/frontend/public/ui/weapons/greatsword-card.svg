@@ -1,0 +1,43 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="blade-core" x1="65" y1="112" x2="101" y2="20" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4D1010"/>
+      <stop offset="0.5" stop-color="#7C1717"/>
+      <stop offset="1" stop-color="#B82A2A"/>
+    </linearGradient>
+    <linearGradient id="blade-highlight" x1="74" y1="103" x2="93" y2="30" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4D1010" stop-opacity="0.2"/>
+      <stop offset="0.58" stop-color="#E07373" stop-opacity="0.74"/>
+      <stop offset="1" stop-color="#E07373"/>
+    </linearGradient>
+    <filter id="sword-shadow" x="13" y="8" width="135" height="146" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#381A13" flood-opacity="0.24"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#sword-shadow)" transform="rotate(-27 80 82)">
+    <path d="M82 18L97 44L93 97L82 110L71 97L67 44L82 18Z" fill="url(#blade-core)" stroke="#B82A2A" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M82 30L90 48L88 92L82 100L76 92L74 48L82 30Z" fill="#4D1010" fill-opacity="0.46"/>
+    <path d="M82 26L89 47L85 93" stroke="url(#blade-highlight)" stroke-width="2.3" stroke-linecap="round"/>
+    <path d="M82 31L82 94" stroke="#E07373" stroke-opacity="0.48" stroke-width="1.7" stroke-linecap="round"/>
+
+    <path d="M57 101H107" stroke="#B82A2A" stroke-width="5.6" stroke-linecap="round"/>
+    <path d="M60 102.2H104" stroke="#E07373" stroke-width="2.15" stroke-linecap="round" stroke-opacity="0.86"/>
+    <path d="M56 101L64.5 94.3L65.6 106.2L56 101Z" fill="#4D1010"/>
+    <path d="M108 101L99.5 94.3L98.4 106.2L108 101Z" fill="#4D1010"/>
+    <circle cx="82" cy="101" r="3.6" fill="#E07373" stroke="#4D1010" stroke-width="1.9"/>
+
+    <path d="M82 104L82 135" stroke="#4D1010" stroke-width="7.6" stroke-linecap="round"/>
+    <path d="M82 104.5L82 134" stroke="#B82A2A" stroke-opacity="0.9" stroke-width="3.3" stroke-linecap="round"/>
+    <path d="M73.8 113H90.2" stroke="#E07373" stroke-width="1.35" stroke-opacity="0.66" stroke-linecap="round"/>
+    <path d="M73.8 121H90.2" stroke="#E07373" stroke-width="1.35" stroke-opacity="0.66" stroke-linecap="round"/>
+    <path d="M73.8 129H90.2" stroke="#E07373" stroke-width="1.35" stroke-opacity="0.66" stroke-linecap="round"/>
+
+    <circle cx="82" cy="138.3" r="3.8" fill="#4D1010"/>
+    <circle cx="82" cy="138.3" r="1.95" fill="#E07373"/>
+
+    <path d="M79.2 140.2C82.1 143.4 86.1 146.3 90.3 148.4" stroke="#B82A2A" stroke-width="1.85" stroke-linecap="round"/>
+    <path d="M82.1 140.2C85.8 143.3 89.7 146 93.7 148" stroke="#E07373" stroke-width="1.35" stroke-linecap="round"/>
+    <path d="M76.7 140.3C79.5 143.2 82.7 145.8 86 147.7" stroke="#7C1717" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+</svg>

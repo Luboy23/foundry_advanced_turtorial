@@ -20,7 +20,7 @@ cp frontend/.env.local.example frontend/.env.local
 make dev
 ```
 - `make dev` 会执行：`restart-anvil -> deploy -> web`。
-- 部署后脚本会同步地址/ABI 到前端。
+- `make deploy` 会先确保本地 Anvil 可用，再调用 `contracts/script/Deploy.s.sol`，并通过 `scripts/sync-contract.js` 同步 ABI、`contract-config.json` 与前端 env。
 - 打开 Vite 地址（通常 `http://localhost:5173`），连接 `31337`。
 
 ## 业务主流程
@@ -65,6 +65,13 @@ GameScene onGameOver
   -> invalidateQueries + UI 刷新
 ```
 
+**运行时配置优先级**
+```text
+frontend/public/contract-config.json
+  > frontend/.env.local
+  > 默认值
+```
+
 ## 命令与环境变量
 **推荐命令（项目根目录）**
 ```bash
@@ -77,6 +84,7 @@ make test
 make anvil
 make clean
 ```
+- `make test` 会在 `frontend/node_modules` 缺失时自动执行 `npm ci --no-audit --no-fund`，并继续跑 `lint + typecheck + test + build`。
 
 **关键环境变量**
 - 根目录 `.env`：`PRIVATE_KEY`、`RPC_URL`、`CHAIN_ID`。
@@ -86,6 +94,11 @@ make clean
   - `VITE_STONEFALL_ADDRESS=0x...`
   - `VITE_E2E_BYPASS_WALLET=false`
   - `VITE_E2E_TEST_PRIVATE_KEY=`
+
+**部署与同步职责**
+- `contracts/script/Deploy.s.sol`：唯一部署入口。
+- `scripts/sync-contract.js`：同步 ABI、`contract-config.json` 和 `.env.local`。
+- `frontend/src/lib/runtime-config.ts`：浏览器优先读取 runtime config，再回退 env/default。
 
 **E2E 绕钱包边界**
 - `VITE_E2E_BYPASS_WALLET=true` 仅用于自动化测试，不用于教学主流程。
@@ -107,3 +120,6 @@ make clean
 ![stonefall-settings-modal](docs-assets/stonefall-settings-modal.png)
 ![stonefall-leaderboard-modal](docs-assets/stonefall-leaderboard-modal.png)
 ![stonefall-history-modal](docs-assets/stonefall-history-modal.png)
+
+## 作者
+- `lllu_23`

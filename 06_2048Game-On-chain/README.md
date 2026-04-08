@@ -67,6 +67,7 @@ make anvil
 make clean
 make reset-anvil
 ```
+- `make test` 会在 `frontend/node_modules` 缺失时自动执行 `npm ci --no-audit --no-fund`，可直接用于新环境回归。
 
 **关键环境变量（`frontend/.env.local`）**
 - `NEXT_PUBLIC_SCORE_CONTRACT_ADDRESS`：合约地址。
@@ -85,3 +86,6 @@ make reset-anvil
 ![游戏主界面（已连接，准备开始）](./docs-assets/game-ready.png)
 ![游戏结束（上链等待签名）](./docs-assets/game-over-pending.png)
 ![链上排行榜弹窗](./docs-assets/leaderboard.png)
+
+## 作者
+- `lllu_23`

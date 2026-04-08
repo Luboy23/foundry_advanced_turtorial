@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {PolymarketTypes} from "../src/PolymarketTypes.sol";
-import {TestBase} from "./TestBase.sol";
+import { PolymarketTypes } from "../src/PolymarketTypes.sol";
+import { TestBase } from "./TestBase.sol";
 
 contract RedeemTest is TestBase {
     event Redeemed(
@@ -18,7 +18,7 @@ contract RedeemTest is TestBase {
         uint256 eventId = createDefaultEvent();
 
         vm.prank(alice);
-        eventFactory.buyYes{value: 1 ether}(eventId);
+        eventFactory.buyYes{ value: 1 ether }(eventId);
 
         vm.prank(alice);
         vm.expectRevert(bytes("EVENT_NOT_RESOLVED"));
@@ -42,13 +42,13 @@ contract RedeemTest is TestBase {
         uint256 eventId = createDefaultEvent();
 
         vm.prank(alice);
-        eventFactory.buyYes{value: 2 ether}(eventId);
+        eventFactory.buyYes{ value: 2 ether }(eventId);
 
         vm.prank(bob);
-        eventFactory.buyYes{value: 1 ether}(eventId);
+        eventFactory.buyYes{ value: 1 ether }(eventId);
 
         vm.prank(bob);
-        eventFactory.buyNo{value: 3 ether}(eventId);
+        eventFactory.buyNo{ value: 3 ether }(eventId);
 
         vm.warp(defaultCloseTime + 1);
         eventFactory.proposeResolution(eventId, PolymarketTypes.Outcome.Yes);
@@ -69,13 +69,13 @@ contract RedeemTest is TestBase {
         uint256 eventId = createDefaultEvent();
 
         vm.prank(alice);
-        eventFactory.buyNo{value: 1 ether}(eventId);
+        eventFactory.buyNo{ value: 1 ether }(eventId);
 
         vm.prank(bob);
-        eventFactory.buyNo{value: 1 ether}(eventId);
+        eventFactory.buyNo{ value: 1 ether }(eventId);
 
         vm.prank(bob);
-        eventFactory.buyYes{value: 2 ether}(eventId);
+        eventFactory.buyYes{ value: 2 ether }(eventId);
 
         vm.warp(defaultCloseTime + 1);
         eventFactory.proposeResolution(eventId, PolymarketTypes.Outcome.No);
@@ -96,10 +96,10 @@ contract RedeemTest is TestBase {
         uint256 eventId = createDefaultEvent();
 
         vm.prank(alice);
-        eventFactory.buyYes{value: 1.2 ether}(eventId);
+        eventFactory.buyYes{ value: 1.2 ether }(eventId);
 
         vm.prank(alice);
-        eventFactory.buyNo{value: 0.8 ether}(eventId);
+        eventFactory.buyNo{ value: 0.8 ether }(eventId);
 
         vm.warp(defaultCloseTime + 1);
         eventFactory.proposeResolution(eventId, PolymarketTypes.Outcome.Invalid);

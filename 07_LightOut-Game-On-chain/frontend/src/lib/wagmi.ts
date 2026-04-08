@@ -1,10 +1,11 @@
 import { createConfig, http } from "wagmi";
-import { injected } from "wagmi/connectors";
+import { injected } from "@wagmi/core";
 import { anvil } from "viem/chains";
+import { getRuntimeConfig } from "@/lib/runtime-config";
 
-const envChainIdRaw = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? anvil.id);
-const chainId = Number.isInteger(envChainIdRaw) ? envChainIdRaw : anvil.id;
-const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL || "http://127.0.0.1:8545";
+const runtime = getRuntimeConfig();
+const chainId = Number.isInteger(runtime.chainId) ? runtime.chainId : anvil.id;
+const rpcUrl = runtime.rpcUrl;
 
 // 允许通过 env 覆盖本地教学链参数，避免硬编码散落在页面内
 const localChain = {

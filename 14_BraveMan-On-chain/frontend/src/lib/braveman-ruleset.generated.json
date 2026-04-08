@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "config_hash": "0x408c83b1af40f4eea638fa4bd4dbeed50e43bb0e731688a9413614f173edc9f7",
+    "ruleset_version": 7
+  },
+  "ruleset": {
+    "arena_height": 720,
+    "arena_width": 1280,
+    "bow_cooldown_ms": 900,
+    "bow_range": 520.0,
+    "bow_spawn_offset": 20.0,
+    "bow_speed": 780.0,
+    "charger_gold": 2,
+    "chaser_gold": 1,
+    "enemy_bounds_inset_bottom": 38.0,
+    "enemy_bounds_inset_top": 143.0,
+    "enemy_bounds_inset_x": 76.0,
+    "enemy_radius": 18.0,
+    "hook_spear_cooldown_ms": 720,
+    "hook_spear_range": 156.0,
+    "hook_spear_sweep_half_width": 28.0,
+    "player_bounds_inset_bottom": 57.0,
+    "player_bounds_inset_top": 113.0,
+    "player_bounds_inset_x": 62.0,
+    "player_radius": 18.0,
+    "projectile_pool_capacity": 8,
+    "projectile_radius": 10.0,
+    "sword_cleave_half_width": 52.0,
+    "sword_cooldown_ms": 650,
+    "sword_range": 110.0
+  }
+}

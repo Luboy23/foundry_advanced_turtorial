@@ -86,6 +86,7 @@ export function EventCard({
             <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-black/10 bg-neutral-100 shadow-sm">
               {coverImageUrl ? (
                 // 封面图使用普通 img，避免 next/image 对动态来源地址的额外域名配置依赖。
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={coverImageUrl} alt={copy.eventCard.coverAlt(event.question)} className="h-full w-full object-cover" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-xs text-neutral-500">{copy.eventCard.noCover}</div>

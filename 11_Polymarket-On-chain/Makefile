@@ -11,6 +11,8 @@ FRONTEND_DIR := frontend
 FRONTEND_ENV := $(FRONTEND_DIR)/.env.local
 FRONTEND_CONFIG_JSON := $(FRONTEND_DIR)/public/contract-config.json
 FRONTEND_ABI_DIR := $(FRONTEND_DIR)/src/abi
+DEPLOY_SCRIPT := script/Deploy.s.sol:Deploy
+SYNC_SCRIPT := scripts/sync-contract.js
 
 .PHONY: help dev deploy web build-contracts test anvil clean restart-anvil ensure-anvil frontend-install
 
@@ -48,40 +50,8 @@ restart-anvil:
 deploy: ensure-anvil
 	@set -euo pipefail; \
 	command -v forge >/dev/null 2>&1 || { echo "forge not found"; exit 1; }; \
-	command -v cast >/dev/null 2>&1 || { echo "cast not found"; exit 1; }; \
-	mkdir -p $(FRONTEND_DIR)/public $(FRONTEND_ABI_DIR); \
-	deploy_contract() { \
-		local target="$$1"; shift || true; \
-		local out; \
-		out=$$(cd $(CONTRACTS_DIR) && forge create --broadcast --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY) "$$target" "$$@"); \
-		local addr; \
-		addr=$$(echo "$$out" | awk '/Deployed to:/ {print $$3}'); \
-		if [ -z "$$addr" ]; then \
-			echo "$$out"; \
-			echo "[make] failed to parse deployed address for $$target" >&2; \
-			exit 1; \
-		fi; \
-		echo "$$addr"; \
-	}; \
-	position_addr=$$(deploy_contract "src/PositionToken.sol:PositionToken" --constructor-args "$(POSITION_URI_BASE)"); \
-	collateral_addr=$$(deploy_contract "src/ETHCollateralVault.sol:ETHCollateralVault"); \
-	oracle_addr=$$(deploy_contract "src/OracleAdapterMock.sol:OracleAdapterMock"); \
-	factory_addr=$$(deploy_contract "src/EventFactory.sol:EventFactory" --constructor-args "$$position_addr" "$$collateral_addr" "$$oracle_addr"); \
-	cast send --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY) "$$position_addr" "setCore(address)" "$$factory_addr" >/dev/null; \
-	cast send --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY) "$$collateral_addr" "setOperator(address)" "$$factory_addr" >/dev/null; \
-	cast send --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY) "$$oracle_addr" "setOperator(address)" "$$factory_addr" >/dev/null; \
-	printf "NEXT_PUBLIC_RPC_URL=%s\nNEXT_PUBLIC_CHAIN_ID=%s\nNEXT_PUBLIC_PROJECT_GITHUB=%s\nNEXT_PUBLIC_EVENT_FACTORY_ADDRESS=%s\nNEXT_PUBLIC_POSITION_TOKEN_ADDRESS=%s\nNEXT_PUBLIC_ETH_COLLATERAL_VAULT_ADDRESS=%s\nNEXT_PUBLIC_ORACLE_ADAPTER_ADDRESS=%s\n" \
-	  "$(RPC_URL)" "$(CHAIN_ID)" "$(PROJECT_GITHUB)" "$$factory_addr" "$$position_addr" "$$collateral_addr" "$$oracle_addr" > $(FRONTEND_ENV); \
-	printf '{\n  "rpcUrl": "%s",\n  "chainId": %s,\n  "eventFactoryAddress": "%s",\n  "positionTokenAddress": "%s",\n  "ethCollateralVaultAddress": "%s",\n  "oracleAdapterAddress": "%s"\n}\n' \
-	  "$(RPC_URL)" "$(CHAIN_ID)" "$$factory_addr" "$$position_addr" "$$collateral_addr" "$$oracle_addr" > $(FRONTEND_CONFIG_JSON); \
-	(cd $(CONTRACTS_DIR) && forge inspect src/EventFactory.sol:EventFactory abi --json > ../$(FRONTEND_ABI_DIR)/EventFactory.json); \
-	(cd $(CONTRACTS_DIR) && forge inspect src/PositionToken.sol:PositionToken abi --json > ../$(FRONTEND_ABI_DIR)/PositionToken.json); \
-	(cd $(CONTRACTS_DIR) && forge inspect src/ETHCollateralVault.sol:ETHCollateralVault abi --json > ../$(FRONTEND_ABI_DIR)/ETHCollateralVault.json); \
-	(cd $(CONTRACTS_DIR) && forge inspect src/OracleAdapterMock.sol:OracleAdapterMock abi --json > ../$(FRONTEND_ABI_DIR)/OracleAdapterMock.json); \
-	echo "[make] deployed EventFactory: $$factory_addr"; \
-	echo "[make] deployed PositionToken: $$position_addr"; \
-	echo "[make] deployed ETHCollateralVault: $$collateral_addr"; \
-	echo "[make] deployed OracleAdapterMock: $$oracle_addr"
+	(cd $(CONTRACTS_DIR) && forge script $(DEPLOY_SCRIPT) --sig "run(string)" "$(POSITION_URI_BASE)" --broadcast --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY)); \
+	node $(SYNC_SCRIPT) --rpc-url $(RPC_URL) --chain-id $(CHAIN_ID) --project-github "$(PROJECT_GITHUB)"
 
 web: frontend-install
 	@set -euo pipefail; \
@@ -97,9 +67,11 @@ dev: restart-anvil deploy web
 
 build-contracts:
 	@cd $(CONTRACTS_DIR) && forge build
+	@node $(SYNC_SCRIPT) --rpc-url $(RPC_URL) --chain-id $(CHAIN_ID) --project-github "$(PROJECT_GITHUB)"
 
-test:
+test: frontend-install
 	@cd $(CONTRACTS_DIR) && forge test
+	@cd $(FRONTEND_DIR) && npm run typecheck
 
 clean:
 	@cd $(CONTRACTS_DIR) && forge clean
@@ -109,4 +81,4 @@ clean:
 frontend-install: $(FRONTEND_DIR)/node_modules
 
 $(FRONTEND_DIR)/node_modules: $(FRONTEND_DIR)/package-lock.json
-	@cd $(FRONTEND_DIR) && npm install
+	@cd $(FRONTEND_DIR) && npm ci --no-audit --no-fund

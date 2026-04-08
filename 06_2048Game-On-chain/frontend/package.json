@@ -2,20 +2,25 @@
   "name": "2048-game-on-chain",
   "version": "0.1.0",
   "description": "2048 on-chain demo frontend (Next.js + wagmi/viem).",
+  "author": "lllu_23",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "npm run build:ci",
+    "build:ci": "next build",
+    "build:turbo": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck"
   },
   "dependencies": {
     "next": "15.3.1",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "@tanstack/react-query": "^5.66.2",
-    "viem": "^2.23.2",
-    "wagmi": "^2.14.12"
+    "viem": "2.45.1",
+    "wagmi": "2.19.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -23,19 +28,18 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^9",
+    "eslint": "9.25.1",
     "eslint-config-next": "15.3.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "5.8.3"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Luboy23/foundry_advanced_turtorial.git",
-    "directory": "06_2048Game-On-chain/frontend"
+    "url": "git+https://github.com/Luboy23/foundry-advanced-06-2048-game-on-chain.git"
   },
   "bugs": {
-    "url": "https://github.com/Luboy23/foundry_advanced_turtorial/issues"
+    "url": "https://github.com/Luboy23/foundry-advanced-06-2048-game-on-chain/issues"
   },
-  "homepage": "https://github.com/Luboy23/foundry_advanced_turtorial/tree/main/06_2048Game-On-chain/frontend",
+  "homepage": "https://github.com/Luboy23/foundry-advanced-06-2048-game-on-chain",
   "packageManager": "npm@11.5.2"
 }

@@ -18,6 +18,7 @@ cd 04_FlappyBird-Onchain
 make dev
 ```
 - `make dev` 会执行：`restart-anvil -> deploy -> sync-contract -> frontend`。
+- `make deploy` 与 `make dev` 现在都会先确保本地 Anvil 可用，再进入部署与同步流程。
 - 浏览器访问 Vite 地址（通常 `http://localhost:5173`），钱包切到 `31337`。
 - 快速验证：打一局后排行榜页能看到链上成绩。
 
@@ -42,7 +43,7 @@ PlayScene gameover
 ## 合约接口与状态
 | 接口/事件 | 调用方 | 输入 | 状态变化 | 失败条件 | 前端触发入口 |
 | --- | --- | --- | --- | --- | --- |
-| `submitScore(uint256)` | 玩家 | 分数 | 更新个人最佳与榜单 | 无显式 require（低分可能不上榜） | `game/chain/scoreboardClient.js` |
+| `submitScore(uint256)` | 玩家 | 分数 | 更新个人最佳与榜单 | 无显式 require（低分可能不上榜） | `frontend/game/chain/scoreboardClient.ts` |
 | `getLeaderboard()` | 任意读 | 无 | 无 | 无 | `ScoreScene` |
 | `leaderboardLength()` | 任意读 | 无 | 无 | 无 | 排行榜辅助读取 |
 | `bestScore(address)` | 任意读 | 玩家地址 | 无 | 无 | 页面最佳分显示 |
@@ -51,10 +52,10 @@ PlayScene gameover
 ## 代码架构与调用链
 | 页面/场景 | 模块 | 下游调用 |
 | --- | --- | --- |
-| `src/main.jsx` / `src/App.jsx` | React 入口与 Provider 装配 | `components/FlappyBird.jsx` |
-| `components/FlappyBird.jsx` | 挂载 Phaser 实例 | `game/gamecore.js` |
-| `game/scenes/*.js` | 菜单/游玩/结算/排行榜逻辑 | `game/chain/scoreboardClient.js` |
-| `components/Web3/WalletConnect.jsx` | 钱包状态与连接 | wagmi + viem |
+| `frontend/src/main.tsx` / `frontend/src/App.tsx` | React 入口、runtime config 加载与 Provider 装配 | `frontend/components/FlappyBird.tsx` |
+| `frontend/components/FlappyBird.tsx` | 异步挂载 Phaser 实例 | `frontend/game/gamecore.ts` |
+| `frontend/game/scenes/*.ts` | 菜单/游玩/结算/排行榜逻辑 | `frontend/game/chain/scoreboardClient.ts` |
+| `frontend/components/Web3/WalletConnect.tsx` | 钱包状态与连接 | wagmi + viem |
 | `contracts/src/FlappyScoreboard.sol` | 排行榜状态机 | 链上事件与存储 |
 
 ## 命令与环境变量
@@ -69,10 +70,32 @@ make test
 make anvil
 make clean
 ```
+- `make test` 会在 `frontend/node_modules` 缺失时自动执行 `npm ci --no-audit --no-fund`，适合作为干净环境的最低回归入口。
+
+**前端常用命令（`frontend/`）**
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run analyze
+```
 
 **关键环境变量（`frontend/.env.local`）**
 - `VITE_FLAPPY_SCORE_ADDRESS`：排行榜合约地址（`make deploy` 自动写入）。
+- `VITE_RPC_URL`：前端优先使用的 RPC URL。
 - `VITE_ANVIL_RPC_URL`：本地 RPC（默认 `http://127.0.0.1:8545`）。
+- `VITE_CHAIN_ID`：链 ID（默认 `31337`）。
+
+**运行时配置优先级**
+1. `frontend/public/contract-config.json`
+2. `frontend/.env.local`
+3. 前端默认值
+
+## 工程说明
+- `04` 已完成从 legacy Vite 游戏模板回收到当前推荐基线，不再属于版本例外项目。
+- 前端源码已迁移到 TypeScript，保留原有玩法与链上交互语义不变。
+- `PreloadScene` 只同步加载首屏必要视觉资源；音频改为首次交互后再懒加载，减少 Phaser 首屏资源争抢。
 
 ## 验收与排错
 | 症状 | 可能原因 | 修复命令/动作 |
@@ -81,9 +104,12 @@ make clean
 | 提示缺少 `VITE_FLAPPY_SCORE_ADDRESS` | 未部署或未同步地址 | `make deploy` 或 `make sync-contract` |
 | 排行榜不刷新 | 事件监听中断或 RPC 抖动 | 刷新页面并确认 anvil 在线 |
 | 交易失败 | 链错误或账户无测试 ETH | 切到 `31337`，换 Anvil 账户 |
-| 前端无法启动 | 依赖未安装 | `cd frontend && npm install` |
+| 前端无法启动 | 依赖未安装 | 直接执行 `make web` 或 `make test`，命令会自动准备前端依赖 |
 
 ## Demo 展示
 ![游戏进行中](./docs-assets/gameplay.png)
 ![排行榜界面](./docs-assets/leaderboard.png)
 ![游戏结束界面](./docs-assets/game-over.png)
+
+## 作者
+- `lllu_23`

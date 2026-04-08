@@ -8,6 +8,14 @@ import "../src/SnakeScoreboard.sol";
 contract SnakeScoreboardTest is Test {
     SnakeScoreboard private scoreboard;
 
+    event ScoreSubmitted(
+        address indexed player,
+        uint32 score,
+        uint32 durationSec,
+        uint16 speedPeak,
+        uint64 timestamp
+    );
+
     /// @notice 部署合约并初始化测试环境
     function setUp() public {
         scoreboard = new SnakeScoreboard();
@@ -30,7 +38,7 @@ contract SnakeScoreboardTest is Test {
         vm.warp(ts);
         vm.prank(player);
         vm.expectEmit(true, false, false, true);
-        emit SnakeScoreboard.ScoreSubmitted(player, score, duration, speed, ts);
+        emit ScoreSubmitted(player, score, duration, speed, ts);
         scoreboard.submitScore(score, duration, speed);
 
         assertEq(scoreboard.getUserCount(player), 1, "user count");

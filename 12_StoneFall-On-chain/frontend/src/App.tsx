@@ -4,11 +4,7 @@
  */
 
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   useAccount,
   useChainId,
@@ -44,17 +40,15 @@ import type { SettingsModel } from './shared/storage/types'
 import { defaultSettings } from './shared/storage/types'
 import { useViewport } from './shared/utils/useViewport'
 import {
-  compareChainEntries,
   STONEFALL_ABI,
   STONEFALL_ADDRESS,
   STONEFALL_ADDRESS_VALID,
-  toChainScoreEntry,
 } from './lib/contract'
 import { STONEFALL_CHAIN_ID, STONEFALL_RPC_URL } from './lib/chain'
 import { formatTxError } from './lib/txError'
 
-const LeaderboardModal = lazy(() => import('./features/ui/modals/LeaderboardModal'))
-const HistoryModal = lazy(() => import('./features/ui/modals/HistoryModal'))
+const LeaderboardModalEntry = lazy(() => import('./features/ui/modals/LeaderboardModalEntry'))
+const HistoryModalEntry = lazy(() => import('./features/ui/modals/HistoryModalEntry'))
 const SettingsModal = lazy(() => import('./features/ui/modals/SettingsModal'))
 const GameOverModal = lazy(() => import('./features/ui/modals/GameOverModal'))
 
@@ -100,8 +94,6 @@ type PendingSubmission = {
   inputType: InputSource
 }
 
-/** 历史分页大小，与合约分页接口保持一致。 */
-const HISTORY_PAGE_SIZE = 10
 /** 触控跟随模式下用于比例映射的世界宽度。 */
 const TOUCH_FOLLOW_WORLD_WIDTH = 1280
 const E2E_BYPASS_WALLET = import.meta.env.VITE_E2E_BYPASS_WALLET === 'true'
@@ -311,33 +303,6 @@ function App() {
     ? '对局进行中，暂不可断开钱包连接'
     : undefined
 
-  // 读取并整理链上 Top10。
-  const leaderboardQuery = useQuery({
-    queryKey: ['stonefall', 'leaderboard', STONEFALL_ADDRESS],
-    enabled: hasContractAddress && !!publicClient,
-    queryFn: async () => {
-      const result = (await publicClient!.readContract({
-        address: STONEFALL_ADDRESS!,
-        abi: STONEFALL_ABI,
-        functionName: 'getLeaderboard',
-      })) as ReadonlyArray<{
-        player: `0x${string}`
-        score: number | bigint
-        survivalMs: number | bigint
-        totalDodged: number | bigint
-        finishedAt: number | bigint
-      }>
-
-      return result
-        .map((entry) => toChainScoreEntry(entry))
-        .sort(compareChainEntries)
-        .slice(0, 10)
-    },
-    staleTime: 5000,
-    gcTime: 60000,
-    refetchOnWindowFocus: true,
-  })
-
   // 读取当前地址链上最佳分。
   const bestScoreQuery = useQuery({
     queryKey: ['stonefall', 'best-score', STONEFALL_ADDRESS, effectiveAddress],
@@ -355,62 +320,6 @@ function App() {
     staleTime: 5000,
     gcTime: 60000,
   })
-
-  // 读取历史总条数，供分页判断是否还有下一页。
-  const historyCountQuery = useQuery({
-    queryKey: ['stonefall', 'history-count', STONEFALL_ADDRESS, effectiveAddress],
-    enabled: hasContractAddress && !!publicClient && !!effectiveAddress,
-    queryFn: async () => {
-      const value = (await publicClient!.readContract({
-        address: STONEFALL_ADDRESS!,
-        abi: STONEFALL_ABI,
-        functionName: 'getUserHistoryCount',
-        args: [effectiveAddress!],
-      })) as bigint
-
-      return Number(value)
-    },
-    staleTime: 5000,
-    gcTime: 60000,
-  })
-
-  // 分页读取历史成绩。offset 基于当前已加载条数推进。
-  const historyQuery = useInfiniteQuery({
-    queryKey: ['stonefall', 'history', STONEFALL_ADDRESS, effectiveAddress],
-    enabled: hasContractAddress && !!publicClient && !!effectiveAddress,
-    initialPageParam: 0,
-    queryFn: async ({ pageParam }) => {
-      const offset = Number(pageParam ?? 0)
-      const result = (await publicClient!.readContract({
-        address: STONEFALL_ADDRESS!,
-        abi: STONEFALL_ABI,
-        functionName: 'getUserHistory',
-        args: [effectiveAddress!, BigInt(offset), BigInt(HISTORY_PAGE_SIZE)],
-      })) as ReadonlyArray<{
-        player: `0x${string}`
-        score: number | bigint
-        survivalMs: number | bigint
-        totalDodged: number | bigint
-        finishedAt: number | bigint
-      }>
-
-      const items = result.map((entry) => toChainScoreEntry(entry))
-      return { items }
-    },
-    getNextPageParam: (_lastPage, pages) => {
-      const total = historyCountQuery.data ?? 0
-      const loaded = pages.reduce((sum, page) => sum + page.items.length, 0)
-      return loaded < total ? loaded : undefined
-    },
-    staleTime: 5000,
-    gcTime: 60000,
-  })
-
-  // 将分页结果拍平为列表，直接供历史弹窗渲染。
-  const historyEntries = useMemo(
-    () => historyQuery.data?.pages.flatMap((page) => page.items) ?? [],
-    [historyQuery.data],
-  )
 
   const chainBestScore = useMemo(() => {
     if (!effectiveConnected) {
@@ -1080,11 +989,9 @@ function App() {
 
       {isLeaderboardOpen ? (
         <Suspense fallback={null}>
-          <LeaderboardModal
+          <LeaderboardModalEntry
             isOpen={isLeaderboardOpen}
             hasContractAddress={hasContractAddress}
-            entries={leaderboardQuery.data ?? []}
-            query={leaderboardQuery}
             shortAddress={shortAddress}
             onClose={() => setIsLeaderboardOpen(false)}
           />
@@ -1093,14 +1000,11 @@ function App() {
 
       {isHistoryOpen ? (
         <Suspense fallback={null}>
-          <HistoryModal
+          <HistoryModalEntry
             isOpen={isHistoryOpen}
             connected={effectiveConnected}
             address={effectiveAddress}
             hasContractAddress={hasContractAddress}
-            entries={historyEntries}
-            historyQuery={historyQuery}
-            historyCountQuery={historyCountQuery}
             onClose={() => setIsHistoryOpen(false)}
           />
         </Suspense>

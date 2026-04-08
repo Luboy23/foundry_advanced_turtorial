@@ -3,12 +3,13 @@ SHELL := /bin/bash
 
 FRONTEND_DIR := frontend
 CONTRACTS_DIR := contracts
-ENV_FILE := $(FRONTEND_DIR)/.env.local
+SCRIPTS_DIR := scripts
 CONTRACTS_ENV := $(CONTRACTS_DIR)/.env
 CONTRACTS_ENV_EXAMPLE := $(CONTRACTS_DIR)/.env.example
 
 ANVIL_HOST ?= 127.0.0.1
 ANVIL_PORT ?= 8545
+ANVIL_CHAIN_ID ?= 31337
 ANVIL_RPC_URL ?= http://$(ANVIL_HOST):$(ANVIL_PORT)
 ANVIL_PID_FILE := .anvil.pid
 ANVIL_LOG_FILE := .anvil.log
@@ -16,7 +17,7 @@ ANVIL_LOG_FILE := .anvil.log
 ANVIL_PRIVATE_KEY ?= 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 ANVIL_OWNER_ADDRESS ?= 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
-.PHONY: dev ensure-anvil restart-anvil deploy frontend-dev frontend-install frontend-build frontend-start frontend-lint \
+.PHONY: dev ensure-anvil restart-anvil deploy web frontend-install frontend-build frontend-start frontend-lint \
 	clean-frontend build-contracts test anvil clean help \
 	deploy_lulucoin deploy_faucet mint balance_of_owner approve_faucet drip deposit balance_of_faucet balance_of_user
 
@@ -70,66 +71,26 @@ restart-anvil:
 
 deploy: ensure-anvil
 	@bash -euo pipefail -c '\
-	update_env() { \
-		file="$$1"; key="$$2"; value="$$3"; \
-		tmp=$$(mktemp); \
-		if [ -f "$$file" ]; then \
-			grep -v "^$$key=" "$$file" > "$$tmp" || true; \
-		fi; \
-		echo "$$key=$$value" >> "$$tmp"; \
-		mv "$$tmp" "$$file"; \
-	}; \
 	if [ ! -f "$(CONTRACTS_ENV)" ]; then \
 		cp "$(CONTRACTS_ENV_EXAMPLE)" "$(CONTRACTS_ENV)"; \
 	fi; \
-	OWNER_PRIVATE_KEY=$$(grep "^OWNER_PRIVATE_KEY=" "$(CONTRACTS_ENV)" | cut -d= -f2-); \
-	OWNER_ADDRESS=$$(grep "^OWNER_ADDRESS=" "$(CONTRACTS_ENV)" | cut -d= -f2-); \
-	DRIP_INTERVAL=$$(grep "^DRIP_INTERVAL=" "$(CONTRACTS_ENV)" | cut -d= -f2-); \
-	DRIP_LIMIT=$$(grep "^DRIP_LIMIT=" "$(CONTRACTS_ENV)" | cut -d= -f2-); \
-	if [ -z "$$OWNER_PRIVATE_KEY" ]; then OWNER_PRIVATE_KEY="$(ANVIL_PRIVATE_KEY)"; fi; \
-	if [ -z "$$OWNER_ADDRESS" ]; then OWNER_ADDRESS="$(ANVIL_OWNER_ADDRESS)"; fi; \
-	if [ -z "$$DRIP_INTERVAL" ]; then DRIP_INTERVAL=60; fi; \
-	if [ -z "$$DRIP_LIMIT" ]; then DRIP_LIMIT=5000000000000000000; fi; \
-	echo "Deploying LuLuCoin..."; \
-	out=$$(cd "$(CONTRACTS_DIR)" && forge create \
+	cd "$(CONTRACTS_DIR)"; \
+	OWNER_PRIVATE_KEY="$(ANVIL_PRIVATE_KEY)" OWNER_ADDRESS="$(ANVIL_OWNER_ADDRESS)" \
+		forge script script/DeployFaucet.s.sol:DeployFaucet \
 		--rpc-url "$(ANVIL_RPC_URL)" \
-		--private-key "$$OWNER_PRIVATE_KEY" \
-		--broadcast \
-		src/LuLuCoin.sol:LuLuCoin \
-		--constructor-args "$$OWNER_ADDRESS"); \
-	llc=$$(echo "$$out" | sed -n "s/.*Deployed to: //p" | head -n 1); \
-	if [ -z "$$llc" ]; then echo "$$out"; exit 1; fi; \
-	update_env "$(CONTRACTS_ENV)" LLC_CONTRACT "$$llc"; \
-	echo "Deploying LLCFaucet..."; \
-	out=$$(cd "$(CONTRACTS_DIR)" && forge create \
-		--rpc-url "$(ANVIL_RPC_URL)" \
-		--private-key "$$OWNER_PRIVATE_KEY" \
-		--broadcast \
-		src/LLCFaucet.sol:LLCFaucet \
-		--constructor-args "$$llc" "$$DRIP_INTERVAL" "$$DRIP_LIMIT" "$$OWNER_ADDRESS"); \
-	faucet=$$(echo "$$out" | sed -n "s/.*Deployed to: //p" | head -n 1); \
-	if [ -z "$$faucet" ]; then echo "$$out"; exit 1; fi; \
-	update_env "$(CONTRACTS_ENV)" FAUCET_CONTRACT "$$faucet"; \
-	update_env "$(ENV_FILE)" NEXT_PUBLIC_LULUCOIN_ADDRESS "$$llc"; \
-	update_env "$(ENV_FILE)" NEXT_PUBLIC_FAUCET_ADDRESS "$$faucet"; \
-	echo "Minting / approving / depositing..."; \
-	$(MAKE) -C "$(CONTRACTS_DIR)" ETH_RPC_URL="$(ANVIL_RPC_URL)" mint approve_faucet deposit; \
-	echo "Wrote $(ENV_FILE)"; \
-	echo "LuLuCoin: $$llc"; \
-	echo "Faucet: $$faucet"; \
+		--broadcast; \
 	'
+	@node "$(SCRIPTS_DIR)/sync-contract.js" --rpc-url "$(ANVIL_RPC_URL)" --chain-id "$(ANVIL_CHAIN_ID)"
 
 frontend/node_modules: $(FRONTEND_DIR)/package.json $(FRONTEND_DIR)/package-lock.json
-	cd $(FRONTEND_DIR) && npm install
+	cd $(FRONTEND_DIR) && npm ci --no-audit --no-fund
 
 frontend-install: frontend/node_modules
 
-frontend-dev: frontend/node_modules
+web: frontend/node_modules
 	cd $(FRONTEND_DIR) && npm run dev
 
-dev: restart-anvil deploy frontend-dev
-
-web: frontend-dev
+dev: restart-anvil deploy web
 
 frontend-build: frontend/node_modules
 	cd $(FRONTEND_DIR) && npm run build
@@ -144,10 +105,11 @@ clean-frontend:
 	rm -rf $(FRONTEND_DIR)/node_modules
 
 build-contracts:
-	@cd $(CONTRACTS_DIR) && forge build
+	@cd $(CONTRACTS_DIR) && forge build && cd .. && node "$(SCRIPTS_DIR)/sync-contract.js"
 
-test:
+test: frontend-install
 	@cd $(CONTRACTS_DIR) && forge test
+	@cd $(FRONTEND_DIR) && npm run typecheck
 
 anvil:
 	@anvil --host $(ANVIL_HOST) --port $(ANVIL_PORT)
@@ -161,10 +123,10 @@ deploy_lulucoin deploy_faucet mint balance_of_owner approve_faucet drip deposit 
 
 help:
 	@echo "Targets:"
-	@echo "  dev                Start anvil, deploy, and run frontend"
-	@echo "  deploy             Deploy LuLuCoin + Faucet and write env"
+	@echo "  dev                Restart anvil, deploy contracts, and run frontend"
+	@echo "  deploy             Deploy LuLuCoin + Faucet via forge script and sync config"
 	@echo "  web                Run frontend dev server"
-	@echo "  build-contracts    Compile contracts"
-	@echo "  test               Run contract tests"
+	@echo "  build-contracts    Compile contracts and refresh synced ABI/config"
+	@echo "  test               Run contract tests and frontend typecheck"
 	@echo "  anvil              Start local anvil node"
 	@echo "  clean              Remove build artifacts"

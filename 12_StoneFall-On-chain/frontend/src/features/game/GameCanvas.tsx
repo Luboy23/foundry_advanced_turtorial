@@ -6,6 +6,16 @@
 import { useEffect, useRef, useState } from 'react'
 import type { StoneFallController } from '../../game/createStoneFallGame'
 
+let createStoneFallGameModulePromise: Promise<typeof import('../../game/createStoneFallGame')> | null = null
+
+const loadCreateStoneFallGameModule = () => {
+  if (!createStoneFallGameModulePromise) {
+    createStoneFallGameModulePromise = import('../../game/createStoneFallGame')
+  }
+
+  return createStoneFallGameModulePromise
+}
+
 type GameCanvasProps = {
   onControllerReady: (controller: StoneFallController | null) => void
 }
@@ -24,6 +34,29 @@ export const GameCanvas = ({ onControllerReady }: GameCanvasProps) => {
   }, [onControllerReady])
 
   useEffect(() => {
+    const requestIdle = window.requestIdleCallback?.bind(window)
+    const cancelIdle = window.cancelIdleCallback?.bind(window)
+
+    if (!requestIdle || !cancelIdle) {
+      const timer = window.setTimeout(() => {
+        void loadCreateStoneFallGameModule()
+      }, 0)
+
+      return () => {
+        window.clearTimeout(timer)
+      }
+    }
+
+    const idleId = requestIdle(() => {
+      void loadCreateStoneFallGameModule()
+    })
+
+    return () => {
+      cancelIdle(idleId)
+    }
+  }, [])
+
+  useEffect(() => {
     if (!mountRef.current) {
       return
     }
@@ -36,7 +69,7 @@ export const GameCanvas = ({ onControllerReady }: GameCanvasProps) => {
       setIsBooting(true)
 
       // 懒加载 Phaser 入口，减少首屏 bundle 压力。
-      const { createStoneFallGame } = await import('../../game/createStoneFallGame')
+      const { createStoneFallGame } = await loadCreateStoneFallGameModule()
       if (disposed || !mountRef.current) {
         return
       }

@@ -151,7 +151,7 @@ class GameAudioEngine {
 
     const audio = new Audio(BGM_SOURCE)
     audio.loop = true
-    audio.preload = 'auto'
+    audio.preload = 'metadata'
     audio.volume = 0.42
     this.bgmAudio = audio
     return audio
@@ -168,7 +168,7 @@ class GameAudioEngine {
 
     const audio = new Audio(GAMEOVER_SFX_SOURCE)
     audio.loop = false
-    audio.preload = 'auto'
+    audio.preload = 'metadata'
     audio.volume = 0.88
     this.gameoverSfxAudio = audio
     return audio

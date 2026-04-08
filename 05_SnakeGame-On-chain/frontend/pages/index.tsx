@@ -30,7 +30,7 @@ import {
 import {
   loadRuntimeConfig,
   type RuntimeScoreboardConfig,
-} from 'lib/scoreboardRuntime'
+} from 'lib/runtime-config'
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -142,7 +142,7 @@ export default function SnakeGame() {
   const [isResumePromptActive, setIsResumePromptActive] = useState(false)
   const [snake, setSnake] = useState<{
     head: { x: number; y: number }
-    trail: Array<any>
+    trail: Array<{ x: number; y: number }>
   }>({
     head: { x: 12, y: 9 },
     trail: [],

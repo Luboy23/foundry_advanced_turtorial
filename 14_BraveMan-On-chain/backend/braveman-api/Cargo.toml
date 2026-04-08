@@ -1,0 +1,23 @@
+[package]
+name = "braveman-api"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+axum = { version = "0.7", features = ["macros"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal"] }
+dotenvy = "0.15"
+time = { version = "=0.3.36", features = ["formatting", "macros"] }
+ethers-core = "2"
+ethers-providers = "2"
+ethers-signers = "2"
+tower-http = { version = "0.6", features = ["cors"] }
+serde.workspace = true
+serde_json.workspace = true
+sha3.workspace = true
+hex.workspace = true
+braveman-core = { path = "../braveman-core" }

@@ -1,4 +1,13 @@
 {
+  "author": "lllu_23",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luboy23/foundry-advanced-03-merkle-airdrop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Luboy23/foundry-advanced-03-merkle-airdrop/issues"
+  },
+  "homepage": "https://github.com/Luboy23/foundry-advanced-03-merkle-airdrop",
   "dependencies": {
     "@openzeppelin/merkle-tree": "^1.0.7"
   }

@@ -3,41 +3,74 @@ import { isAddress } from 'viem'
 export type RuntimeScoreboardConfig = {
   address?: `0x${string}`
   rpcUrl?: string
-  source: 'runtime' | 'fallback'
+  chainId?: number
+  source: 'runtime' | 'legacy' | 'fallback'
 }
 
-// 前端运行时配置文件（由 make env / sync 脚本写入）
-const SCOREBOARD_CONFIG_URL = '/scoreboard.json'
+const CONTRACT_CONFIG_URL = '/contract-config.json'
+const LEGACY_SCOREBOARD_CONFIG_URL = '/scoreboard.json'
 
-// 从运行时配置文件读取合约地址与 RPC
+const normalizeRuntimeConfig = (
+  data: unknown,
+  source: RuntimeScoreboardConfig['source']
+): RuntimeScoreboardConfig => {
+  const candidate = typeof data === 'object' && data !== null ? data : {}
+  const config = candidate as Record<string, unknown>
+  const addressCandidate =
+    config.scoreboardAddress ?? config.address
+  const address =
+    typeof addressCandidate === 'string' && isAddress(addressCandidate)
+    ? (addressCandidate as `0x${string}`)
+    : undefined
+  const rpcUrl =
+    typeof config.rpcUrl === 'string' && config.rpcUrl.trim()
+      ? config.rpcUrl.trim()
+      : undefined
+  const chainId =
+    typeof config.chainId === 'number' && Number.isFinite(config.chainId)
+      ? config.chainId
+      : undefined
+  if (!address && !rpcUrl && !chainId) {
+    return { source: 'fallback' }
+  }
+  return { address, rpcUrl, chainId, source }
+}
+
 export const loadRuntimeConfig = async (): Promise<RuntimeScoreboardConfig> => {
-  // SSR 阶段没有 window，直接走 fallback 交给环境变量
   if (typeof window === 'undefined') {
     return { source: 'fallback' }
   }
   try {
-    // 带时间戳禁用缓存，确保部署后无需硬刷新即可拿到最新地址
     const response = await fetch(
-      `${SCOREBOARD_CONFIG_URL}?ts=${Date.now()}`,
+      `${CONTRACT_CONFIG_URL}?ts=${Date.now()}`,
+      { cache: 'no-store' }
+    )
+    if (!response.ok) {
+      throw new Error('runtime_missing')
+    }
+    const data = await response.json()
+    const runtimeConfig = normalizeRuntimeConfig(data, 'runtime')
+    if (runtimeConfig.source !== 'fallback') {
+      return runtimeConfig
+    }
+  } catch {
+    // 继续尝试旧版 runtime 文件
+  }
+
+  try {
+    const response = await fetch(
+      `${LEGACY_SCOREBOARD_CONFIG_URL}?ts=${Date.now()}`,
       { cache: 'no-store' }
     )
     if (!response.ok) {
       return { source: 'fallback' }
     }
     const data = await response.json()
-    const address = isAddress(data?.address)
-      ? (data.address as `0x${string}`)
-      : undefined
-    const rpcUrl =
-      typeof data?.rpcUrl === 'string' && data.rpcUrl.trim()
-        ? data.rpcUrl.trim()
-        : undefined
-    if (!address && !rpcUrl) {
-      return { source: 'fallback' }
-    }
-    return { address, rpcUrl, source: 'runtime' }
+    const runtimeConfig = normalizeRuntimeConfig(data, 'legacy')
+    return runtimeConfig.source === 'fallback'
+      ? { source: 'fallback' }
+      : runtimeConfig
   } catch {
-    // 读取失败时不抛错，回退到 fallback 配置保持页面可用
     return { source: 'fallback' }
   }
 }

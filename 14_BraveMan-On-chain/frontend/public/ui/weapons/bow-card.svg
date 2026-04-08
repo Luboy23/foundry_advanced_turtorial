@@ -1,0 +1,29 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bow-limb" x1="55" y1="32" x2="104" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#173257"/>
+      <stop offset="0.55" stop-color="#2C69AD"/>
+      <stop offset="1" stop-color="#5FA7F3"/>
+    </linearGradient>
+    <linearGradient id="bow-arrow" x1="72" y1="76" x2="132" y2="76" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#204266"/>
+      <stop offset="1" stop-color="#7DB7F9"/>
+    </linearGradient>
+    <filter id="bow-shadow" x="26" y="12" width="116" height="140" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#173257" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#bow-shadow)" transform="rotate(-22 80 80)">
+    <path d="M62 26C86 44 100 67 103 80C100 93 86 116 62 134" stroke="url(#bow-limb)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M64 34C83 50 95 69 98 80C95 91 83 110 64 126" stroke="#BFE2FF" stroke-width="2.4" stroke-linecap="round" opacity="0.72"/>
+    <path d="M60 26C84 45 100 66 104 80C100 94 84 115 60 134" stroke="#0D223C" stroke-width="2.2" stroke-linecap="round" opacity="0.58"/>
+    <path d="M57 26L57 134" stroke="#D6E2EE" stroke-width="2.5" stroke-linecap="round" opacity="0.95"/>
+    <path d="M58 80H121" stroke="url(#bow-arrow)" stroke-width="4.8" stroke-linecap="round"/>
+    <path d="M121 80L109 73" stroke="#7DB7F9" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M121 80L109 87" stroke="#7DB7F9" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M73 80L68 76L68 84L73 80Z" fill="#D0E7FF"/>
+    <path d="M57 72C59 76 60 79 60 80C60 81 59 84 57 88" stroke="#A8C5DF" stroke-width="1.6" stroke-linecap="round" opacity="0.75"/>
+    <circle cx="57" cy="80" r="4.2" fill="#1D446D" stroke="#C7E3FF" stroke-width="2"/>
+  </g>
+</svg>

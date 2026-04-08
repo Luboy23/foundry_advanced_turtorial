@@ -1,12 +1,63 @@
+# OS / archives
 .DS_Store
 /*.zip
+
+# Dependencies
 node_modules/
+**/node_modules/
+
+# Frontend build / test artifacts
 .next/
+**/.next/
+dist/
+**/dist/
 out/
-cache/
-broadcast/
+**/out/
 coverage/
+**/coverage/
+**/test-results/
+**/playwright-report/
+**/.turbo/
+**/.vite/
+**/.cache/
+**/.runtime/
+**/.vercel/
+**/.eslintcache
+**/*.tsbuildinfo
+
+# Foundry / chain artifacts
+cache/
+**/cache/
+broadcast/
+**/broadcast/
 .anvil.log
+.anvil.pid
+.api.log
+.api.pid
+**/.anvil.log
+**/.anvil.pid
+**/.api.log
+**/.api.pid
+
+# Local data
+.data/
+**/.data/
+target/
+**/target/
+**/*.sqlite
+**/*.sqlite-journal
+**/*.sqlite-shm
+**/*.sqlite-wal
+
+# Env
 .env
 .env.*
+**/.env
+**/.env.*
 !.env.example
+!**/.env.example
+!**/.env.local.example
+!**/.env*.example
+
+# Recommended generated runtime config
+**/public/contract-config.json

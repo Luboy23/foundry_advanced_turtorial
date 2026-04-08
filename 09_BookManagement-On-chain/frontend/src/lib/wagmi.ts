@@ -2,9 +2,10 @@ import { QueryClient } from "@tanstack/react-query";
 import { createConfig, http, injected } from "wagmi";
 import { defineChain } from "viem";
 import { TARGET_CHAIN_ID } from "@/lib/registry";
+import { getRuntimeConfig } from "@/lib/runtime-config";
 
 // RPC 地址：默认连接本地 Anvil
-const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL ?? "http://127.0.0.1:8545";
+const rpcUrl = getRuntimeConfig().rpcUrl;
 
 // 自定义本地链配置（用于 wagmi）
 export const localAnvil = defineChain({

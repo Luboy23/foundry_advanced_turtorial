@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
+import { Ownable } from "openzeppelin-contracts/access/Ownable.sol";
 
-import {PolymarketTypes} from "./PolymarketTypes.sol";
+import { PolymarketTypes } from "./PolymarketTypes.sol";
 
 /// @title OracleAdapterMock
 /// @notice 无争议流程的结果适配器：提案 -> 冷静期 -> 最终化。

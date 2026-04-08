@@ -1,33 +1,27 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-**/.vscode/settings.json
-.idea
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Env
 .env
-.env*.local
-
-# Local chain logs
+.env.*
+!.env.example
+!**/.env.example
+!**/.env.local.example
+!**/.env*.example
 .anvil.log
 .anvil.pid
+*.tsbuildinfo
+**/.vscode/settings.json
+**/.idea
+
+frontend/node_modules
+frontend/.next
+frontend/out
+frontend/coverage
+frontend/test-results
+frontend/playwright-report
+frontend/.vercel
+frontend/public/contract-config.json
+
+contracts/cache
+contracts/out
+contracts/broadcast
+contracts/.env
+contracts/node_modules

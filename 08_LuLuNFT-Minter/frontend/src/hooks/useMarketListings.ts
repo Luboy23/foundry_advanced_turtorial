@@ -215,7 +215,7 @@ export const useMarketListings = () => {
               functionName: "ownerOf",
               args: [record.tokenId]
             })) as string;
-          } catch (error) {
+          } catch {
             owner = undefined;
           }
 
@@ -230,7 +230,7 @@ export const useMarketListings = () => {
               })) as string;
               approved =
                 approvedAddress.toLowerCase() === MARKET_ADDRESS.toLowerCase();
-            } catch (error) {
+            } catch {
               approved = false;
             }
             if (!approved) {
@@ -241,7 +241,7 @@ export const useMarketListings = () => {
                   functionName: "isApprovedForAll",
                   args: [record.seller, MARKET_ADDRESS as `0x${string}`]
                 })) as boolean;
-              } catch (error) {
+              } catch {
                 approved = false;
               }
             }
@@ -255,7 +255,7 @@ export const useMarketListings = () => {
               functionName: "tokenURI",
               args: [record.tokenId]
             })) as string;
-          } catch (error) {
+          } catch {
             tokenUri = "";
           }
 
@@ -282,7 +282,7 @@ export const useMarketListings = () => {
 
       setListings(hydrated);
       setLastUpdated(Date.now());
-    } catch (loadError) {
+    } catch {
       setError("市场数据加载失败");
     } finally {
       setLoading(false);
@@ -337,8 +337,6 @@ export const useMarketListings = () => {
         }
 
         return hash;
-      } catch (error) {
-        throw error;
       } finally {
         setPendingActionKey(null);
       }
@@ -369,7 +367,7 @@ export const useMarketListings = () => {
       let priceWei: bigint;
       try {
         priceWei = parseEther(normalized);
-      } catch (error) {
+      } catch {
         throw new Error("价格格式错误");
       }
       if (priceWei <= BigInt(0)) {

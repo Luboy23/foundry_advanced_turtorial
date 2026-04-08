@@ -1,0 +1,206 @@
+[
+  {
+    "type": "function",
+    "name": "getBest",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "gridSize",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "density",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct LightsOutResults.Result",
+        "components": [
+          {
+            "name": "player",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "gridSize",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "density",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "moves",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "durationMs",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "finishedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "usedHint",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getLatest",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct LightsOutResults.Result",
+        "components": [
+          {
+            "name": "player",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "gridSize",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "density",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "moves",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "durationMs",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "finishedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "usedHint",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "submitResult",
+    "inputs": [
+      {
+        "name": "gridSize",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "density",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "moves",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "durationMs",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "usedHint",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "ResultSubmitted",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "gridSize",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "uint8"
+      },
+      {
+        "name": "density",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "uint8"
+      },
+      {
+        "name": "moves",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "durationMs",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "finishedAt",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      },
+      {
+        "name": "usedHint",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  }
+]

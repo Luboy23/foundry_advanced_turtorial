@@ -68,6 +68,8 @@ make test
 make anvil
 make clean
 ```
+- `make test` 会在 `frontend/node_modules` 缺失时自动执行 `npm ci --no-audit --no-fund`，适合作为干净环境回归入口。
+- `make deploy` 会在本地 Anvil 未启动时自动拉起节点，再执行部署和配置同步。
 
 **关键环境变量**
 - 根目录 `.env` / `contracts/.env`：`PRIVATE_KEY`、`RPC_URL`、`CHAIN_ID`。
@@ -89,3 +91,6 @@ make clean
 ![wallet-disconnected](./docs-assets/wallet-disconnected.png)
 ![game-ready](./docs-assets/game-ready.png)
 ![leaderboard](./docs-assets/leaderboard.png)
+
+## 作者
+- `lllu_23`

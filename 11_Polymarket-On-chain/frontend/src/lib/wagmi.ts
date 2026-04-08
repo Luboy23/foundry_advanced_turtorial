@@ -1,6 +1,6 @@
 import { createConfig, http } from "wagmi";
 import type { Address } from "viem";
-import { injected, mock } from "wagmi/connectors";
+import { injected, mock } from "@wagmi/core";
 
 import { foundryLocal } from "@/lib/chain";
 import { RPC_URL } from "@/lib/config";
@@ -24,10 +24,10 @@ const connectors = E2E_MODE
       mock({
         accounts: [e2eMockAccount],
         features: {
-          reconnect: true
-        }
+          reconnect: true,
+        },
       }),
-      injected()
+      injected(),
     ]
   : [injected()];
 
@@ -36,6 +36,6 @@ export const wagmiConfig = createConfig({
   chains: [foundryLocal],
   connectors,
   transports: {
-    [foundryLocal.id]: http(RPC_URL)
-  }
+    [foundryLocal.id]: http(RPC_URL),
+  },
 });

@@ -1,6 +1,6 @@
 # Game Frontend
 
-前端基于 React + Vite + Phaser，Web3 使用 wagmi + viem。
+前端基于 React 19 + Vite 7 + Phaser，Web3 使用 wagmi + viem。当前模板已经完成从 legacy Vite 游戏脚手架回收，并统一到仓库推荐的 TypeScript 基线。
 
 ## 开发启动
 
@@ -12,71 +12,86 @@ npm run dev
 ## 常用命令
 
 ```bash
-npm run build
-npm run preview
 npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run analyze
+npm run preview
 ```
 
-## 环境变量
+## 运行时配置
 
-复制示例文件后再填写实际值：
-`cp .env.local.example .env.local`
+复制示例文件后再填写本地兜底值：
 
-- `VITE_FLAPPY_SCORE_ADDRESS`：合约地址（由根目录 Makefile 的 `deploy` 写入 `frontend/.env.local`）。
-- `VITE_ANVIL_RPC_URL`（可选）：自定义 RPC URL。
+```bash
+cp .env.local.example .env.local
+```
+
+前端读取优先级固定为：
+
+1. `public/contract-config.json`
+2. `frontend/.env.local`
+3. 代码内默认值
+
+关键变量：
+
+- `VITE_FLAPPY_SCORE_ADDRESS`：排行榜合约地址
+- `VITE_RPC_URL`：优先 RPC URL
+- `VITE_ANVIL_RPC_URL`：本地 Anvil RPC URL
+- `VITE_CHAIN_ID`：链 ID，默认 `31337`
 
 ## 合约同步
 
-在根目录运行：
+在项目根目录运行：
+
+```bash
+make deploy
+```
+
+或单独执行：
 
 ```bash
 make sync-contract
 ```
 
-会从 `contracts/out/` 中同步 ABI，并写入 `frontend/components/Web3/`。
+同步脚本会输出 ABI、`public/contract-config.json` 和前端 `.env.local` 兜底配置。
 
 ## 架构概览
 
-- React 作为宿主 UI，负责钱包连接、容器渲染与全局状态注入。
-- Phaser 负责游戏逻辑与 UI（菜单/排行榜/暂停/结束/设置）。
+- React 作为宿主 UI，负责 runtime config 加载、Provider 注入和钱包桥延迟挂载。
+- Phaser 负责游戏逻辑与 UI（菜单、排行榜、暂停、结束、设置）。
 - Web3 读写通过 viem，在 Phaser 内部调用；钱包连接由 wagmi 管理。
 
 ## 运行流程
 
 1. `index.html` 提供 `#root`。
-2. `src/main.jsx` 启动 React，注入 Provider。
-3. `components/FlappyBird.jsx` 创建 Phaser 实例并挂载到 `#game-container`。
-4. `game/gamecore.js` 初始化游戏与场景列表。
-5. `game/scenes/PreloadScene.js` 预加载资源并进入菜单。
+2. `src/main.tsx` 先加载 runtime config，再异步挂载 React。
+3. `src/App.tsx` 延迟挂载钱包桥，并渲染 `components/FlappyBird.tsx`。
+4. `components/FlappyBird.tsx` 异步加载 `game/gamecore.ts` 并创建 Phaser 实例。
+5. `game/scenes/PreloadScene.ts` 只同步预加载首屏视觉资源；音频在首次交互后再懒加载。
 
 ## 场景与系统
 
-- `MenuScene`：开始/最高分/设置，且要求连接钱包后才能开始游戏。
+- `MenuScene`：开始、最高分、设置，且要求连接钱包后才能开始游戏。
 - `PlayScene`：主循环、分数与难度曲线、自适应管道间距。
 - `PauseScene`：暂停与继续。
 - `ScoreScene`：链上 Top10 与最佳分展示。
 - `GameOverLoadingScene`：等待钱包签名，签名完成才进入 GameOver。
-- `GameOverScene`：重新开始/菜单/设置。
-
-## 缩放与适配
-
-- 使用虚拟分辨率（720x600）+ 相机缩放适配屏幕。
-- 白色留白区域作为安全边界，核心游戏画面居中。
+- `GameOverScene`：重新开始、菜单、设置。
 
 ## Web3/链上交互
 
-- 读取排行榜：`game/chain/scoreboardClient.js` → `getLeaderboard()`
+- 读取排行榜：`game/chain/scoreboardClient.ts`
 - 提交成绩：`submitScore()`（需要钱包签名）
-- 钱包连接：`components/Web3/WalletConnect.jsx` + 全局事件 `wallet:status`
-- Phaser 显示钱包状态：`game/scenes/BaseScene.js`
+- 钱包连接：`components/Web3/WalletConnect.tsx` + 全局事件 `wallet:status`
+- Phaser 显示钱包状态：`game/scenes/BaseScene.ts`
 
-## 音频与设置
+## 音频与资源策略
 
 - 设置项：音效开关、音乐开关、难度模式（自适应/固定）
-- 音效：`game/audio/audioManager.js`
-- 设置持久化：`game/state/settings.js`
-
-## 资源说明
-
-- 静态资源放在 `public/assets/`（Phaser 运行时直接加载）。
-- 游戏逻辑位于 `game/`，React 宿主位于 `src/`。
+- 音效引擎：`game/audio/audioManager.ts`
+- 设置持久化：`game/state/settings.ts`
+- 静态资源位于 `public/assets/`
+- 图片与音频采用“保守压缩 + 文件名稳定”策略
+- BGM 与 SFX 不在页面首屏空载入时抢下载，首次交互后才进入真正可播放状态

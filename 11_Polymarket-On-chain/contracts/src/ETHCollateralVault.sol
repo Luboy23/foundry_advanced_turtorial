@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
+import { Ownable } from "openzeppelin-contracts/access/Ownable.sol";
 
 /// @title ETHCollateralVault
 /// @notice ETH 抵押金库：仅授权 operator 可入金和出金。
@@ -64,7 +64,7 @@ contract ETHCollateralVault is Ownable {
         require(address(this).balance >= amount, "VAULT_INSUFFICIENT_BALANCE");
 
         totalRedeemed += amount;
-        (bool success,) = to.call{value: amount}("");
+        (bool success,) = to.call{ value: amount }("");
         require(success, "TRANSFER_FAILED");
 
         emit CollateralPaidOut(eventId, to, amount);

@@ -96,3 +96,6 @@ make clean
 ![空投首页](./docs-assets/ui-airdrop-home.png)
 ![Merkle 生成结果](./docs-assets/ui-merkle-result.png)
 ![领取表单](./docs-assets/ui-claim-form.png)
+
+## 作者
+- `lllu_23`

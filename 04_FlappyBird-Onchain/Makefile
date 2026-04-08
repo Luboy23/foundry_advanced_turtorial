@@ -1,4 +1,5 @@
 SHELL := /bin/bash
+.DEFAULT_GOAL := dev
 
 # 根目录（执行 Makefile 的当前路径）
 ROOT_DIR := $(CURDIR)
@@ -6,6 +7,7 @@ ROOT_DIR := $(CURDIR)
 # 本地 Anvil 节点配置（可通过环境变量覆盖）
 ANVIL_HOST ?= 127.0.0.1
 ANVIL_PORT ?= 8545
+CHAIN_ID ?= 31337
 RPC_URL ?= http://$(ANVIL_HOST):$(ANVIL_PORT)
 
 # Anvil 默认测试助记词与私钥（仅本地开发使用）
@@ -17,12 +19,7 @@ DEPLOY_PRIVATE_KEY ?= $(ANVIL_PRIVATE_KEY)
 # Anvil 进程 PID 与日志文件
 ANVIL_PID_FILE := $(ROOT_DIR)/.anvil.pid
 ANVIL_LOG_FILE := $(ROOT_DIR)/.anvil.log
-# 前端环境变量文件（写入合约地址）
 FRONTEND_DIR := $(ROOT_DIR)/frontend
-ENV_FILE := $(FRONTEND_DIR)/.env.local
-
-# Foundry 合约路径（forge create 的目标）
-CONTRACT_PATH := src/FlappyScoreboard.sol:FlappyScoreboard
 
 # 伪目标声明
 .PHONY: dev anvil restart-anvil wait-anvil deploy frontend web stop-anvil status sync-contract \
@@ -94,52 +91,39 @@ wait-anvil:
 	echo "Anvil not responding at $(RPC_URL)."; \
 	exit 1'
 
-# 部署合约并写入前端环境变量（VITE_FLAPPY_SCORE_ADDRESS）
-deploy: wait-anvil
+deploy: anvil
 	@bash -euo pipefail -c '\
-	echo "Deploying FlappyScoreboard..."; \
+	echo "Deploying FlappyScoreboard via forge script..."; \
 	cd contracts; \
-	addr=$$(forge create --rpc-url $(RPC_URL) --private-key $(DEPLOY_PRIVATE_KEY) --broadcast \
-		$(CONTRACT_PATH) | awk '\''/Deployed to:/ {print $$3}'\''); \
-	if [[ -z "$$addr" ]]; then \
-		echo "Failed to parse deployed address."; \
-		exit 1; \
-	fi; \
-	cd "$(ROOT_DIR)"; \
-	env_file="$(ENV_FILE)"; \
-	if [[ ! -f "$$env_file" ]]; then \
-		touch "$$env_file"; \
-	fi; \
-	if grep -q '\''^VITE_FLAPPY_SCORE_ADDRESS='\'' "$$env_file"; then \
-		sed -i "" "s/^VITE_FLAPPY_SCORE_ADDRESS=.*/VITE_FLAPPY_SCORE_ADDRESS=$$addr/" "$$env_file"; \
-	else \
-		echo "VITE_FLAPPY_SCORE_ADDRESS=$$addr" >> "$$env_file"; \
-	fi; \
-	echo "Wrote VITE_FLAPPY_SCORE_ADDRESS to $$env_file"; \
-	echo "Deployed to $$addr"; \
+	forge script script/Deploy.s.sol:Deploy \
+		--rpc-url $(RPC_URL) \
+		--private-key $(DEPLOY_PRIVATE_KEY) \
+		--broadcast; \
 	'
 	@$(MAKE) sync-contract
 
-# 同步合约 ABI 与地址到前端（写入 components/Web3）
 sync-contract:
-	@node scripts/sync-contract.js
+	@node scripts/sync-contract.js --rpc-url $(RPC_URL) --chain-id $(CHAIN_ID)
 
 # 启动前端开发服务器（Vite）
-frontend:
+frontend: frontend-install
 	cd $(FRONTEND_DIR) && npm run dev
 
 # 标准化别名
 web: frontend
 
 build-contracts:
-	@cd contracts && forge build
+	@cd contracts && forge build && cd .. && node scripts/sync-contract.js --rpc-url $(RPC_URL) --chain-id $(CHAIN_ID)
 
-test:
+test: frontend-install
 	@cd contracts && forge test
+	@cd $(FRONTEND_DIR) && npm run typecheck
+	@cd $(FRONTEND_DIR) && npm run test
 
 # 安装前端依赖
 frontend-install:
-	cd $(FRONTEND_DIR) && npm install
+	@cd $(FRONTEND_DIR) && \
+	if [ ! -d node_modules ]; then npm ci --no-audit --no-fund; fi
 
 # 前端生产构建
 frontend-build:
@@ -185,9 +169,9 @@ clean:
 help:
 	@echo "Targets:"
 	@echo "  dev                Start anvil, deploy, and run frontend"
-	@echo "  deploy             Deploy contract and write frontend env"
+	@echo "  deploy             Deploy contract and sync contract-config.json"
 	@echo "  web                Run frontend dev server"
-	@echo "  build-contracts    Compile contracts"
-	@echo "  test               Run contract tests"
+	@echo "  build-contracts    Compile contracts and refresh synced ABI/config"
+	@echo "  test               Run contract tests plus frontend typecheck/test"
 	@echo "  anvil              Start local anvil node"
 	@echo "  clean              Remove build artifacts"

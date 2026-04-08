@@ -1,0 +1,547 @@
+[
+  {
+    "type": "function",
+    "name": "DEFAULT_TURN_TIMEOUT",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "cancelGame",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimTimeoutWin",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "createGame",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "gameCounter",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "games",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "player1",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "player2",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "currentTurn",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "state",
+        "type": "uint8",
+        "internalType": "enum TicTacToe.GameState"
+      },
+      {
+        "name": "winner",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "lastMoveAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getGameState",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "player1",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "player2",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "currentTurn",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "board",
+        "type": "uint8[9]",
+        "internalType": "uint8[9]"
+      },
+      {
+        "name": "state",
+        "type": "uint8",
+        "internalType": "enum TicTacToe.GameState"
+      },
+      {
+        "name": "winner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getLeaderboardCount",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getLeaderboardPage",
+    "inputs": [
+      {
+        "name": "offset",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "limit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "page",
+        "type": "tuple[]",
+        "internalType": "struct TicTacToe.LeaderboardEntry[]",
+        "components": [
+          {
+            "name": "player",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "gamesPlayed",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "totalScore",
+            "type": "int256",
+            "internalType": "int256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPlayerHistoryCount",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPlayerHistoryPage",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "offset",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "limit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "page",
+        "type": "tuple[]",
+        "internalType": "struct TicTacToe.PlayerHistoryEntry[]",
+        "components": [
+          {
+            "name": "gameId",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "opponent",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "result",
+            "type": "uint8",
+            "internalType": "enum TicTacToe.MatchResult"
+          },
+          {
+            "name": "scoreDelta",
+            "type": "int8",
+            "internalType": "int8"
+          },
+          {
+            "name": "endedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTimeInfo",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "lastMoveAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "turnTimeout",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "joinGame",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "makeMove",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "position",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "playerInGame",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "playerStats",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "gamesPlayed",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "totalScore",
+        "type": "int256",
+        "internalType": "int256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "resign",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "GameCancelled",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "GameCreated",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "player1",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "GameDrawn",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "GameWon",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "winner",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MoveMade",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "position",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PlayerJoined",
+    "inputs": [
+      {
+        "name": "gameId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "player2",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "AlreadyInGame",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "CannotPlayAgainstYourself",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "GameNotAvailable",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidPosition",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotEligibleToClaim",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotGameCreator",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotParticipant",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotYourTurn",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PositionAlreadyTaken",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "TimeoutNotReached",
+    "inputs": []
+  }
+]

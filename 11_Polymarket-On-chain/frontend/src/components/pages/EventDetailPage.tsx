@@ -202,6 +202,7 @@ export function EventDetailPage({ eventIdParam }: { eventIdParam: string }) {
   const { data: metadataResult } = useEventMetadata(detail?.event.metadataURI);
 
   const { buyYes, buyNo, redeemToETH, isPending, error: actionError } = useEventActions(eventId);
+  const currentEvent = detail?.event;
 
   const [buyAmountInput, setBuyAmountInput] = useState("0.1");
   const [redeemYesInput, setRedeemYesInput] = useState("");
@@ -209,7 +210,6 @@ export function EventDetailPage({ eventIdParam }: { eventIdParam: string }) {
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const redeemPreviewYesAmount = useMemo(() => {
-    const currentEvent = detail?.event;
     if (!currentEvent || currentEvent.state !== EventState.Resolved) {
       return "0";
     }
@@ -220,10 +220,9 @@ export function EventDetailPage({ eventIdParam }: { eventIdParam: string }) {
       return formatCompactUnits(position?.yesBalance ?? 0n);
     }
     return "0";
-  }, [detail?.event?.state, detail?.event?.finalOutcome, position?.yesBalance, redeemYesInput]);
+  }, [currentEvent, position?.yesBalance, redeemYesInput]);
 
   const redeemPreviewNoAmount = useMemo(() => {
-    const currentEvent = detail?.event;
     if (!currentEvent || currentEvent.state !== EventState.Resolved) {
       return "0";
     }
@@ -234,7 +233,7 @@ export function EventDetailPage({ eventIdParam }: { eventIdParam: string }) {
       return formatCompactUnits(position?.noBalance ?? 0n);
     }
     return "0";
-  }, [detail?.event?.state, detail?.event?.finalOutcome, position?.noBalance, redeemNoInput]);
+  }, [currentEvent, position?.noBalance, redeemNoInput]);
 
   const { data: redeemPreview } = useRedeemPreview({
     eventId,
@@ -243,7 +242,6 @@ export function EventDetailPage({ eventIdParam }: { eventIdParam: string }) {
   });
 
   useEffect(() => {
-    const currentEvent = detail?.event;
     if (!currentEvent || currentEvent.state !== EventState.Resolved || !position) {
       return;
     }
@@ -262,7 +260,7 @@ export function EventDetailPage({ eventIdParam }: { eventIdParam: string }) {
       setRedeemYesInput("");
       setRedeemNoInput("");
     }
-  }, [detail?.event?.id, detail?.event?.state, detail?.event?.finalOutcome, position?.yesBalance, position?.noBalance]);
+  }, [currentEvent, position]);
 
   if (!eventId) {
     return (
@@ -424,6 +422,7 @@ export function EventDetailPage({ eventIdParam }: { eventIdParam: string }) {
             <div className="px-6 pb-6 lg:p-4 lg:pl-0">
               <div className="relative h-full min-h-[180px] overflow-hidden rounded-2xl border border-black/10 bg-neutral-100">
                 {/* metadata 图片来源可能是动态地址，使用 img 避免 next/image 额外域名白名单配置。 */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={coverImage} alt={copy.eventCard.coverAlt(event.question)} className="absolute inset-0 h-full w-full object-cover" />
               </div>
             </div>

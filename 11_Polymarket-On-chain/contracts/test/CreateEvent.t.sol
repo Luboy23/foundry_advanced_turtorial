@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {PolymarketTypes} from "../src/PolymarketTypes.sol";
-import {TestBase} from "./TestBase.sol";
+import { PolymarketTypes } from "../src/PolymarketTypes.sol";
+import { TestBase } from "./TestBase.sol";
 
 contract CreateEventTest is TestBase {
     event EventCreated(

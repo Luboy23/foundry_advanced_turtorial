@@ -18,7 +18,8 @@ cd 05_SnakeGame-On-chain
 make dev
 ```
 - `make dev` 会执行：`restart-anvil -> deploy -> frontend`。
-- 部署后自动同步 `frontend/public/scoreboard.json` 与 ABI。
+- 部署后自动同步 ABI、`frontend/public/contract-config.json` 和前端 env。
+- `frontend/public/scoreboard.json` 仅保留兼容层；当前标准入口已切到 `contract-config.json`。
 - 打开 `http://localhost:3000`，连接 Anvil 钱包即可游玩。
 
 ## 业务主流程
@@ -54,13 +55,15 @@ make dev
 | --- | --- | --- |
 | `frontend/pages/index.tsx` | 游戏主页面与提交流程 | `lib/scoreboardClient.ts` |
 | `frontend/components/WalletStatus.tsx` | 钱包状态与门禁提示 | wagmi/viem |
-| `frontend/lib/scoreboardRuntime.ts` | 运行时地址读取 | `public/scoreboard.json` |
+| `frontend/lib/runtime-config.ts` | 统一运行时配置入口 | `scoreboardRuntime.ts` |
+| `frontend/lib/scoreboardRuntime.ts` | 兼容新旧 runtime 配置读取 | `public/contract-config.json` / `public/scoreboard.json` |
 | `frontend/lib/scoreboardClient.ts` | 合约读写封装 | `SnakeScoreboard` |
 | `contracts/src/SnakeScoreboard.sol` | 排行榜与历史存储逻辑 | 事件与环形缓冲 |
 
 **运行时地址优先级**
 ```text
-frontend/public/scoreboard.json
+frontend/public/contract-config.json
+  > frontend/public/scoreboard.json (兼容层)
   > frontend/.env.local
   > frontend/lib/scoreboard.address.json
 ```
@@ -77,10 +80,16 @@ make test
 make anvil
 make clean
 ```
+- `make test` 会在 `frontend/node_modules` 缺失时自动执行 `npm ci --no-audit --no-fund`，无需手工先装依赖。
 
 **关键环境变量（`frontend/.env.local`）**
 - `NEXT_PUBLIC_ANVIL_RPC_URL`：默认 `http://127.0.0.1:8545`。
 - `NEXT_PUBLIC_SCOREBOARD_ADDRESS`：部署后地址。
+
+**部署与同步职责**
+- `contracts/script/Deploy.s.sol`：唯一部署入口。
+- `scripts/sync-contract.js`：同步 ABI、`contract-config.json` 与 `.env.local`。
+- `Makefile`：只编排 `deploy -> sync-contract -> frontend`，不再内联写地址文件。
 
 ## 验收与排错
 | 症状 | 可能原因 | 修复命令/动作 |
@@ -89,9 +98,12 @@ make clean
 | 提示地址无效 | 地址未同步 | `make deploy` |
 | 排行榜为空 | 尚未有成功上链提交 | 完成一局并签名提交 |
 | 历史不更新 | 交易未确认或 RPC 波动 | 等待回执后重试查询 |
-| 启动失败 | 前端依赖缺失 | `cd frontend && npm install` |
+| 启动失败 | 前端依赖缺失 | 直接执行 `make web` 或 `make test`，命令会自动准备前端依赖 |
 
 ## Demo 展示
 ![游戏进行中](./docs-assets/gameplay.png)
 ![排行榜弹窗](./docs-assets/leaderboard.png)
 ![游戏结束（上链成功）](./docs-assets/game-over-success.png)
+
+## 作者
+- `lllu_23`

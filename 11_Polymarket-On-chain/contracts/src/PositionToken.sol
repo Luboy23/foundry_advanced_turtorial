@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
-import {ERC1155} from "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
+import { Ownable } from "openzeppelin-contracts/access/Ownable.sol";
+import { ERC1155 } from "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 
 /// @title PositionToken
 /// @notice 预测事件头寸代币（ERC1155），由核心合约统一铸造与销毁。
@@ -23,7 +23,7 @@ contract PositionToken is ERC1155, Ownable {
 
     /// @notice 初始化 ERC1155 基础 URI 与合约 owner。
     /// @param baseUri ERC1155 元数据基础 URI。
-    constructor(string memory baseUri) ERC1155(baseUri) {}
+    constructor(string memory baseUri) ERC1155(baseUri) { }
 
     /// @notice 设置核心合约地址。
     /// @dev 仅 owner 可调用；禁止设置为零地址。

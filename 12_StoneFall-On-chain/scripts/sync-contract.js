@@ -1,19 +1,15 @@
-/**
- * 模块职责：同步合约 ABI 与运行时配置到前端，并维护 .env.local 关键字段。
- * 说明：本文件注释以“业务意图 + 关键约束”为主，便于后续维护与教学阅读。
- */
-
 const fs = require("fs");
 const path = require("path");
 
 const rootDir = path.resolve(__dirname, "..");
+const contractsDir = path.join(rootDir, "contracts");
 const outFile = path.join(
-  rootDir,
-  "contracts",
+  contractsDir,
   "out",
   "StoneFallScoreboard.sol",
   "StoneFallScoreboard.json"
 );
+const broadcastDir = path.join(contractsDir, "broadcast");
 const abiTarget = path.join(rootDir, "frontend", "src", "lib", "stonefall.abi.json");
 const runtimeConfigTarget = path.join(
   rootDir,
@@ -25,19 +21,16 @@ const envTarget = path.join(rootDir, "frontend", ".env.local");
 
 const DEFAULT_RPC_URL = "http://127.0.0.1:8545";
 const DEFAULT_CHAIN_ID = "31337";
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-/**
- * 解析脚本参数。
- * 支持 --address / --rpc-url / --chain-id。
- */
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const output = {};
 
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i];
-    if (arg === "--address" && args[i + 1]) {
-      output.address = args[i + 1];
+    if ((arg === "--scoreboard-address" || arg === "--address") && args[i + 1]) {
+      output.scoreboardAddress = args[i + 1];
       i += 1;
       continue;
     }
@@ -56,17 +49,13 @@ const parseArgs = () => {
   return output;
 };
 
-/**
- * 确保输出目录存在，避免 writeFileSync 因目录缺失失败。
- */
 const ensureDir = (filePath) => {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
 };
 
-/**
- * 仅覆盖约定 key，保留 .env.local 其他自定义变量。
- * 这样可以避免脚本把用户本地调试变量误删。
- */
+const isAddress = (value) =>
+  typeof value === "string" && /^0x[a-fA-F0-9]{40}$/.test(value);
+
 const mergeEnvWithKnownKeys = (filePath, knownEntries) => {
   const nextKeys = Object.keys(knownEntries);
   const raw = fs.existsSync(filePath)
@@ -100,10 +89,6 @@ const mergeEnvWithKnownKeys = (filePath, knownEntries) => {
   fs.writeFileSync(filePath, `${normalized}\n`);
 };
 
-/**
- * 从 Foundry 编译产物读取 ABI。
- * 若产物缺失或结构异常，直接退出并提示错误，避免写入错误 ABI。
- */
 const loadAbi = () => {
   if (!fs.existsSync(outFile)) {
     console.error(`Missing foundry output: ${outFile}`);
@@ -119,34 +104,101 @@ const loadAbi = () => {
   return parsed.abi;
 };
 
-/**
- * 主流程：
- * 1) 同步 ABI 到前端源码目录
- * 2) 如提供地址，则同步运行时配置与前端 .env.local
- */
+const listRunLatestFiles = (dir, files = []) => {
+  if (!fs.existsSync(dir)) return files;
+
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      listRunLatestFiles(fullPath, files);
+    } else if (entry.isFile() && entry.name === "run-latest.json") {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+};
+
+const readAddressFromBroadcast = () => {
+  const files = listRunLatestFiles(broadcastDir);
+  files.sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
+
+  for (const filePath of files) {
+    try {
+      const parsed = JSON.parse(fs.readFileSync(filePath, "utf8"));
+      for (const tx of parsed.transactions ?? []) {
+        const contractName = tx.contractName || tx.contract_name;
+        const contractAddress = tx.contractAddress || tx.contract_address;
+        if (
+          contractName === "StoneFallScoreboard" &&
+          isAddress(contractAddress)
+        ) {
+          console.log(
+            `Scoreboard address inferred from ${path.relative(rootDir, filePath)}`
+          );
+          return contractAddress;
+        }
+      }
+    } catch (error) {
+      console.warn(`Failed to parse ${filePath}: ${error.message}`);
+    }
+  }
+
+  return undefined;
+};
+
+const parseEnvFile = () => {
+  if (!fs.existsSync(envTarget)) return {};
+
+  const result = {};
+  const content = fs.readFileSync(envTarget, "utf8");
+  for (const line of content.split(/\r?\n/)) {
+    if (!line || line.trim().startsWith("#")) continue;
+    const index = line.indexOf("=");
+    if (index <= 0) continue;
+    result[line.slice(0, index).trim()] = line.slice(index + 1).trim();
+  }
+  return result;
+};
+
+const parseRuntimeConfig = () => {
+  if (!fs.existsSync(runtimeConfigTarget)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(runtimeConfigTarget, "utf8"));
+  } catch (error) {
+    console.warn(`Failed to parse runtime config: ${error.message}`);
+    return {};
+  }
+};
+
 const main = () => {
   const args = parseArgs();
-  const address = args.address;
-  const rpcUrl = args.rpcUrl || process.env.RPC_URL || DEFAULT_RPC_URL;
-  const chainId = args.chainId || process.env.CHAIN_ID || DEFAULT_CHAIN_ID;
-
+  const env = parseEnvFile();
+  const runtime = parseRuntimeConfig();
   const abi = loadAbi();
+
   ensureDir(abiTarget);
   fs.writeFileSync(abiTarget, JSON.stringify(abi, null, 2));
   console.log(`ABI synced -> ${path.relative(rootDir, abiTarget)}`);
 
-  if (!address) {
-    // 地址缺失时仅更新 ABI，避免覆盖前端现有部署配置。
-    console.warn("Address missing, skip runtime/env sync.");
-    return;
-  }
+  const address =
+    args.scoreboardAddress ||
+    readAddressFromBroadcast() ||
+    runtime.stoneFallScoreboardAddress ||
+    runtime.address ||
+    env.VITE_STONEFALL_ADDRESS ||
+    ZERO_ADDRESS;
+  const rpcUrl = args.rpcUrl || process.env.RPC_URL || DEFAULT_RPC_URL;
+  const chainId = args.chainId || process.env.CHAIN_ID || DEFAULT_CHAIN_ID;
+  const resolvedAddress = isAddress(address) ? address : ZERO_ADDRESS;
 
   ensureDir(runtimeConfigTarget);
   fs.writeFileSync(
     runtimeConfigTarget,
     JSON.stringify(
       {
-        address,
+        stoneFallScoreboardAddress: resolvedAddress,
+        address: resolvedAddress,
         rpcUrl,
         chainId: Number(chainId),
       },
@@ -157,11 +209,10 @@ const main = () => {
   console.log(`Runtime config synced -> ${path.relative(rootDir, runtimeConfigTarget)}`);
 
   ensureDir(envTarget);
-  // 仅同步约定三项，避免污染前端其他环境变量。
   mergeEnvWithKnownKeys(envTarget, {
     VITE_CHAIN_ID: chainId,
     VITE_RPC_URL: rpcUrl,
-    VITE_STONEFALL_ADDRESS: address,
+    VITE_STONEFALL_ADDRESS: resolvedAddress,
   });
   console.log(`Env synced -> ${path.relative(rootDir, envTarget)}`);
 };

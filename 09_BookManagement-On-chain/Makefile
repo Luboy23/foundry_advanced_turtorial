@@ -2,8 +2,8 @@ SHELL := /bin/bash
 
 CONTRACTS_DIR := $(CURDIR)/contracts
 FRONTEND_DIR := $(CURDIR)/frontend
-CONTRACT_PATH := src/BookManagement.sol:BookManagement
-FORGE_CREATE_FLAGS ?= --broadcast
+DEPLOY_SCRIPT := script/Deploy.s.sol:Deploy
+SYNC_SCRIPT := $(CURDIR)/scripts/sync-contract.js
 
 ANVIL_RPC_URL ?= http://127.0.0.1:8545
 ANVIL_PRIVATE_KEY ?= 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
@@ -32,6 +32,7 @@ help:
 
 build-contracts:
 	@cd "$(CONTRACTS_DIR)" && forge build
+	@node "$(SYNC_SCRIPT)" --rpc-url "$(RPC_URL)" --chain-id "$(CHAIN_ID)"
 
 test:
 	@cd "$(CONTRACTS_DIR)" && forge test
@@ -91,7 +92,7 @@ restart-anvil:
 	done; \
 	$(MAKE) ensure-anvil
 
-deploy:
+deploy: ensure-anvil
 	@if [ -z "$(RPC_URL)" ] || [ -z "$(PRIVATE_KEY)" ]; then \
 		echo "RPC_URL and PRIVATE_KEY are required"; \
 		exit 1; \
@@ -101,32 +102,8 @@ deploy:
 		exit 1; \
 	fi
 	@echo "Deploying BookManagement..."
-	@DEPLOY_LOG=$$(mktemp); \
-		cd "$(CONTRACTS_DIR)" && NO_COLOR=1 forge create --rpc-url "$(RPC_URL)" --private-key "$(PRIVATE_KEY)" $(FORGE_CREATE_FLAGS) "$(CONTRACT_PATH)" > $$DEPLOY_LOG 2>&1; \
-		STATUS=$$?; \
-		if [ $$STATUS -ne 0 ]; then \
-			echo "Deploy output:"; \
-			cat $$DEPLOY_LOG; \
-			rm -f $$DEPLOY_LOG; \
-			exit $$STATUS; \
-		fi; \
-		ADDR=$$(sed -n 's/.*Deployed to: //p' $$DEPLOY_LOG | tail -n1); \
-		if [ -z "$$ADDR" ]; then \
-			ADDR=$$(grep -Eo '0x[a-fA-F0-9]{40}' $$DEPLOY_LOG | tail -n1); \
-		fi; \
-		rm -f $$DEPLOY_LOG; \
-		if [ -z "$$ADDR" ]; then \
-			echo "Deploy succeeded but could not parse address."; \
-			exit 1; \
-		fi; \
-		echo "Deployed to $$ADDR"; \
-		if [ -f "$(FRONTEND_DIR)/.env.local" ]; then \
-			grep -v '^NEXT_PUBLIC_CONTRACT_ADDRESS=' "$(FRONTEND_DIR)/.env.local" > "$(FRONTEND_DIR)/.env.local.tmp" || true; \
-			mv "$(FRONTEND_DIR)/.env.local.tmp" "$(FRONTEND_DIR)/.env.local"; \
-		fi; \
-		echo "NEXT_PUBLIC_CONTRACT_ADDRESS=$$ADDR" >> "$(FRONTEND_DIR)/.env.local"; \
-		echo "Wrote $(FRONTEND_DIR)/.env.local"; \
-		node "$(CURDIR)/scripts/sync-abi.mjs";
+	@cd "$(CONTRACTS_DIR)" && forge script "$(DEPLOY_SCRIPT)" --rpc-url "$(RPC_URL)" --private-key "$(PRIVATE_KEY)" --broadcast
+	@node "$(SYNC_SCRIPT)" --rpc-url "$(RPC_URL)" --chain-id "$(CHAIN_ID)"
 
 web:
 	@PORT="$(WEB_PORT)"; \

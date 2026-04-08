@@ -1,3 +1,5 @@
+import { getRuntimeConfig } from "@/lib/runtime-config";
+
 const addressPattern = /^0x[0-9a-fA-F]{40}$/;
 
 /**
@@ -9,8 +11,9 @@ const parseAddress = (value: string | undefined): `0x${string}` | null => {
   return addressPattern.test(normalized) ? (normalized as `0x${string}`) : null;
 };
 
-const rawChainId = process.env.NEXT_PUBLIC_CHAIN_ID ?? "31337";
-const rawRpcUrl = process.env.NEXT_PUBLIC_RPC_URL ?? "http://127.0.0.1:8545";
+const runtime = getRuntimeConfig();
+const rawChainId = String(runtime.chainId);
+const rawRpcUrl = runtime.rpcUrl;
 const rawIpfsGatewayBase = (process.env.NEXT_PUBLIC_IPFS_GATEWAY_BASE ?? "https://ipfs.io/ipfs/").trim();
 
 /** 当前前端连接的 RPC 地址。 */
@@ -23,20 +26,19 @@ export const IPFS_GATEWAY_BASE = rawIpfsGatewayBase.endsWith("/")
   : `${rawIpfsGatewayBase}/`;
 /** 项目主页地址，用于页脚外链。 */
 export const PROJECT_GITHUB =
-  process.env.NEXT_PUBLIC_PROJECT_GITHUB ??
-  "https://github.com/lllu23/foundry_advanced_turtorial";
+  runtime.projectGithub;
 /** 活动索引器地址，留空表示仅走链上日志回读。 */
 export const ACTIVITY_INDEXER_URL =
   (process.env.NEXT_PUBLIC_ACTIVITY_INDEXER_URL ?? "").trim() || null;
 
 /** EventFactory 合约地址。 */
-export const EVENT_FACTORY_ADDRESS = parseAddress(process.env.NEXT_PUBLIC_EVENT_FACTORY_ADDRESS);
+export const EVENT_FACTORY_ADDRESS = parseAddress(runtime.eventFactoryAddress);
 /** ERC1155 头寸代币合约地址。 */
-export const POSITION_TOKEN_ADDRESS = parseAddress(process.env.NEXT_PUBLIC_POSITION_TOKEN_ADDRESS);
+export const POSITION_TOKEN_ADDRESS = parseAddress(runtime.positionTokenAddress);
 /** ETH 抵押金库合约地址。 */
-export const ETH_COLLATERAL_VAULT_ADDRESS = parseAddress(process.env.NEXT_PUBLIC_ETH_COLLATERAL_VAULT_ADDRESS);
+export const ETH_COLLATERAL_VAULT_ADDRESS = parseAddress(runtime.ethCollateralVaultAddress);
 /** 预言机适配器合约地址。 */
-export const ORACLE_ADAPTER_ADDRESS = parseAddress(process.env.NEXT_PUBLIC_ORACLE_ADAPTER_ADDRESS);
+export const ORACLE_ADAPTER_ADDRESS = parseAddress(runtime.oracleAdapterAddress);
 
 /** 前端运行所需的核心合约地址是否已全部配置。 */
 export const IS_CONTRACT_CONFIGURED =

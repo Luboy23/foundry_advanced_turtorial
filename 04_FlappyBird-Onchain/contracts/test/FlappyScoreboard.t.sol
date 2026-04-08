@@ -43,7 +43,8 @@ contract FlappyScoreboardTest is Test {
             scoreboard.submitScore(i * 10);
         }
 
-        (address[] memory players, uint256[] memory scores, uint256[] memory timestamps) = scoreboard.getLeaderboard();
+        (address[] memory players, uint256[] memory scores, uint256[] memory timestamps) =
+            scoreboard.getLeaderboard();
         assertEq(players.length, 10);
         assertEq(scores.length, 10);
         assertEq(timestamps.length, 10);
@@ -52,5 +53,4 @@ contract FlappyScoreboardTest is Test {
         assertEq(scores[0], 120);
         assertEq(scores[9], 30);
     }
-
 }

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {PolymarketTypes} from "../src/PolymarketTypes.sol";
-import {TestBase} from "./TestBase.sol";
+import { PolymarketTypes } from "../src/PolymarketTypes.sol";
+import { TestBase } from "./TestBase.sol";
 
 contract ResolutionTest is TestBase {
     event ResolutionProposed(
@@ -91,6 +91,9 @@ contract ResolutionTest is TestBase {
     function test_Finalize_SetsResolvedState() public {
         uint256 eventId = createDefaultEvent();
 
+        vm.prank(alice);
+        eventFactory.buyNo{ value: 1 ether }(eventId);
+
         vm.warp(defaultCloseTime + 1);
         eventFactory.proposeResolution(eventId, PolymarketTypes.Outcome.No);
 
@@ -117,6 +120,9 @@ contract ResolutionTest is TestBase {
     // 场景：冷静期 30 秒，30 秒时可 finalize
     function test_Finalize_SuccessWhenLivenessAt30Seconds() public {
         uint256 eventId = createDefaultEvent();
+
+        vm.prank(alice);
+        eventFactory.buyYes{ value: 1 ether }(eventId);
 
         vm.warp(defaultCloseTime + 1);
         eventFactory.proposeResolution(eventId, PolymarketTypes.Outcome.Yes);
@@ -169,15 +175,25 @@ contract ResolutionTest is TestBase {
         uint256 eventId = createDefaultEvent();
 
         vm.prank(alice);
-        eventFactory.buyNo{value: 1 ether}(eventId);
+        eventFactory.buyNo{ value: 1 ether }(eventId);
 
         vm.warp(defaultCloseTime + 1);
         eventFactory.proposeResolution(eventId, PolymarketTypes.Outcome.Yes);
         vm.warp(defaultCloseTime + 1 + oracle.LIVENESS());
         eventFactory.finalizeResolution(eventId);
 
-        (,, PolymarketTypes.EventState state, PolymarketTypes.Outcome outcome,, uint256 yesPool, uint256 noPool, uint256 totalSnapshot, uint256 winningSnapshot,,)
-        = eventFactory.getEvent(eventId);
+        (
+            ,
+            ,
+            PolymarketTypes.EventState state,
+            PolymarketTypes.Outcome outcome,
+            ,
+            uint256 yesPool,
+            uint256 noPool,
+            uint256 totalSnapshot,
+            uint256 winningSnapshot,
+            ,
+        ) = eventFactory.getEvent(eventId);
 
         assertEq(state, PolymarketTypes.EventState.Resolved);
         assertEq(outcome, PolymarketTypes.Outcome.Invalid);

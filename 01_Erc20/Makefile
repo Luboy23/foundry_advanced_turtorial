@@ -1,20 +1,22 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := dev
 
+CONTRACTS_DIR := contracts
+FRONTEND_DIR := frontend
+SCRIPTS_DIR := scripts
+CONTRACTS_ENV := $(CONTRACTS_DIR)/.env
+CONTRACTS_ENV_EXAMPLE := $(CONTRACTS_DIR)/.env.example
+
 ANVIL_HOST ?= 127.0.0.1
 ANVIL_PORT ?= 8545
+ANVIL_CHAIN_ID ?= 31337
 ANVIL_RPC_URL ?= http://$(ANVIL_HOST):$(ANVIL_PORT)
 ANVIL_PRIVATE_KEY ?= 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 ANVIL_OWNER_ADDRESS ?= 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-
-CONTRACT_PATH := src/LuLuCoin.sol:LuLuCoin
-CONTRACTS_DIR := contracts
-FRONTEND_DIR := frontend
-ENV_FILE := $(FRONTEND_DIR)/.env.local
 ANVIL_PID_FILE := .anvil.pid
 ANVIL_LOG_FILE := .anvil.log
 
-.PHONY: dev ensure-anvil restart-anvil deploy frontend web build-contracts test anvil clean help
+.PHONY: dev ensure-anvil restart-anvil deploy web build-contracts test anvil clean help
 
 ensure-anvil:
 	@set -e; \
@@ -65,43 +67,31 @@ restart-anvil:
 	fi
 
 deploy: ensure-anvil
-	@set -e; \
-	echo "Deploying LuLuCoin..."; \
-	output=$$(cd $(CONTRACTS_DIR) && forge create \
+	@bash -euo pipefail -c '\
+	if [ ! -f "$(CONTRACTS_ENV)" ]; then \
+		cp "$(CONTRACTS_ENV_EXAMPLE)" "$(CONTRACTS_ENV)"; \
+	fi; \
+	cd "$(CONTRACTS_DIR)"; \
+	OWNER_PRIVATE_KEY="$(ANVIL_PRIVATE_KEY)" OWNER_ADDRESS="$(ANVIL_OWNER_ADDRESS)" \
+		forge script script/DeployLuLuCoin.s.sol:DeployLuLuCoin \
 		--rpc-url "$(ANVIL_RPC_URL)" \
-		--private-key "$(ANVIL_PRIVATE_KEY)" \
-		--broadcast \
-		"$(CONTRACT_PATH)" \
-		--constructor-args "$(ANVIL_OWNER_ADDRESS)"); \
-	addr=$$(echo "$$output" | awk '/Deployed to:/ {print $$3}' | tail -n 1); \
-	if [ -z "$$addr" ]; then \
-		echo "$$output"; \
-		echo "Failed to parse deployed address."; \
-		exit 1; \
-	fi; \
-	mkdir -p "$(FRONTEND_DIR)"; \
-	tmp=$$(mktemp); \
-	if [ -f "$(ENV_FILE)" ]; then \
-		grep -v '^NEXT_PUBLIC_LULUCOIN_ADDRESS=' "$(ENV_FILE)" > "$$tmp" || true; \
-	fi; \
-	echo "NEXT_PUBLIC_LULUCOIN_ADDRESS=$$addr" >> "$$tmp"; \
-	mv "$$tmp" "$(ENV_FILE)"; \
-	echo "Wrote $(ENV_FILE)"
+		--broadcast; \
+	'
+	@node "$(SCRIPTS_DIR)/sync-contract.js" --rpc-url "$(ANVIL_RPC_URL)" --chain-id "$(ANVIL_CHAIN_ID)"
 
-frontend:
+web:
 	@cd "$(FRONTEND_DIR)" && \
 	if [ ! -d node_modules ]; then npm install; fi; \
 	npm run dev
 
-dev: restart-anvil deploy frontend
-
-web: frontend
+dev: restart-anvil deploy web
 
 build-contracts:
-	@cd "$(CONTRACTS_DIR)" && forge build
+	@cd "$(CONTRACTS_DIR)" && forge build && cd .. && node "$(SCRIPTS_DIR)/sync-contract.js"
 
 test:
 	@cd "$(CONTRACTS_DIR)" && forge test
+	@cd "$(FRONTEND_DIR)" && if [ ! -d node_modules ]; then npm install; fi; npm run typecheck
 
 anvil:
 	@anvil --host "$(ANVIL_HOST)" --port "$(ANVIL_PORT)"
@@ -112,10 +102,10 @@ clean:
 
 help:
 	@echo "Targets:"
-	@echo "  dev                Start anvil, deploy, and run frontend"
-	@echo "  deploy             Deploy LuLuCoin and write frontend env"
+	@echo "  dev                Restart anvil, deploy contracts, and run frontend"
+	@echo "  deploy             Deploy LuLuCoin via forge script and sync frontend config"
 	@echo "  web                Run frontend dev server"
-	@echo "  build-contracts    Compile contracts"
-	@echo "  test               Run contract tests"
+	@echo "  build-contracts    Compile contracts and refresh synced ABI/config"
+	@echo "  test               Run contract tests and frontend typecheck"
 	@echo "  anvil              Start local anvil node"
 	@echo "  clean              Remove build artifacts"

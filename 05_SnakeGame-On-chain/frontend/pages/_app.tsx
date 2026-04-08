@@ -1,7 +1,7 @@
 import type { AppProps } from 'next/app'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { injected } from '@wagmi/core'
 import { WagmiProvider, createConfig, http } from 'wagmi'
-import { injected } from 'wagmi/connectors'
 import { anvil } from 'wagmi/chains'
 
 import '../styles/globals.css'

@@ -30,6 +30,7 @@ make dev
 - `make dev` 会执行：`restart-anvil -> deploy -> web`。
 - 部署后自动写入 `NEXT_PUBLIC_CONTRACT_ADDRESS` 并同步 ABI。
 - 打开 `http://localhost:3000`，连接 `31337`。
+- `make deploy` 现在会自动确保本地 Anvil 可用，不再默认依赖外部先启动 `127.0.0.1:8545`。
 
 ## 业务主流程
 **馆员链路**
@@ -76,6 +77,7 @@ make test
 make anvil
 make clean
 ```
+- `make deploy` 会在本地链未就绪时自动拉起 Anvil，然后再执行部署与同步。
 
 **关键环境变量**
 - 根目录 `.env`：`RPC_URL`、`PRIVATE_KEY`、`CHAIN_ID`。
@@ -94,3 +96,6 @@ make clean
 ![管理端仪表盘](./docs-assets/bm-admin-dashboard.png)
 ![管理端借阅台账](./docs-assets/bm-admin-ledger.png)
 ![读者借阅历史](./docs-assets/bm-reader-history.png)
+
+## 作者
+- `lllu_23`

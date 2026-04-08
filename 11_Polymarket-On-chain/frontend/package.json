@@ -2,13 +2,18 @@
   "name": "polymarket-on-chain-frontend",
   "private": true,
   "version": "1.0.0",
+  "author": "lllu_23",
   "packageManager": "npm@11.9.0",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run build:ci",
+    "build:ci": "next build --webpack",
+    "build:turbo": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck",
+    "test:ci": "npm run check && npm run build:ci",
     "test:smoke": "cd .. && make deploy && cd frontend && NEXT_PUBLIC_E2E_MODE=1 NEXT_PUBLIC_E2E_ACCOUNT_INDEX=0 playwright test -c playwright.config.ts e2e/smoke/app.smoke.spec.ts e2e/smoke/wait-buy.smoke.spec.ts && NEXT_PUBLIC_E2E_MODE=1 NEXT_PUBLIC_E2E_ACCOUNT_INDEX=1 playwright test -c playwright.config.ts e2e/smoke/permissions.smoke.spec.ts",
     "test:e2e": "cd .. && make deploy && cd frontend && NEXT_PUBLIC_E2E_MODE=1 NEXT_PUBLIC_E2E_ACCOUNT_INDEX=0 playwright test -c playwright.config.ts e2e/core-e2e/event-lifecycle.spec.ts e2e/core-e2e/wait-buy-order.spec.ts",
     "test:e2e:ui": "NEXT_PUBLIC_E2E_MODE=1 NEXT_PUBLIC_E2E_ACCOUNT_INDEX=0 playwright test -c playwright.config.ts --ui"
@@ -28,19 +33,27 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "tailwind-merge": "^3.3.1",
-    "viem": "^2.24.3",
-    "wagmi": "^2.12.2",
+    "viem": "2.45.0",
+    "wagmi": "2.19.5",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0",
+    "@playwright/test": "1.58.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
-    "eslint": "^9.17.0",
+    "eslint": "9.39.3",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.7.2"
-  }
+    "typescript": "5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luboy23/foundry-advanced-11-polymarket-on-chain.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Luboy23/foundry-advanced-11-polymarket-on-chain/issues"
+  },
+  "homepage": "https://github.com/Luboy23/foundry-advanced-11-polymarket-on-chain"
 }

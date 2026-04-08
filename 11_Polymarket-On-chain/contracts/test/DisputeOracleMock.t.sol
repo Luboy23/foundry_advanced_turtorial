@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {PolymarketTypes} from "../src/PolymarketTypes.sol";
-import {OracleAdapterDisputeMock} from "../src/OracleAdapterDisputeMock.sol";
-import {TestBase} from "./TestBase.sol";
+import { PolymarketTypes } from "../src/PolymarketTypes.sol";
+import { OracleAdapterDisputeMock } from "../src/OracleAdapterDisputeMock.sol";
+import { TestBase } from "./TestBase.sol";
 
 contract DisputeOracleMockTest is TestBase {
     OracleAdapterDisputeMock internal oracleDispute;
@@ -32,7 +32,7 @@ contract DisputeOracleMockTest is TestBase {
 
         vm.warp(block.timestamp + oracleDispute.DISPUTE_WINDOW() + 1);
         vm.expectRevert(bytes("DISPUTE_WINDOW_PASSED"));
-        oracleDispute.disputeResolution{value: 1 ether}(1, alice);
+        oracleDispute.disputeResolution{ value: 1 ether }(1, alice);
     }
 
     function test_Finalize_UndisputedReturnsProposedOutcome() public {
@@ -51,7 +51,7 @@ contract DisputeOracleMockTest is TestBase {
     function test_Finalize_DisputedReturnsInvalid() public {
         oracleDispute.proposeResolution(1, resolver, PolymarketTypes.Outcome.Yes);
 
-        oracleDispute.disputeResolution{value: 2 ether}(1, bob);
+        oracleDispute.disputeResolution{ value: 2 ether }(1, bob);
 
         vm.warp(block.timestamp + oracleDispute.LIVENESS());
         PolymarketTypes.Outcome outcome = oracleDispute.finalizeResolution(1);

@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
-import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.sol";
-import {ERC1155Holder} from "openzeppelin-contracts/token/ERC1155/utils/ERC1155Holder.sol";
+import { Ownable } from "openzeppelin-contracts/access/Ownable.sol";
+import { ReentrancyGuard } from "openzeppelin-contracts/security/ReentrancyGuard.sol";
+import { ERC1155Holder } from "openzeppelin-contracts/token/ERC1155/utils/ERC1155Holder.sol";
 
-import {PolymarketTypes} from "./PolymarketTypes.sol";
-import {PositionToken} from "./PositionToken.sol";
-import {ETHCollateralVault} from "./ETHCollateralVault.sol";
-import {OracleAdapterMock} from "./OracleAdapterMock.sol";
+import { PolymarketTypes } from "./PolymarketTypes.sol";
+import { PositionToken } from "./PositionToken.sol";
+import { ETHCollateralVault } from "./ETHCollateralVault.sol";
+import { OracleAdapterMock } from "./OracleAdapterMock.sol";
 
 /// @title BinaryEventCore
 /// @notice Pari-mutuel 二元奖池核心流程（ETH 抵押、YES/NO 直购、结算后兑付）。
@@ -152,11 +152,7 @@ abstract contract BinaryEventCore is Ownable, ReentrancyGuard, ERC1155Holder {
     /// @param _positionToken ERC1155 头寸代币合约。
     /// @param _collateralVault ETH 抵押金库合约。
     /// @param _oracle 结果提案/最终化适配器。
-    constructor(
-        PositionToken _positionToken,
-        ETHCollateralVault _collateralVault,
-        OracleAdapterMock _oracle
-    ) {
+    constructor(PositionToken _positionToken, ETHCollateralVault _collateralVault, OracleAdapterMock _oracle) {
         require(address(_positionToken) != address(0), "ZERO_ADDRESS");
         require(address(_collateralVault) != address(0), "ZERO_ADDRESS");
         require(address(_oracle) != address(0), "ZERO_ADDRESS");
@@ -292,7 +288,11 @@ abstract contract BinaryEventCore is Ownable, ReentrancyGuard, ERC1155Holder {
     /// @param yesAmount 提交赎回的 YES 份额。
     /// @param noAmount 提交赎回的 NO 份额。
     /// @return payout 可兑付 ETH（wei）。
-    function redeemToETH(uint256 eventId, uint256 yesAmount, uint256 noAmount) external nonReentrant returns (uint256 payout) {
+    function redeemToETH(uint256 eventId, uint256 yesAmount, uint256 noAmount)
+        external
+        nonReentrant
+        returns (uint256 payout)
+    {
         _requireEventExists(eventId);
 
         EventData storage eventData = events[eventId];
@@ -426,7 +426,11 @@ abstract contract BinaryEventCore is Ownable, ReentrancyGuard, ERC1155Holder {
     /// @param user 用户地址。
     /// @return yesBalance YES 份额余额。
     /// @return noBalance NO 份额余额。
-    function getUserPosition(uint256 eventId, address user) external view returns (uint256 yesBalance, uint256 noBalance) {
+    function getUserPosition(uint256 eventId, address user)
+        external
+        view
+        returns (uint256 yesBalance, uint256 noBalance)
+    {
         _requireEventExists(eventId);
         yesBalance = positionToken.balanceOf(user, yesTokenId(eventId));
         noBalance = positionToken.balanceOf(user, noTokenId(eventId));
@@ -438,7 +442,11 @@ abstract contract BinaryEventCore is Ownable, ReentrancyGuard, ERC1155Holder {
     /// @param yesAmount 计划赎回的 YES 份额。
     /// @param noAmount 计划赎回的 NO 份额。
     /// @return payout 可兑付 ETH（wei）。
-    function getRedeemPreview(uint256 eventId, uint256 yesAmount, uint256 noAmount) external view returns (uint256 payout) {
+    function getRedeemPreview(uint256 eventId, uint256 yesAmount, uint256 noAmount)
+        external
+        view
+        returns (uint256 payout)
+    {
         _requireEventExists(eventId);
         EventData storage eventData = events[eventId];
         if (eventData.state != PolymarketTypes.EventState.Resolved) {
@@ -451,7 +459,11 @@ abstract contract BinaryEventCore is Ownable, ReentrancyGuard, ERC1155Holder {
     /// @return vaultBalance 当前金库余额（wei）。
     /// @return totalCollateralIn 累计入金（wei）。
     /// @return totalRedeemed 累计出金（wei）。
-    function getVaultMetrics() external view returns (uint256 vaultBalance, uint256 totalCollateralIn, uint256 totalRedeemed) {
+    function getVaultMetrics()
+        external
+        view
+        returns (uint256 vaultBalance, uint256 totalCollateralIn, uint256 totalRedeemed)
+    {
         vaultBalance = collateralVault.vaultBalance();
         totalCollateralIn = collateralVault.totalCollateralIn();
         totalRedeemed = collateralVault.totalRedeemed();
@@ -462,7 +474,11 @@ abstract contract BinaryEventCore is Ownable, ReentrancyGuard, ERC1155Holder {
     /// @return token ERC1155 头寸代币地址。
     /// @return collateral ETH 抵押金库地址。
     /// @return oracleAdapter 结果适配器地址。
-    function getModuleAddresses() external view returns (address eventCore, address token, address collateral, address oracleAdapter) {
+    function getModuleAddresses()
+        external
+        view
+        returns (address eventCore, address token, address collateral, address oracleAdapter)
+    {
         eventCore = address(this);
         token = address(positionToken);
         collateral = address(collateralVault);
@@ -476,7 +492,11 @@ abstract contract BinaryEventCore is Ownable, ReentrancyGuard, ERC1155Holder {
     /// @param yesAmount 提交赎回的 YES 份额。
     /// @param noAmount 提交赎回的 NO 份额。
     /// @return 预估可兑付 ETH（wei）。
-    function _previewRedeemPayout(EventData storage eventData, uint256 yesAmount, uint256 noAmount) internal view returns (uint256) {
+    function _previewRedeemPayout(EventData storage eventData, uint256 yesAmount, uint256 noAmount)
+        internal
+        view
+        returns (uint256)
+    {
         if (eventData.finalOutcome == PolymarketTypes.Outcome.Yes) {
             if (yesAmount == 0 || eventData.winningPoolSnapshot == 0) {
                 return 0;
@@ -506,7 +526,7 @@ abstract contract BinaryEventCore is Ownable, ReentrancyGuard, ERC1155Holder {
         EventData storage eventData = events[eventId];
         require(eventData.state == PolymarketTypes.EventState.Open, "EVENT_NOT_BUYABLE");
 
-        collateralVault.depositCollateral{value: msg.value}(eventId);
+        collateralVault.depositCollateral{ value: msg.value }(eventId);
 
         uint256 tokenId = side == PolymarketTypes.PositionSide.Yes ? yesTokenId(eventId) : noTokenId(eventId);
         positionToken.mint(msg.sender, tokenId, msg.value);

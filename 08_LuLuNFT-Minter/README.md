@@ -77,6 +77,7 @@ make test
 make anvil
 make clean
 ```
+- `make test` 会在 `frontend/node_modules` 缺失时自动执行 `npm ci --no-audit --no-fund`，无需手工先装前端依赖。
 
 **关键环境变量**
 - 根目录 `.env`：`PRIVATE_KEY`（或 `DEPLOYER_PRIVATE_KEY`）。
@@ -100,3 +101,6 @@ make clean
 ![铸造台（已上传待铸造）](./docs-assets/mint-panel-ready.png)
 ![我的藏品管理页](./docs-assets/collection-manage.png)
 ![NFT 市场挂单页](./docs-assets/market-listings.png)
+
+## 作者
+- `lllu_23`

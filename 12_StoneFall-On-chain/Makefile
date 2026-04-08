@@ -18,9 +18,9 @@ endif
 
 CONTRACTS_DIR := contracts
 FRONTEND_DIR := frontend
-CONTRACT_PATH := src/StoneFallScoreboard.sol:StoneFallScoreboard
+DEPLOY_SCRIPT := script/Deploy.s.sol:Deploy
 
-.PHONY: help dev deploy web build-contracts test anvil restart-anvil clean
+.PHONY: help dev deploy web frontend-install build-contracts test anvil ensure-anvil restart-anvil clean
 
 help:
 	@echo "Targets:"
@@ -37,6 +37,28 @@ dev: restart-anvil deploy web
 
 anvil:
 	@anvil --host $(ANVIL_HOST) --port $(ANVIL_PORT) --chain-id $(CHAIN_ID)
+
+ensure-anvil:
+	@set -e; \
+	if ! command -v lsof >/dev/null 2>&1; then \
+		echo "缺少 lsof 命令，请先安装"; \
+		exit 1; \
+	fi; \
+	if lsof -iTCP:$(ANVIL_PORT) -sTCP:LISTEN -n -P >/dev/null 2>&1; then \
+		echo "Anvil already running on port $(ANVIL_PORT)."; \
+	else \
+		echo "Starting Anvil..."; \
+		anvil --host $(ANVIL_HOST) --port $(ANVIL_PORT) --chain-id $(CHAIN_ID) > $(ANVIL_LOG_FILE) 2>&1 & \
+		echo $$! > $(ANVIL_PID_FILE); \
+		for i in {1..50}; do \
+			if lsof -iTCP:$(ANVIL_PORT) -sTCP:LISTEN -n -P >/dev/null 2>&1; then break; fi; \
+			sleep 0.2; \
+		done; \
+		if ! lsof -iTCP:$(ANVIL_PORT) -sTCP:LISTEN -n -P >/dev/null 2>&1; then \
+			echo "Anvil 启动失败，请检查 $(ANVIL_LOG_FILE)"; \
+			exit 1; \
+		fi; \
+	fi
 
 restart-anvil:
 	@set -e; \
@@ -59,7 +81,7 @@ restart-anvil:
 	echo $$! > $(ANVIL_PID_FILE); \
 	sleep 1
 
-deploy:
+deploy: ensure-anvil
 	@set -e; \
 	if ! command -v forge >/dev/null 2>&1; then \
 		echo "forge 未安装，请先安装 Foundry"; \
@@ -72,27 +94,24 @@ deploy:
 	echo "Building contracts..."; \
 	(cd $(CONTRACTS_DIR) && forge build >/dev/null); \
 	echo "Deploying StoneFallScoreboard..."; \
-	OUTPUT=$$(cd $(CONTRACTS_DIR) && forge create --broadcast --rpc-url $(RPC_URL) --private-key $(DEPLOYER_PRIVATE_KEY) $(CONTRACT_PATH)); \
-	echo "$$OUTPUT"; \
-	ADDRESS=$$(echo "$$OUTPUT" | awk '/Deployed to:/ {print $$3}' | tail -n 1); \
-	if [ -z "$$ADDRESS" ]; then \
-		echo "解析合约地址失败"; \
-		exit 1; \
-	fi; \
+	(cd $(CONTRACTS_DIR) && forge script $(DEPLOY_SCRIPT) --broadcast --rpc-url $(RPC_URL) --private-key $(DEPLOYER_PRIVATE_KEY)); \
 	echo "Syncing frontend config..."; \
-	node scripts/sync-contract.js --address $$ADDRESS --rpc-url $(RPC_URL) --chain-id $(CHAIN_ID); \
-	echo "Deployed address: $$ADDRESS"
+	node scripts/sync-contract.js --rpc-url $(RPC_URL) --chain-id $(CHAIN_ID)
 
-web:
+web: frontend-install
+	@cd $(FRONTEND_DIR) && npm run dev
+
+frontend-install:
 	@cd $(FRONTEND_DIR) && \
-	if [ ! -d node_modules ]; then npm install; fi && \
-	npm run dev
+	if [ ! -d node_modules ]; then npm ci --no-audit --no-fund; fi
 
 build-contracts:
 	@cd $(CONTRACTS_DIR) && forge build
+	@node scripts/sync-contract.js --rpc-url $(RPC_URL) --chain-id $(CHAIN_ID)
 
-test:
+test: frontend-install
 	@cd $(CONTRACTS_DIR) && forge test
+	@cd $(FRONTEND_DIR) && npm run lint && npm run typecheck && npm run test && npm run build
 
 clean:
 	@rm -rf $(CONTRACTS_DIR)/cache $(CONTRACTS_DIR)/out $(FRONTEND_DIR)/dist $(FRONTEND_DIR)/test-results $(ANVIL_LOG_FILE) $(ANVIL_PID_FILE)

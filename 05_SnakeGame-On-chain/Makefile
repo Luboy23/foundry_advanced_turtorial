@@ -3,6 +3,7 @@ SHELL := /bin/bash
 
 # Anvil 本地链参数（端口、RPC、部署私钥、进程与日志文件）
 ANVIL_PORT ?= 8545
+ANVIL_CHAIN_ID ?= 31337
 ANVIL_RPC_URL ?= http://127.0.0.1:$(ANVIL_PORT)
 ANVIL_PRIVATE_KEY ?= 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 ANVIL_PID_FILE ?= .anvil.pid
@@ -12,9 +13,10 @@ ANVIL_LOG_FILE ?= .anvil.log
 CONTRACTS_DIR ?= contracts
 FRONTEND_DIR ?= frontend
 ENV_FILE ?= $(FRONTEND_DIR)/.env.local
-PUBLIC_CONFIG ?= $(FRONTEND_DIR)/public/scoreboard.json
+PUBLIC_CONFIG ?= $(FRONTEND_DIR)/public/contract-config.json
+LEGACY_PUBLIC_CONFIG ?= $(FRONTEND_DIR)/public/scoreboard.json
 
-.PHONY: anvil down restart-anvil deploy env frontend dev up help web build-contracts test clean
+.PHONY: anvil down restart-anvil deploy env frontend frontend-install dev up help web build-contracts test clean
 
 # 启动本地 Anvil；若已运行则直接复用已有进程
 anvil:
@@ -64,14 +66,12 @@ deploy: anvil
 	@cd $(CONTRACTS_DIR) && forge build
 	# 先把 forge script 的 json 输出落盘，失败时可配合 DEBUG=1 排查
 	@tmp=$$(mktemp); \
-	(cd $(CONTRACTS_DIR) && forge script script/DeploySnakeScoreboard.s.sol \
+	(cd $(CONTRACTS_DIR) && forge script script/DeploySnakeScoreboard.s.sol:DeploySnakeScoreboard \
 		--rpc-url $(ANVIL_RPC_URL) \
 		--private-key $(ANVIL_PRIVATE_KEY) \
 		--broadcast --json > $$tmp); \
-	# 同步合约地址/ABI 到前端运行目录
-	node scripts/sync-contract.js; \
-	# 从前端 runtime 配置回读地址，避免直接解析脚本日志文本
-	address=$$(node -e "const fs=require('fs');try{const d=JSON.parse(fs.readFileSync('$(PUBLIC_CONFIG)','utf8'));process.stdout.write(d.address||'');}catch(e){}"); \
+	node scripts/sync-contract.js --rpc-url $(ANVIL_RPC_URL) --chain-id $(ANVIL_CHAIN_ID); \
+	address=$$(node -e "const fs=require('fs');try{const d=JSON.parse(fs.readFileSync('$(PUBLIC_CONFIG)','utf8'));process.stdout.write(d.scoreboardAddress||d.address||'');}catch(e){}"); \
 	if [ -z "$$address" ]; then \
 		echo "Failed to parse deployed address from sync output."; \
 		echo "Tip: re-run with: make deploy DEBUG=1"; \
@@ -90,16 +90,19 @@ env:
 	fi
 	@mkdir -p $(FRONTEND_DIR)
 	@echo "NEXT_PUBLIC_ANVIL_RPC_URL=$(ANVIL_RPC_URL)" > $(ENV_FILE)
+	@echo "NEXT_PUBLIC_RPC_URL=$(ANVIL_RPC_URL)" >> $(ENV_FILE)
+	@echo "NEXT_PUBLIC_CHAIN_ID=$(ANVIL_CHAIN_ID)" >> $(ENV_FILE)
 	@echo "NEXT_PUBLIC_SCOREBOARD_ADDRESS=$(ADDRESS)" >> $(ENV_FILE)
 	@echo "Wrote $(ENV_FILE)"
 	@mkdir -p $(FRONTEND_DIR)/public
-	@printf '{\n  "address": "%s",\n  "rpcUrl": "%s"\n}\n' "$(ADDRESS)" "$(ANVIL_RPC_URL)" > $(PUBLIC_CONFIG)
+	@printf '{\n  "scoreboardAddress": "%s",\n  "rpcUrl": "%s",\n  "chainId": %s\n}\n' "$(ADDRESS)" "$(ANVIL_RPC_URL)" "$(ANVIL_CHAIN_ID)" > $(PUBLIC_CONFIG)
 	@echo "Wrote $(PUBLIC_CONFIG)"
+	@printf '{\n  "address": "%s",\n  "rpcUrl": "%s"\n}\n' "$(ADDRESS)" "$(ANVIL_RPC_URL)" > $(LEGACY_PUBLIC_CONFIG)
+	@echo "Wrote $(LEGACY_PUBLIC_CONFIG)"
 
 # 启动前端开发服务器（首次自动 npm install）
-frontend:
+frontend: frontend-install
 	@cd $(FRONTEND_DIR) && \
-	if [ ! -d node_modules ]; then npm install; fi; \
 	npm run dev
 
 # 前端启动别名：与 frontend target 行为一致
@@ -107,11 +110,16 @@ web: frontend
 
 # 仅构建合约（不部署）
 build-contracts:
-	@cd $(CONTRACTS_DIR) && forge build
+	@cd $(CONTRACTS_DIR) && forge build && cd .. && node scripts/sync-contract.js --rpc-url $(ANVIL_RPC_URL) --chain-id $(ANVIL_CHAIN_ID)
 
 # 运行 Foundry 合约测试
-test:
+frontend-install:
+	@cd $(FRONTEND_DIR) && \
+	if [ ! -d node_modules ]; then npm ci --no-audit --no-fund; fi
+
+test: frontend-install
 	@cd $(CONTRACTS_DIR) && forge test
+	@cd $(FRONTEND_DIR) && npm run typecheck
 
 # 清理合约与前端构建产物、Anvil PID/日志
 clean:
@@ -129,7 +137,7 @@ up: dev
 help:
 	@echo "Targets:"
 	@echo "  dev                Start anvil, deploy, and run frontend"
-	@echo "  deploy             Deploy scoreboard contract and write env"
+	@echo "  deploy             Deploy scoreboard contract and sync contract-config.json"
 	@echo "  web                Run frontend dev server"
 	@echo "  build-contracts    Compile contracts"
 	@echo "  test               Run contract tests"

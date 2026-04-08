@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
+import { Ownable } from "openzeppelin-contracts/access/Ownable.sol";
 
-import {PolymarketTypes} from "./PolymarketTypes.sol";
+import { PolymarketTypes } from "./PolymarketTypes.sol";
 
 /// @title OracleAdapterDisputeMock
 /// @notice 带争议窗口的结果适配器：提案 -> 争议 -> 冷静期后最终化。
@@ -76,7 +76,9 @@ contract OracleAdapterDisputeMock is Ownable {
     /// @param outcome 最终结果。
     /// @param disputed 是否经历争议。
     /// @param finalizedAt 最终化时间戳（秒）。
-    event ResolutionFinalized(uint256 indexed eventId, PolymarketTypes.Outcome outcome, bool disputed, uint64 finalizedAt);
+    event ResolutionFinalized(
+        uint256 indexed eventId, PolymarketTypes.Outcome outcome, bool disputed, uint64 finalizedAt
+    );
 
     /// @notice 仅允许 operator 调用。
     modifier onlyOperator() {

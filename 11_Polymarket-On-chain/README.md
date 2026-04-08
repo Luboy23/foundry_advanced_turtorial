@@ -56,6 +56,7 @@ make test
 make anvil
 make clean
 ```
+- `make test` 会在 `frontend/node_modules` 缺失时自动执行 `npm ci --no-audit --no-fund`，无需先手工安装前端依赖。
 
 ## 关键环境变量
 - `.env`：`PRIVATE_KEY`、`RPC_URL`、`CHAIN_ID`
@@ -64,3 +65,6 @@ make clean
   - `NEXT_PUBLIC_POSITION_TOKEN_ADDRESS`
   - `NEXT_PUBLIC_ETH_COLLATERAL_VAULT_ADDRESS`
   - `NEXT_PUBLIC_ORACLE_ADAPTER_ADDRESS`
+
+## 作者
+- `lllu_23`

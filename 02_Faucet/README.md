@@ -75,6 +75,7 @@ make test
 make anvil
 make clean
 ```
+- `make test` 会在 `frontend/node_modules` 缺失时自动执行 `npm ci --no-audit --no-fund`，可以直接用于干净环境回归。
 
 **关键环境变量（`contracts/.env`）**
 - `OWNER_PRIVATE_KEY` / `OWNER_ADDRESS`：管理员。
@@ -96,3 +97,6 @@ make clean
 ![水龙头首页](./docs-assets/ui-faucet-home.png)
 ![管理员编辑弹窗](./docs-assets/ui-admin-edit.png)
 ![ethers 链上交互代码](./docs-assets/web3-ethers-code.png)
+
+## 作者
+- `lllu_23`

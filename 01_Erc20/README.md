@@ -80,3 +80,6 @@ make clean
 ![铸造页面（首页）](./docs-assets/ui-mint-home.png)
 ![合约实现（LuLuCoin.sol）](./docs-assets/contract-lulucoin.png)
 ![合约交互核心（erc20mint.js）](./docs-assets/web3-mint-code.png)
+
+## 作者
+- `lllu_23`

@@ -1,21 +1,26 @@
 {
   "name": "erc721-fixed-price-market",
   "version": "0.1.0",
+  "author": "lllu_23",
   "private": true,
   "packageManager": "npm@11.5.2",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run build:ci",
+    "build:ci": "next build --webpack",
+    "build:turbo": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.59.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "viem": "^2.24.3",
-    "wagmi": "^2.12.2",
+    "viem": "2.45.2",
+    "wagmi": "2.19.5",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
@@ -24,9 +29,17 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
+    "eslint": "9.39.2",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "typescript": "5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luboy23/foundry-advanced-08-lulu-nft-minter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Luboy23/foundry-advanced-08-lulu-nft-minter/issues"
+  },
+  "homepage": "https://github.com/Luboy23/foundry-advanced-08-lulu-nft-minter"
 }

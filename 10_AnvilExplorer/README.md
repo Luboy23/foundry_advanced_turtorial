@@ -31,6 +31,7 @@ make dev
 ```
 - `make dev` 会执行：启动 anvil + indexer + frontend。
 - 前端默认地址 `http://localhost:3000`，indexer 默认 `http://127.0.0.1:8787`。
+- 本项目是服务协同型模板，无业务合约；`make deploy` 与 `make build-contracts` 为显式 no-op。
 
 ## 业务主流程
 1. 前端读取数据源模式（`auto/indexer/rpc`）。
@@ -60,6 +61,12 @@ make dev
 | `frontend/app/api/cast/route.ts` | Cast 网关与只读白名单 | Indexer debug RPC / RPC |
 | `services/indexer/src/sync/*` | 增量同步与 reorg 处理 | Anvil RPC |
 | `services/indexer/src/api/routes/*` | 读取与调试 API | SQLite + RPC |
+| `services/indexer/src/health-smoke.ts` | 后端健康烟测入口 | `/v1/health` |
+
+**前端 / 服务 / 链边界**
+- 前端只消费 `Indexer API`、`Next API(/api/cast)` 与 `RPC`，不直接承担索引逻辑。
+- `services/indexer` 只负责链数据同步、聚合查询与健康检查，不写前端配置文件。
+- 本项目不引入业务合约同步脚本，避免把服务型模板误导成合约模板。
 
 **`auto/indexer/rpc` 回退策略**
 - `rpc`：强制只走 RPC，不访问 indexer。
@@ -72,14 +79,19 @@ make dev
 make help
 make dev
 make start
+make api
 make web
 make anvil
 make indexer
 make deploy
 make build-contracts
 make test
+make test-frontend
+make test-backend
+make stop
 make clean
 ```
+- `make test-frontend` 与 `make test-backend` 会在对应 `node_modules` 缺失时自动执行 `npm ci --no-audit --no-fund`，适合作为干净环境回归入口。
 
 **关键环境变量（`frontend/.env.local`）**
 - `NEXT_PUBLIC_DATA_SOURCE=auto|indexer|rpc`
@@ -100,3 +112,6 @@ make clean
 ![首页面板](./docs-assets/ui-home-dashboard.png)
 ![区块列表](./docs-assets/ui-block-list.png)
 ![交易详情](./docs-assets/ui-transaction-detail.png)
+
+## 作者
+- `lllu_23`

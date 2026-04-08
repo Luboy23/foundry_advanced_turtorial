@@ -6,21 +6,24 @@
   "main": "server.js",
   "scripts": {
     "dev": "next dev",
-    "build": "next build --webpack",
+    "build": "npm run build:ci",
+    "build:ci": "next build --webpack",
+    "build:turbo": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Luboy23/foundry_advanced_turtorial.git",
-    "directory": "05_SnakeGame-On-chain/frontend"
+    "url": "git+https://github.com/Luboy23/foundry-advanced-05-snake-game-on-chain.git"
   },
   "author": "lllu_23",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Luboy23/foundry_advanced_turtorial/issues"
+    "url": "https://github.com/Luboy23/foundry-advanced-05-snake-game-on-chain/issues"
   },
-  "homepage": "https://github.com/Luboy23/foundry_advanced_turtorial/tree/main/05_SnakeGame-On-chain/frontend",
+  "homepage": "https://github.com/Luboy23/foundry-advanced-05-snake-game-on-chain",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
@@ -28,24 +31,25 @@
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@tanstack/react-query": "^5.0.0",
     "@use-it/interval": "^1.0.0",
-    "next": "^16.1.6",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "viem": "^2.0.0",
-    "wagmi": "^2.0.0"
+    "next": "16.1.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "viem": "2.45.2",
+    "wagmi": "2.19.5"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "3.3.3",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/react": "^19.2.8",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
-    "eslint": "^9.39.2",
-    "eslint-config-next": "^16.1.1",
+    "eslint": "9.39.2",
+    "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "postcss": "^8.5.6",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
+    "typescript": "5.9.3"
   }
 }

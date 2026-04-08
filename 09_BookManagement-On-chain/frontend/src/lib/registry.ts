@@ -1,14 +1,13 @@
 import type { Abi } from "viem";
 import bookManagementAbi from "@/lib/generated/book-management-abi.json";
+import { getRuntimeConfig } from "@/lib/runtime-config";
 
-// 合约地址：由 .env.local 注入（前端读取）
-export const registryAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as
-  | `0x${string}`
-  | undefined;
+const runtime = getRuntimeConfig();
 
-const chainIdFromEnv = Number.parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? "31337", 10);
-export const TARGET_CHAIN_ID =
-  Number.isInteger(chainIdFromEnv) && chainIdFromEnv > 0 ? chainIdFromEnv : 31337;
+// 合约地址：优先读取 runtime config，缺失时回退 .env.local。
+export const registryAddress = runtime.bookManagementAddress;
+
+export const TARGET_CHAIN_ID = runtime.chainId;
 
 // 常用的 0x00 哈希常量
 export const zeroHash =

@@ -634,6 +634,7 @@ export function CreateEventFormCard({ owner, resolver, isConnected, isWrongNetwo
                     />
                     {localCoverPreviewUrl ? (
                       <div className="relative h-32 overflow-hidden rounded-lg border border-black/10 bg-neutral-200">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={localCoverPreviewUrl} alt={copy.createForm.previewCoverFallback} className="h-full w-full object-cover" />
                       </div>
                     ) : null}
@@ -708,6 +709,7 @@ export function CreateEventFormCard({ owner, resolver, isConnected, isWrongNetwo
             <CardContent className="space-y-3 px-5 text-sm">
               <div className="relative overflow-hidden rounded-xl border border-black/10 bg-neutral-100">
                 {metadataMode === "local" && localCoverPreviewUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
                   <img src={localCoverPreviewUrl} alt={copy.createForm.previewCoverFallback} className="h-44 w-full object-cover" />
                 ) : (
                   <div className="flex h-44 items-center justify-center bg-gradient-to-br from-neutral-100 to-neutral-200 text-xs text-neutral-500">

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {PolymarketTypes} from "../src/PolymarketTypes.sol";
-import {TestBase} from "./TestBase.sol";
+import { PolymarketTypes } from "../src/PolymarketTypes.sol";
+import { TestBase } from "./TestBase.sol";
 
 contract InvariantTest is TestBase {
     // 场景：组合资金视角下应满足 资金覆盖不变量
@@ -10,10 +10,10 @@ contract InvariantTest is TestBase {
         uint256 eventId = createDefaultEvent();
 
         vm.prank(alice);
-        eventFactory.buyYes{value: 4 ether}(eventId);
+        eventFactory.buyYes{ value: 4 ether }(eventId);
 
         vm.prank(bob);
-        eventFactory.buyNo{value: 3 ether}(eventId);
+        eventFactory.buyNo{ value: 3 ether }(eventId);
 
         vm.warp(defaultCloseTime + 1);
         eventFactory.proposeResolution(eventId, PolymarketTypes.Outcome.Yes);
