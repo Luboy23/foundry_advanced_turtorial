@@ -1,14 +1,10 @@
-<h1 align="center"> 2026 年 Foundry 进阶开发教程 <br></h1>
-<p align="center"><strong>学习如何使用 Foundry 进行更深一步的 Solidity 智能合约开发 <br>作者： lllu_23</br></strong>
-</p>
+# 2026 年 Foundry 进阶开发教程
 
-<br>
-<br>
-<br>
-<h1><strong>Warning: 本教程中构建的所有代码未经过严格审核，仅用于学习交流的目的，禁止在实际的生产环境中使用！！！！！！</strong></h1>
-<br>
-<br>
-<br>
+学习如何使用 Foundry 进行更深一步的 Solidity 智能合约开发。  
+作者：`lllu_23`
+
+> [!WARNING]
+> 本教程中构建的所有代码未经过严格审核，仅用于学习交流，禁止在生产环境中直接使用。
 
 # 项目总览
 
@@ -25,7 +21,10 @@
 | [09_BookManagement-On-chain](09_BookManagement-On-chain/) | ![09_BookManagement-On-chain](09_BookManagement-On-chain/docs-assets/bm-home-landing.png) | 图书借阅管理平台，支持馆员端馆藏/借阅/读者管理与读者端注册查询。 |
 | [10_AnvilExplorer](10_AnvilExplorer/) | ![10_AnvilExplorer](10_AnvilExplorer/docs-assets/ui-home-dashboard.png) | 本地 Anvil 链浏览器，支持区块/交易/地址查询、链状态查看与 Cast 调试控制台。 |
 | [11_Polymarket-On-chain](11_Polymarket-On-chain/) | ![11_Polymarket-On-chain](11_Polymarket-On-chain/docs-assets/lulu-market-overview-card.png) | Polymarket 风格预测市场示例，支持市场创建、交易与结果结算流程。 |
-| [12_StoneFall-On-chain](12_StoneFall-On-chain/) | ![12_StoneFall-On-chain](12_StoneFall-On-chain/docs-assets/stonefall-idle-wallet-disconnected.png) | StoneFall 躲避上链版，支持结算自动提交成绩、链上排行榜与历史记录。 |
+| [12_StoneFall-On-chain](12_StoneFall-On-chain/) | ![12_StoneFall-On-chain](12_StoneFall-On-chain/docs-assets/stonefall-gameplay-running.png) | StoneFall 躲避上链版，支持结算自动提交成绩、链上排行榜与历史记录。 |
+| [13_Down-Man-On-chain](13_Down-Man-On-chain/) | ![13_Down-Man-On-chain](13_Down-Man-On-chain/docs-assets/downman-gameplay-running.png) | Phaser 下落生存上链版，支持结算自动提交、链上排行榜与历史记录。 |
+| [14_BraveMan-On-chain](14_BraveMan-On-chain/) | ![14_BraveMan-On-chain](14_BraveMan-On-chain/docs-assets/braveman-settlement-pending-signature.png) | BraveMan 三段式教学样板，结合前端实时游玩、Rust 确定性复盘与链上结算。 |
+| [15_TicTacToe-On-chain](15_TicTacToe-On-chain/) | ![15_TicTacToe-On-chain](15_TicTacToe-On-chain/docs-assets/04-gameplay-your-turn.png) | Web3 链上井字棋，支持创建/加入对局、链上落子、历史战绩与排行榜。 |
 
 # 开发建议（工程实践清单）
 
@@ -128,46 +127,52 @@
 # 如何解决你在编程学习当中遇到的问题
 
 ## 1. 搜索引擎
-### 当你遇到了编译错误或者是你无法解决的问题，你可以尝试将你的代码片段复制粘贴到搜索引擎的对话框中，看一看有没有人遇到和你类似的错误，如果是常规错误，那么大部分时候靠搜索引擎就能解决
+当你遇到了编译错误或者无法解决的问题时，可以先把核心报错片段放进搜索引擎，看一看是否有人遇到过类似问题。对于常规错误，大部分时候靠搜索引擎就能解决。
+
 **Tips**：
 不要将错误代码整段整段的复制到对话框中，这样搜索引擎通常会无法检索到正确的信息
 - 正确做法：选择较为核心的错误提示进行搜索
-### 搜索引擎推荐：
-  - [百度](https://www.baidu.com/)
-  - [谷歌](https://www.google.com/)
+
+推荐的搜索引擎：
+- [百度](https://www.baidu.com/)
+- [谷歌](https://www.google.com/)
 
 ## 2. 论坛
-### Stack Exchange 是一个专注于以太坊生态的论坛，里面有很多开发者提出的问题，也有很多大佬会帮忙解答，如果你在搜索栏中无法找到类似的错误解决办法，发个贴并附上详细的代码以及错误提示，相信不久之后就会有大佬帮你解答。
-  - [Stack Exchange Ethereum](https://ethereum.stackexchange.com/)
+Stack Exchange 是一个专注于以太坊生态的论坛，里面有很多开发者提出问题，也有很多经验丰富的开发者帮忙解答。如果你在搜索栏中找不到类似的解决办法，可以发帖并附上详细代码和错误提示。
+
+- [Stack Exchange Ethereum](https://ethereum.stackexchange.com/)
 
 ## 3. 免费的 AI 助手
-### 如何使用这一类的人工智能工信就不用我多说了，需要注意的是，一般来说不需要开通会员，也能够帮你解决大部分问题了，按自己的喜好选择适合的工具即可，我个人更加偏爱 ChatGPT 和 Phind。
-  - [DeepSeek](https://chat.deepseek.com/)
-  - [ChatGPT](https://chat.openai.com/)
-  - [Phind](https://www.phind.com/)：与 ChatGPT 类似，但是可以结合提问内容进行网页搜索
-  - [Gemini](https://gemini.google.com/)
-  - [claude.ai](https://claude.ai/)
+这一类人工智能工具的使用方式就不展开了。需要注意的是，很多时候即使不开通会员，也足够帮你解决大部分开发问题；按自己的习惯选择顺手的工具即可，我个人更偏爱 ChatGPT 和 Phind。
 
-## 4. Github Copilot
-### 
+- [DeepSeek](https://chat.deepseek.com/)
+- [ChatGPT](https://chat.openai.com/)
+- [Phind](https://www.phind.com/)：与 ChatGPT 类似，但可以结合提问内容进行网页搜索
+- [Gemini](https://gemini.google.com/)
+- [Claude](https://claude.ai/)
+
+## 4. GitHub Copilot
 **我不推荐新手朋友在学习的过程中使用 Copilot，Copilot 会自动帮你完成很多本应你自己完成的代码，相信我，自己跟着视频教程敲一遍代码，一定能让你学到更多**
-  - [copilot](https://github.com/features/copilot)
+
+- [GitHub Copilot](https://github.com/features/copilot)
 
 # 测试网水龙头
 
-## 推荐使用 [Amoy](https://amoy.polygonscan.com/): Polygon 的测试网，之前的名字叫 `Mumbai`, 后来改为了 `Amoy`
+## 推荐使用 [Amoy](https://amoy.polygonscan.com/)
+Polygon 的测试网，之前的名字叫 `Mumbai`，后来改为了 `Amoy`。
+
 1. [Alchemy Faucet (Amoy)](https://www.alchemy.com/faucets/polygon-amoy)
 2. [QuickNode Faucet (Amoy)](https://faucet.quicknode.com/polygon/amoy)
 3. [Chainlink Faucet (Amoy)](https://faucets.chain.link/polygon-amoy)
--  **Tips: 现在的水龙头基本都需要你在主网钱包中有少量的代币余额，才可以领取测试币**
+- **Tips**：现在的水龙头基本都需要你在主网钱包中有少量代币余额，才可以领取测试币。
 
 # 推荐安装的 VSCode 插件
 
 ## 常规使用
 - 图标优化:(选择自己喜欢的图标即可)
-  1. Vscode-Icons
+  1. VSCode Icons
   2. Material Icon Theme
-- Vscode主题:(选择自己喜欢的主题即可)
+- VSCode 主题:(选择自己喜欢的主题即可)
   1. One Dark Pro
   2. Dracula Theme Official
   3. Shades of Purple
@@ -175,18 +180,18 @@
 - TODO Highlight: TODO 高亮
 - indent-rainbow: 缩进显示优化
 - Prettier - Code formatter: 代码格式化
-- Path Interllicense: 自动补全文件路径
+- Path Intellisense: 自动补全文件路径
 - Code Snap: 代码截图工具
 - Peacock: 用于区分不同主题的工作区
 - Code Spell Checker: 检查单词错误
-- Markdown All in One: 用于编写合约的 ReadMe.md 文档
+- Markdown All in One: 用于编写合约的 `README.md` 文档
  
-## 智能合约开发的 Vscode 插件
+## 智能合约开发的 VSCode 插件
 - Solidity: 以太坊官方插件
-- Foundry Test Explorer: 直接在 VSCode的 test explorer 中运行 Foundry 的 solidity 测试
+- Foundry Test Explorer: 直接在 VSCode 的 test explorer 中运行 Foundry 的 Solidity 测试
 - Even Better Toml: 静态分析`.toml`文件主要用于便捷查看 `foundry.toml` 文件
 
-## 前端开发相关的 Vscode 插件
+## 前端开发相关的 VSCode 插件
 - Auto Rename Tag: 自动重命名标签配对
 - Eslint: 用于 JS 和 TS 代码的静态分析
 - Next.js Snippets: 提供常用的 Next.js 代码片段
@@ -225,18 +230,18 @@
 # 一些 Web3 招聘网站
 ## 中文招聘网站
 - [SmartDeer](https://www.smartdeer.work/zh): 在 IOS/Android 端的应用商店都能自己搜索到，将求职意向选择到 Web3 相关的岗位，会跳转出很多的 Web3 项目方，缺点是 HR 回复速度慢或不回复，需要自己找到联系方式后，通过写邮件或其他方式再次投递简历。
-- [abetterweb3]: 华人自制的以 `Notion` 形式发布的招聘网页，可以在上面发布自己的简历，也可以根据项目方贴出来的联系方式直接与项目方联系
+- [abetterweb3](https://abetterweb3.notion.site/abetterweb3-7ce334dcf8524cb79a5894bdd784ddb4): 华人自制的以 `Notion` 形式发布的招聘网页，可以在上面发布自己的简历，也可以根据项目方贴出来的联系方式直接与项目方联系
 - Boss 直聘, 智联招聘, 猎聘这些传统的招聘网站也有很多 Web3 的招聘信息，大家注意甄别，和项目方沟通时记得多留几个心眼，不要踩坑就行
 
 ## 海外招聘网站
-https://web3.career/<br>
-https://remote3.co/<br>
-https://remoteok.com/<br>
-https://cryptojobslist.com/<br>
-https://www.useweb3.xyz/<br>
-https://www.cryptojobs.com/<br>
-https://blockchain.works-hub.com/<br>
-https://abetterweb3.notion.site/abetterweb3-7ce334dcf8524cb79a5894bdd784ddb4<br>
+- [web3.career](https://web3.career/)
+- [remote3.co](https://remote3.co/)
+- [remoteok.com](https://remoteok.com/)
+- [cryptojobslist.com](https://cryptojobslist.com/)
+- [useweb3.xyz](https://www.useweb3.xyz/)
+- [cryptojobs.com](https://www.cryptojobs.com/)
+- [blockchain.works-hub.com](https://blockchain.works-hub.com/)
+- [abetterweb3](https://abetterweb3.notion.site/abetterweb3-7ce334dcf8524cb79a5894bdd784ddb4)
 
 # 环境配置
 1. 安装并配置 `git` 所需的环境
@@ -249,7 +254,7 @@ https://abetterweb3.notion.site/abetterweb3-7ce334dcf8524cb79a5894bdd784ddb4<br>
         - 国内建议切换到淘宝镜像源，下载速度会快很多
 
 ## 合约部分的环境配置
-1. 安装 `Rustup`: Foundry 运行必须的环境时
+1. 安装 `Rustup`：Foundry 运行所需的基础环境之一
    - [rust](https://www.rust-lang.org/tools/install)
         - 安装成功后可以运行 `rustc --version` ，如果安装成功则显示 `rustc x.x.x`，截止 2026 年 2 月，当前我使用的版本为 `rustc 1.93.0 (2026-01-22)`
 
@@ -262,18 +267,18 @@ https://abetterweb3.notion.site/abetterweb3-7ce334dcf8524cb79a5894bdd784ddb4<br>
         - 安装成功后可以运行 `forge --version` ，如果安装成功则显示 `forge x.x.x`，截止 2026 年 2 月，当前我使用的版本为 `forge 1.0.0-stable (e144b820 2025-02-13T20:02:34.979686000Z)`
 
 ## 前端项目的环境配置
-1. 安装[Next.js](https://nextjs.org/): 作为项目的前端框架，当然你也可以选择 React, Vue,因人而已，选择自己用的顺手的即可,截止 2026 年 2 月，当前我使用的版本为 `15.5.12`。
-  - 在终端运行`npx create-next-app@latest` 初始化一个 Nextjs 项目，并根据自己的需求选择所需要的附加插件
+1. 安装 [Next.js](https://nextjs.org/): 作为项目的前端框架，当然你也可以选择 React、Vue，因人而异，选择自己顺手的即可。截止 2026 年 2 月，当前我使用的版本为 `15.5.12`。
+  - 在终端运行 `npx create-next-app@latest` 初始化一个 Next.js 项目，并根据自己的需求选择所需要的附加插件
   
-2. 安装[tailwindcss](https://tailwindcss.com/docs/installation)
-  - 在终端运行`npm install -D tailwindcss npx tailwindcss init`,然后根据官网文档进行配置
+2. 安装 [Tailwind CSS](https://tailwindcss.com/docs/installation)
+  - 在终端运行 `npm install -D tailwindcss`，然后根据官网文档进行配置
+  
+3. 安装 [Ethers](https://docs.ethers.org/v6/): 用于前端与合约之间的交互（新手更推荐 Ethers）
 
-3. 安装[Ethers](https://docs.ethers.org/v6/): 用于前端与合约之间的交互(新手更推荐 Ethers)
+4. 安装 [wagmi](https://wagmi.sh/): 用于前端与合约之间的交互
 
-4. 安装[Wagmi](https://wagmi.sh/): 用于前端与合约之间的交互
-
-5. 安装[RainbowKit](https://www.rainbowkit.com/zh-CN): 主要用于前端和钱包交互
-  - 在终端运行`npm init @rainbow-me/rainbowkit@latest`
+5. 安装 [RainbowKit](https://www.rainbowkit.com/zh-CN): 主要用于前端和钱包交互
+  - 在终端运行 `npm init @rainbow-me/rainbowkit@latest`
 
 # 常见的 Foundry 指令
 
@@ -377,17 +382,234 @@ function setBlockGasLimit(uint _gasLimit) public;
 
 
 # 使用 `cast` 与合约进行交互
-## 一般使用 `cast send` 和  `cast call` 与智能合约进行交互，详细用法可以在[ Foundry 官方文档](https://book.getfoundry.sh/cast/?highlight=cast#how-to-use-cast)  - cast 概览中找到
+一般使用 `cast send` 和 `cast call` 与智能合约进行交互，详细用法可以在 [Foundry 官方文档](https://book.getfoundry.sh/cast/?highlight=cast#how-to-use-cast) 的 cast 概览中找到。
 
 
 
-<br><br><br><br><br>
-<p align="center">
-<strong>
-感谢你阅读全文，希望这篇文档能给你带来一些帮助！<br>
-搬运转载请注明出处！！！<br>
-作者： lllu_23<br>
-联系方式: lllu238744@gmail.com<br>
-最后一次更新时间: 2026-3-28<br>
-</strong>
-</p>
+
+
+
+# 零知识证明（ZK）开发总览
+
+## 1. 什么是零知识证明
+零知识证明（Zero-Knowledge Proof，简称 `ZK`）最核心的价值，可以概括为一句话：
+**我不把原始隐私数据直接交给你，但我仍然可以向你证明“某个条件是真的”。**
+
+最常见的理解方式，可以先看下面这几个例子：
+- 我不公开完整成绩单，但我可以证明“我的分数达到了某条录取线”
+- 我不公开生日和身份证信息，但我可以证明“我已经成年”
+- 我不公开完整失业凭证，但我可以证明“我满足某项补助领取资格”
+
+从工程角度看，`ZK` 项目并不是“给普通 DApp 多装一个库”，而是把“本地持有隐私数据、生成证明、链上或服务端验证、执行后续业务动作”串成一条新的开发链路。
+
+## 2. ZK 项目通常在解决什么问题
+传统链上项目里，常见做法往往是：
+- 把用户数据直接提交到后端或链上
+- 后端或合约再根据这些数据判断用户是否满足条件
+
+而 `ZK` 项目更适合处理下面这些场景：
+- 数据本身很敏感，不适合直接公开
+- 业务真正关心的不是“全部原始数据”，而只是“你是否满足某个资格”
+- 需要防止同一份资格被重复使用
+- 需要把“验证结果”与钱包地址、链上状态、业务流程绑定起来
+
+所以很多 `ZK` 项目的重点并不是“加密一切”，而是：
+**尽量少暴露数据，只把业务真正需要验证的结论交给系统。**
+
+## 3. 一次完整的 ZK 验证流程是什么样的
+从开发流程来看，一次典型的 `ZK` 验证通常会经过下面这些阶段：
+
+1. 先明确业务规则，也就是“你到底想证明什么”
+2. 把这个规则写成电路约束（`circuit`）
+3. 使用工具链编译电路，生成 `wasm`、`zkey`、`verifier` 等产物
+4. 准备好业务侧需要公开的公共输入，例如资格集合根、项目编号、版本号等
+5. 在前端或服务端根据私有数据生成 `proof`
+6. 把 `proof + public signals` 提交给链上合约或验证服务
+7. 由 `verifier` 验证证明是否成立
+8. 验证通过后，才允许进入后续业务动作，比如注册、申请、购买、领取补助、铸造资格等
+
+如果你是第一次接触这类项目，最需要先建立下面这三个认知：
+- 原始隐私数据通常不会直接上链
+- 链上更关心的是“证明有没有通过”
+- `proof` 只是在证明你满足条件，不是在替代完整业务逻辑
+
+## 4. 初学者最容易混淆的几个概念
+
+### `circuit`
+电路就是你要证明的规则本身，可以把它理解为“隐私业务逻辑的数学表达”。
+
+### `witness`
+`witness` 一般指生成证明时使用的私有输入，它往往来自本地持有的敏感数据。  
+很多初学者会把 `witness` 当成 `proof` 本身，这是不对的，`witness` 更像是生成证明时喂给电路的数据。
+
+### `public input / public signals`
+这些是验证方允许公开看到的输入或输出。  
+比如版本号、项目 ID、Merkle root、当前绑定的钱包地址、某些公开结果等，都可能作为 `public signals` 出现。
+
+### `proof`
+`proof` 就是最终生成出来的证明结果。  
+验证方不需要知道你的全部原始数据，只需要拿到 `proof` 和对应的公共输入，就可以判断你是否满足电路约束。
+
+### `verifier`
+`verifier` 是验证证明是否成立的程序或合约。  
+在链上项目里，通常会把 `verifier` 生成成一个 Solidity 合约，然后由业务合约去调用它。
+
+### `wasm`
+很多浏览器内 proving 场景，会把电路编译后的 `wasm` 产物交给前端使用。  
+前端在本地加载 `wasm` 后，就可以配合私有输入计算 `witness` 或生成证明。
+
+### `zkey`
+`zkey` 是生成证明时会用到的关键产物。  
+如果你走的是 `Groth16` 这类常见路线，前端或服务端通常都要依赖 `zkey` 才能完成正式 proving。
+
+### `trusted setup`
+`trusted setup` 可以理解为某些证明系统在正式 proving 之前需要准备的一组可信参数。  
+对于 `Groth16` 来说，这一步非常关键，所以很多开发者第一次接触 `ZK` 时都会在这里花很多时间。
+
+### `Merkle root`
+很多资格证明项目不会把全部用户数据逐条公开验证，而是先把资格集合组织成一棵 Merkle Tree。  
+链上或验证方只需要持有 `Merkle root`，用户再通过路径证明自己属于这个集合即可。
+
+### `nullifier`
+`nullifier` 最常见的用途是防止同一份资格被重复使用。  
+它不是简单的用户 ID，而是一个专门服务于“防重复提交 / 防重复领取 / 防重复验证”的工程设计。
+
+### `wallet binding`
+很多业务会把证明结果和当前钱包地址绑定。  
+这样做的好处是，即使别人拿到了你的某份本地凭证，也不能轻易换个钱包地址重新复用。
+
+## 5. 开发 ZK 项目通常需要掌握的技术
+
+### 电路与证明层
+- `Circom`：用来描述电路约束，是很多 JavaScript 生态 `ZK` 项目的常见入口。
+- `snarkjs`：负责 trusted setup、proof 生成、proof 验证、calldata 导出等核心流程。
+- `circomlib / circomlibjs`：提供常见电路组件和对应的 JavaScript 辅助能力，能少写很多基础模板。
+- `ffjavascript`：负责有限域相关运算，是很多 `snarkjs` / `circom` 周边工具依赖的底层库。
+- `Groth16`：当前非常常见的一条工程路线，优点是链上验证成本和产物形态都比较成熟。
+
+### 链上验证层
+- `Solidity verifier`：把证明验证能力带到链上，是业务合约能否真正消费 `proof` 的关键。
+- `Foundry`：非常适合管理 verifier、业务合约、部署脚本和测试流程。
+- `Anvil`：适合本地快速搭一条链，把 proving、部署、验证、前端交互整条链路跑通。
+
+### 前端交互层
+- `Next.js`：适合承载正式业务前端、路由、API route 和静态产物同步。
+- `React`：用于组织复杂的多角色界面、交易流程状态和本地凭证管理。
+- `TypeScript`：在 `ZK` 项目里尤其重要，因为 proof 输入、公共信号、ABI 配置、角色状态这些数据结构都很容易出错。
+- `wagmi + viem`：用于钱包连接、链上读写、交易状态处理与前端合约交互。
+- 浏览器内 proving：很多隐私项目希望让用户在本地完成证明，这样私有数据就不用先上传到后端。
+- `wasm / zkey` 产物加载：前端 proving 能不能跑起来，很大程度上取决于这两类产物能否正确同步、加载和缓存。
+
+### 后端与服务层
+- 事件索引：把链上事件投影成更容易查询的业务数据。
+- 数据聚合 API：把链上状态、链下草稿、本地流程说明、角色视图统一成稳定接口。
+- 数据库存储：托管草稿、辅助记录、发放记录、历史快照等链下状态。
+- 类型同步 / OpenAPI：避免前后端各写一套接口类型，减少联调错误。
+- `NestJS + Prisma + PostgreSQL`：这是目前很常见的一套工程组合，适合把复杂业务状态和链上事件聚合起来。
+
+### 工程协作层
+- 构建脚本：把 `build-zk`、`build-contracts`、`deploy` 这样的动作收敛成稳定入口。
+- 部署脚本：负责 verifier、业务合约、运行时配置、地址同步等流程。
+- ABI / 运行时配置同步：让前端可以稳定拿到最新地址、ABI、`wasm`、`zkey` 和公开样例。
+- 测试与环境管理：把电路测试、合约测试、前端构建、角色流程校验收成一套可以重复执行的流程。
+
+**总结一下：**
+真正的 `ZK` 项目，本质上是“电路 + 合约 + 前端 + 数据约束 + 业务规则 + 工程同步”一起工作的结果。
+
+## 6. 一个完整 ZK 项目通常如何落地
+如果你以后要自己做一类 `ZK` 项目，我建议按下面这个顺序思考和落地：
+
+1. 先定义业务里的“资格条件”，例如是否成年、是否在某个名单里、是否达到某个阈值
+2. 再定义哪些数据必须私有，哪些数据可以公开，这一步没想清楚，后面电路和前端都会反复返工
+3. 把资格规则抽象成电路输入、约束和输出，明确哪些是私有输入，哪些是公共输入
+4. 编译电路并生成核心产物，包括 `wasm`、`zkey`、验证相关产物以及测试样例
+5. 部署 verifier 与业务合约，让链上具备“接收 proof 并判断它是否成立”的能力
+6. 准备公共状态，例如资格集合根、版本号、项目 ID、角色配置、业务参数等
+7. 在前端或服务端完成 proof 生成，如果强调隐私，很多时候会选择在浏览器内完成 proving
+8. 把 proof 接进真实业务动作，例如验证成功后允许提交申请、购买受限商品、领取权益或完成登记
+9. 最后补上防重放、防重复提交和版本失效机制，例如 `nullifier`、版本号、钱包绑定、资格集合刷新等
+
+你会发现，`ZK` 项目的难点往往不只是“电路能不能写出来”，还在于：
+- 电路设计是否真的贴合业务
+- 前端 proving 是否稳定
+- 公共输入是否设计合理
+- 链上验证和业务状态机能不能闭环
+
+## 7. 如果你想开始做 ZK 项目，建议先补哪些能力
+
+### 第一阶段：先建立最小认知
+- 先理解零知识证明到底在解决什么问题
+- 先理解 Merkle Tree、commitment、nullifier 这些常见结构在工程里的作用
+- 先把 `circuit / witness / proof / verifier / public input` 这几个概念彻底分清楚
+
+### 第二阶段：学会本地跑通最小闭环
+- 学会写一个最小 `Circom` 电路
+- 学会编译电路
+- 学会生成 `proof`
+- 学会本地验证 `proof`
+- 学会把 verifier 合约部署到本地链上
+
+### 第三阶段：再进入前端与业务集成
+- 学会前端加载 `wasm / zkey`
+- 学会处理 proving 过程中的耗时、报错和用户交互状态
+- 学会把 proof 和钱包地址、业务参数、链上状态绑定起来
+- 学会设计“验证成功之后到底允许做什么”
+
+### 第四阶段：最后补工程化能力
+- 统一构建脚本和运行入口
+- 管理环境变量、部署地址、ABI、公开样例和运行时配置
+- 补自动化测试
+- 补可信设置、版本切换、产物同步、性能与安全性问题
+
+**我的建议是：**
+不要一开始就去追最复杂的证明系统，也不要一上来就把精力全部放在论文和数学推导上。  
+对于大多数想做业务型 `ZK` 项目的人来说，先把“本地 build -> prove -> verify -> 链上调用 -> 前端交互”这条最小链路跑通，收益会更大。
+
+## 8. 推荐的 ZK 学习资料与工具
+
+### 基础概念
+- [Circom 2 Documentation](https://docs.circom.io/)：非常适合作为 `Circom` 生态总入口，其中也包含 `Background in ZK`、电路编译、witness 计算和 proving 流程说明。
+- [Proving circuits with ZK](https://docs.circom.io/getting-started/proving-circuits/)：如果你想快速建立“trusted setup -> prove -> verify -> smart contract verify”的全流程认知，这一页非常值得反复阅读。
+- [OpenZeppelin MerkleProof](https://docs.openzeppelin.com/contracts/5.x/api/utils#MerkleProof)：理解 Merkle proof、资格集合、路径验证时非常有帮助。
+
+### Circom / snarkjs
+- [snarkjs](https://github.com/iden3/snarkjs)：最核心的 JavaScript `zkSNARK` 工具之一，常见的 `Groth16 fullprove / verify / powers of tau` 都绕不开它。
+- [circomlib](https://github.com/iden3/circomlib)：常见电路模板与哈希、比较器、签名等基础组件库。
+- [circomlibjs](https://github.com/iden3/circomlibjs)：很多前端或脚本侧的 witness 辅助、哈希与工具函数都会依赖它。
+- [ffjavascript](https://github.com/iden3/ffjavascript)：有限域计算相关底层库，虽然偏底层，但很多时候排查问题会看到它。
+
+### 链上验证与 Solidity 集成
+- [Foundry Docs](https://www.getfoundry.sh/)：如果你要把 verifier 和业务合约结合起来，这是最值得长期看的文档之一。
+- [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts) ：在权限控制、Merkle proof 校验、角色管理、标准接口复用方面都非常有帮助。
+
+### 前端与工程化
+- [Next.js Docs](https://nextjs.org/docs)：适合搭建正式业务前端、路由、API route 和产物同步链路。
+- [wagmi](https://wagmi.sh/)：适合处理钱包连接、合约读写与 React 侧的链交互状态。
+- [viem](https://viem.sh/)：适合做类型更清晰的链上读写、编码解码和客户端管理。
+- [NestJS Docs](https://docs.nestjs.com/)：如果你的 `ZK` 项目需要稳定的后端聚合层、事件索引或工作台 API，这套文档很值得系统学习。
+- [Prisma Docs](https://www.prisma.io/docs)：如果你要托管链下记录、凭证草稿、历史状态或管理后台数据，Prisma 的上手门槛相对友好。
+- [PostgreSQL Docs](https://www.postgresql.org/docs/)：做正式业务型项目时，理解数据库本身仍然很重要。
+- [OpenAPI Specification](https://swagger.io/specification/)：如果你想把后端接口类型稳定同步到前端，这是一套很值得补的标准。
+
+### 进阶方向
+- [snarkjs Trusted Setup / Powers of Tau 说明](https://github.com/iden3/snarkjs)：如果你后面想真正理解 `ptau`、Phase 2、trusted setup 这些关键词，建议直接回到 `snarkjs` 官方仓库学习。
+- [Circom Background in ZK](https://docs.circom.io/)：适合回头补概念背景，把“会用工具”升级成“知道自己在做什么”。
+- [OWASP SCSVS](https://scs.owasp.org/SCSVS/)：虽然它不是专门写给 `ZK` 的，但对合约安全、权限控制、输入验证和系统边界思考很有帮助。
+
+**最后的建议：**
+如果你是第一次正式接触 `ZK`，不要急着把资源一口气全部看完。  
+最有效的方式通常是：
+- 先看一遍概念
+- 再跑一遍最小样例
+- 遇到卡点时回到官方文档定点补知识
+
+这样学习速度通常会比“先把所有资料完整看完再动手”更快一些。
+---
+
+感谢你阅读全文，希望这篇文档能给你带来一些帮助！
+
+- 作者：`lllu_23`
+- 联系方式：`lllu238744@gmail.com`
+- 最后一次更新时间：`2026-04-09`
+
+搬运转载请注明出处。
