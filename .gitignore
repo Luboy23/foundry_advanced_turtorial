@@ -61,3 +61,6 @@ target/
 
 # Recommended generated runtime config
 **/public/contract-config.json
+
+# Project docs should stay local
+[0-9][0-9]_*/docs/
