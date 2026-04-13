@@ -1,0 +1,31 @@
+{
+  "scoreSource": {
+    "scoreSourceIdLabel": "GAOKAO_2026",
+    "sourceTitle": "2026 全国统一高考",
+    "maxScore": 100,
+    "merkleDepth": 20
+  },
+  "records": [
+    {
+      "candidateLabel": "demo-student",
+      "candidateIdHash": "100001",
+      "score": 60,
+      "secretSalt": "910001",
+      "boundStudentAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+    },
+    {
+      "candidateLabel": "alice@example.com",
+      "candidateIdHash": "100002",
+      "score": 88,
+      "secretSalt": "910002",
+      "boundStudentAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+    },
+    {
+      "candidateLabel": "bob@example.com",
+      "candidateIdHash": "100003",
+      "score": 42,
+      "secretSalt": "910003",
+      "boundStudentAddress": "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
+    }
+  ]
+}

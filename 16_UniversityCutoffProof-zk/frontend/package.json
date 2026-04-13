@@ -1,0 +1,45 @@
+{
+  "name": "16-university-cutoff-proof-zk-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "npm@11.9.0",
+  "scripts": {
+    "postinstall": "node scripts/patch-browser-crypto.mjs",
+    "dev": "next dev --webpack",
+    "build": "npm run build:ci",
+    "build:ci": "next build --webpack",
+    "build:turbo": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc -p tsconfig.typecheck.json --noEmit",
+    "check": "npm run lint && npm run typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "backend:types": "npm --prefix ../backend run openapi:export && openapi-typescript ../backend/openapi.json -o types/generated/backend-api.ts"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.59.0",
+    "circomlibjs": "0.1.7",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.577.0",
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "snarkjs": "0.7.6",
+    "tailwind-merge": "^3.3.1",
+    "viem": "2.47.0",
+    "wagmi": "2.19.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "eslint": "9.39.1",
+    "eslint-config-next": "16.1.6",
+    "openapi-typescript": "^7.13.0",
+    "tailwindcss": "^4.1.18",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
+  }
+}

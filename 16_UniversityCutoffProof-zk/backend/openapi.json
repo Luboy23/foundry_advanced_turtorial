@@ -1,0 +1,1739 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/auth/challenge": {
+      "post": {
+        "operationId": "AuthController_createChallenge",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChallengeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "创建钱包登录挑战",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthChallengeDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/verify": {
+      "post": {
+        "operationId": "AuthController_verify",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyWalletDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "校验签名并建立会话",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/session": {
+      "get": {
+        "operationId": "AuthController_getSession",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "读取当前后台钱包会话",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "nullable": true,
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BackendSessionStatusDto"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "退出当前钱包会话",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/authority/workbench": {
+      "get": {
+        "operationId": "AuthorityController_getWorkbench",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "考试院工作台聚合数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorityWorkbenchDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authority"
+        ]
+      }
+    },
+    "/api/authority/drafts": {
+      "post": {
+        "operationId": "AuthorityController_createDraft",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAuthorityDraftDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "创建考试院成绩草稿",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorityDraftDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authority"
+        ]
+      }
+    },
+    "/api/authority/drafts/current": {
+      "get": {
+        "operationId": "AuthorityController_getCurrentDraft",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "读取当前最新草稿",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorityDraftDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authority"
+        ]
+      }
+    },
+    "/api/authority/drafts/{draftId}/preview": {
+      "get": {
+        "operationId": "AuthorityController_getDraftPreview",
+        "parameters": [
+          {
+            "name": "draftId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "预览当前草稿的成绩源摘要与学生凭证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorityDraftGenerationDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authority"
+        ]
+      }
+    },
+    "/api/authority/drafts/{draftId}/generate": {
+      "post": {
+        "operationId": "AuthorityController_generateDraftBatch",
+        "parameters": [
+          {
+            "name": "draftId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateAuthorityDraftBatchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "生成当前草稿的成绩源摘要与学生凭证批次",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorityDraftGenerationDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authority"
+        ]
+      }
+    },
+    "/api/authority/issuance-records": {
+      "get": {
+        "operationId": "AuthorityController_getIssuanceRecords",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuthorityIssuanceRecordDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authority"
+        ]
+      }
+    },
+    "/api/authority/publish-history": {
+      "get": {
+        "operationId": "AuthorityController_getPublishHistory",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuthorityPublishHistoryItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authority"
+        ]
+      }
+    },
+    "/api/universities/{family}/workbench": {
+      "get": {
+        "operationId": "UniversityController_getWorkbench",
+        "parameters": [
+          {
+            "name": "family",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "大学工作台聚合数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UniversityWorkbenchDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "university"
+        ]
+      }
+    },
+    "/api/universities/{family}/rules": {
+      "get": {
+        "operationId": "UniversityController_getRules",
+        "parameters": [
+          {
+            "name": "family",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UniversityRuleVersionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "university"
+        ]
+      }
+    },
+    "/api/universities/{family}/applications": {
+      "get": {
+        "operationId": "UniversityController_getApplications",
+        "parameters": [
+          {
+            "name": "family",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentApplicationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "university"
+        ]
+      }
+    },
+    "/api/universities/{family}/summary": {
+      "get": {
+        "operationId": "UniversityController_getSummary",
+        "parameters": [
+          {
+            "name": "family",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UniversitySummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "university"
+        ]
+      }
+    },
+    "/api/students/{wallet}/workbench": {
+      "get": {
+        "operationId": "StudentController_getWorkbench",
+        "parameters": [
+          {
+            "name": "wallet",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "学生工作台聚合数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentWorkbenchDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "student"
+        ]
+      }
+    },
+    "/api/students/{wallet}/applications": {
+      "get": {
+        "operationId": "StudentController_getApplications",
+        "parameters": [
+          {
+            "name": "wallet",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentApplicationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "student"
+        ]
+      }
+    },
+    "/api/students/{wallet}/current-application": {
+      "get": {
+        "operationId": "StudentController_getCurrentApplication",
+        "parameters": [
+          {
+            "name": "wallet",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentCurrentApplicationDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "student"
+        ]
+      }
+    },
+    "/api/students/{wallet}/eligibility": {
+      "get": {
+        "operationId": "StudentController_getEligibility",
+        "parameters": [
+          {
+            "name": "wallet",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentEligibilityDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "student"
+        ]
+      }
+    },
+    "/api/students/{wallet}/auxiliary-records": {
+      "post": {
+        "operationId": "StudentController_createAuxiliaryRecord",
+        "parameters": [
+          {
+            "name": "wallet",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStudentAuxiliaryRecordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentAuxiliaryRecordDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "student"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "operationId": "SystemController_getHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "后端健康检查",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "system"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "UniversityCutoffProof-zk Backend",
+    "description": "NestJS workbench backend for the admission demo",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "BackendSessionStatusDto": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string"
+          },
+          "walletAddress": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "devSignatureBypass": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sessionId",
+          "walletAddress",
+          "role",
+          "expiresAt",
+          "devSignatureBypass"
+        ]
+      },
+      "CreateChallengeDto": {
+        "type": "object",
+        "properties": {
+          "walletAddress": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "walletAddress"
+        ]
+      },
+      "AuthChallengeDto": {
+        "type": "object",
+        "properties": {
+          "walletAddress": {
+            "type": "string"
+          },
+          "challenge": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "walletAddress",
+          "challenge",
+          "expiresAt",
+          "nonce"
+        ]
+      },
+      "VerifyWalletDto": {
+        "type": "object",
+        "properties": {
+          "walletAddress": {
+            "type": "string"
+          },
+          "challenge": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "walletAddress",
+          "challenge",
+          "signature"
+        ]
+      },
+      "WalletSessionDto": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string"
+          },
+          "walletAddress": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "devSignatureBypass": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sessionId",
+          "walletAddress",
+          "role",
+          "expiresAt",
+          "devSignatureBypass"
+        ]
+      },
+      "LogoutDto": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ]
+      },
+      "ScoreSourceInfoDto": {
+        "type": "object",
+        "properties": {
+          "scoreSourceIdLabel": {
+            "type": "string"
+          },
+          "sourceTitle": {
+            "type": "string"
+          },
+          "maxScore": {
+            "type": "number"
+          },
+          "merkleDepth": {
+            "type": "number",
+            "default": 20
+          }
+        },
+        "required": [
+          "scoreSourceIdLabel",
+          "sourceTitle",
+          "maxScore"
+        ]
+      },
+      "ScoreRecordInputDto": {
+        "type": "object",
+        "properties": {
+          "candidateLabel": {
+            "type": "string"
+          },
+          "candidateIdHash": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "secretSalt": {
+            "type": "string"
+          },
+          "boundStudentAddress": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "candidateLabel",
+          "candidateIdHash",
+          "score",
+          "secretSalt",
+          "boundStudentAddress"
+        ]
+      },
+      "AuthorityImportPayloadDto": {
+        "type": "object",
+        "properties": {
+          "scoreSource": {
+            "$ref": "#/components/schemas/ScoreSourceInfoDto"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScoreRecordInputDto"
+            }
+          }
+        },
+        "required": [
+          "scoreSource",
+          "records"
+        ]
+      },
+      "AuthorityDraftDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "scoreSourceIdLabel": {
+            "type": "string"
+          },
+          "sourceTitle": {
+            "type": "string"
+          },
+          "maxScore": {
+            "type": "number"
+          },
+          "payloadJson": {
+            "$ref": "#/components/schemas/AuthorityImportPayloadDto"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "scoreSourceIdLabel",
+          "sourceTitle",
+          "maxScore",
+          "payloadJson",
+          "createdBy",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "AuthorityPublishHistoryItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "scoreSourceId": {
+            "type": "string"
+          },
+          "scoreSourceIdLabel": {
+            "type": "string"
+          },
+          "sourceTitle": {
+            "type": "string"
+          },
+          "merkleRoot": {
+            "type": "string"
+          },
+          "maxScore": {
+            "type": "number"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "issuedAt": {
+            "type": "string"
+          },
+          "txHash": {
+            "type": "object",
+            "nullable": true
+          },
+          "blockNumber": {
+            "type": "object",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "scoreSourceId",
+          "scoreSourceIdLabel",
+          "sourceTitle",
+          "merkleRoot",
+          "maxScore",
+          "issuer",
+          "issuedAt",
+          "active",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "AuthorityIssuanceRecordDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "batchId": {
+            "type": "string"
+          },
+          "scoreSourceIdLabel": {
+            "type": "string"
+          },
+          "candidateLabel": {
+            "type": "string"
+          },
+          "boundStudentAddress": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "batchId",
+          "scoreSourceIdLabel",
+          "candidateLabel",
+          "boundStudentAddress",
+          "score",
+          "fileName",
+          "createdAt"
+        ]
+      },
+      "ScoreSourcePublicationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "scoreSourceId": {
+            "type": "string"
+          },
+          "scoreSourceIdLabel": {
+            "type": "string"
+          },
+          "sourceTitle": {
+            "type": "string"
+          },
+          "merkleRoot": {
+            "type": "string"
+          },
+          "maxScore": {
+            "type": "number"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "issuedAt": {
+            "type": "string"
+          },
+          "txHash": {
+            "type": "object",
+            "nullable": true
+          },
+          "blockNumber": {
+            "type": "object",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "scoreSourceId",
+          "scoreSourceIdLabel",
+          "sourceTitle",
+          "merkleRoot",
+          "maxScore",
+          "issuer",
+          "issuedAt",
+          "active",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "WorkbenchSyncStatusDto": {
+        "type": "object",
+        "properties": {
+          "stale": {
+            "type": "boolean"
+          },
+          "partialErrors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "stale",
+          "partialErrors"
+        ]
+      },
+      "AuthorityWorkbenchDto": {
+        "type": "object",
+        "properties": {
+          "currentDraft": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AuthorityDraftDto"
+              }
+            ]
+          },
+          "publishHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthorityPublishHistoryItemDto"
+            }
+          },
+          "issuanceRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthorityIssuanceRecordDto"
+            }
+          },
+          "latestActiveSource": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScoreSourcePublicationDto"
+              }
+            ]
+          },
+          "latestSource": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScoreSourcePublicationDto"
+              }
+            ]
+          },
+          "syncStatus": {
+            "$ref": "#/components/schemas/WorkbenchSyncStatusDto"
+          }
+        },
+        "required": [
+          "publishHistory",
+          "issuanceRecords",
+          "syncStatus"
+        ]
+      },
+      "CreateAuthorityDraftDto": {
+        "type": "object",
+        "properties": {
+          "createdBy": {
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/AuthorityImportPayloadDto"
+          }
+        },
+        "required": [
+          "createdBy",
+          "payload"
+        ]
+      },
+      "GeneratedScoreSourceDto": {
+        "type": "object",
+        "properties": {
+          "scoreSourceIdLabel": {
+            "type": "string"
+          },
+          "scoreSourceIdBytes32": {
+            "type": "string"
+          },
+          "scoreSourceIdField": {
+            "type": "string"
+          },
+          "sourceTitle": {
+            "type": "string"
+          },
+          "maxScore": {
+            "type": "number"
+          },
+          "merkleDepth": {
+            "type": "number"
+          },
+          "merkleRoot": {
+            "type": "string"
+          },
+          "merkleRootHex": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "scoreSourceIdLabel",
+          "scoreSourceIdBytes32",
+          "scoreSourceIdField",
+          "sourceTitle",
+          "maxScore",
+          "merkleDepth",
+          "merkleRoot",
+          "merkleRootHex"
+        ]
+      },
+      "GeneratedCredentialDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number"
+          },
+          "scoreSourceId": {
+            "type": "string"
+          },
+          "scoreSourceIdBytes32": {
+            "type": "string"
+          },
+          "scoreSourceTitle": {
+            "type": "string"
+          },
+          "boundStudentAddress": {
+            "type": "string"
+          },
+          "boundStudentField": {
+            "type": "string"
+          },
+          "candidateLabel": {
+            "type": "string"
+          },
+          "candidateIdHash": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "maxScore": {
+            "type": "number"
+          },
+          "secretSalt": {
+            "type": "string"
+          },
+          "leaf": {
+            "type": "string"
+          },
+          "merkleRoot": {
+            "type": "string"
+          },
+          "pathElements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pathIndices": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "issuedAt": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "version",
+          "scoreSourceId",
+          "scoreSourceIdBytes32",
+          "scoreSourceTitle",
+          "boundStudentAddress",
+          "boundStudentField",
+          "candidateLabel",
+          "candidateIdHash",
+          "score",
+          "maxScore",
+          "secretSalt",
+          "leaf",
+          "merkleRoot",
+          "pathElements",
+          "pathIndices",
+          "issuedAt"
+        ]
+      },
+      "AuthorityIssuanceBatchDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "draftId": {
+            "type": "string"
+          },
+          "scoreSourceIdLabel": {
+            "type": "string"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "credentialCount": {
+            "type": "number"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "issuanceRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthorityIssuanceRecordDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "draftId",
+          "scoreSourceIdLabel",
+          "filePath",
+          "credentialCount",
+          "createdBy",
+          "mode",
+          "createdAt",
+          "issuanceRecords"
+        ]
+      },
+      "AuthorityDraftGenerationDto": {
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "scoreSource": {
+            "$ref": "#/components/schemas/GeneratedScoreSourceDto"
+          },
+          "credentials": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GeneratedCredentialDto"
+            }
+          },
+          "batch": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AuthorityIssuanceBatchDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "draftId",
+          "mode",
+          "scoreSource",
+          "credentials"
+        ]
+      },
+      "IssuanceRecordInputDto": {
+        "type": "object",
+        "properties": {
+          "candidateLabel": {
+            "type": "string"
+          },
+          "boundStudentAddress": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "candidateLabel",
+          "boundStudentAddress",
+          "score"
+        ]
+      },
+      "GenerateAuthorityDraftBatchDto": {
+        "type": "object",
+        "properties": {
+          "createdBy": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "default": "preview"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssuanceRecordInputDto"
+            }
+          }
+        },
+        "required": [
+          "createdBy"
+        ]
+      },
+      "UniversitySummaryDto": {
+        "type": "object",
+        "properties": {
+          "familyKey": {
+            "type": "string"
+          },
+          "ruleCount": {
+            "type": "number"
+          },
+          "pendingApplicationCount": {
+            "type": "number"
+          },
+          "approvedApplicationCount": {
+            "type": "number"
+          },
+          "rejectedApplicationCount": {
+            "type": "number"
+          },
+          "latestScoreSourceIdLabel": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "familyKey",
+          "ruleCount",
+          "pendingApplicationCount",
+          "approvedApplicationCount",
+          "rejectedApplicationCount"
+        ]
+      },
+      "UniversityRuleVersionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "schoolId": {
+            "type": "string"
+          },
+          "schoolIdLabel": {
+            "type": "string"
+          },
+          "familyKey": {
+            "type": "string"
+          },
+          "schoolName": {
+            "type": "string"
+          },
+          "versionId": {
+            "type": "string"
+          },
+          "versionNumber": {
+            "type": "number"
+          },
+          "universityKey": {
+            "type": "string"
+          },
+          "scoreSourceId": {
+            "type": "string"
+          },
+          "cutoffScore": {
+            "type": "number"
+          },
+          "admin": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "cutoffFrozen": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "txHash": {
+            "type": "object",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "schoolId",
+          "schoolIdLabel",
+          "familyKey",
+          "schoolName",
+          "versionId",
+          "versionNumber",
+          "universityKey",
+          "scoreSourceId",
+          "cutoffScore",
+          "admin",
+          "active",
+          "cutoffFrozen",
+          "updatedAt",
+          "createdAt"
+        ]
+      },
+      "StudentApplicationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "schoolId": {
+            "type": "string"
+          },
+          "schoolName": {
+            "type": "string"
+          },
+          "familyKey": {
+            "type": "string"
+          },
+          "applicant": {
+            "type": "string"
+          },
+          "nullifierHash": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "submittedAt": {
+            "type": "string"
+          },
+          "decidedAt": {
+            "type": "object",
+            "nullable": true
+          },
+          "submittedTxHash": {
+            "type": "object",
+            "nullable": true
+          },
+          "decisionTxHash": {
+            "type": "object",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "schoolId",
+          "schoolName",
+          "familyKey",
+          "applicant",
+          "nullifierHash",
+          "status",
+          "submittedAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UniversityWorkbenchDto": {
+        "type": "object",
+        "properties": {
+          "familyKey": {
+            "type": "string"
+          },
+          "latestActiveSource": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScoreSourcePublicationDto"
+              }
+            ]
+          },
+          "summary": {
+            "$ref": "#/components/schemas/UniversitySummaryDto"
+          },
+          "currentSourceRule": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UniversityRuleVersionDto"
+              }
+            ]
+          },
+          "canCreateDraft": {
+            "type": "boolean"
+          },
+          "createDraftGuardReason": {
+            "type": "object",
+            "nullable": true
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UniversityRuleVersionDto"
+            }
+          },
+          "applications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentApplicationDto"
+            }
+          },
+          "syncStatus": {
+            "$ref": "#/components/schemas/WorkbenchSyncStatusDto"
+          }
+        },
+        "required": [
+          "familyKey",
+          "summary",
+          "canCreateDraft",
+          "rules",
+          "applications",
+          "syncStatus"
+        ]
+      },
+      "StudentAuxiliaryRecordDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "walletAddress": {
+            "type": "string"
+          },
+          "schoolId": {
+            "type": "string"
+          },
+          "schoolName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "versionId": {
+            "type": "object",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "dedupeKey": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "walletAddress",
+          "schoolId",
+          "schoolName",
+          "status",
+          "message",
+          "createdAt",
+          "dedupeKey"
+        ]
+      },
+      "StudentWorkbenchDto": {
+        "type": "object",
+        "properties": {
+          "walletAddress": {
+            "type": "string"
+          },
+          "latestActiveSource": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScoreSourcePublicationDto"
+              }
+            ]
+          },
+          "applications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentApplicationDto"
+            }
+          },
+          "currentApplication": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StudentApplicationDto"
+              }
+            ]
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UniversityRuleVersionDto"
+            }
+          },
+          "auxiliaryRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentAuxiliaryRecordDto"
+            }
+          },
+          "note": {
+            "type": "string"
+          },
+          "syncStatus": {
+            "$ref": "#/components/schemas/WorkbenchSyncStatusDto"
+          }
+        },
+        "required": [
+          "walletAddress",
+          "applications",
+          "rules",
+          "auxiliaryRecords",
+          "note",
+          "syncStatus"
+        ]
+      },
+      "StudentCurrentApplicationDto": {
+        "type": "object",
+        "properties": {
+          "application": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StudentApplicationDto"
+              }
+            ]
+          }
+        }
+      },
+      "StudentEligibilityDto": {
+        "type": "object",
+        "properties": {
+          "walletAddress": {
+            "type": "string"
+          },
+          "hasActiveScoreSource": {
+            "type": "boolean"
+          },
+          "hasOpenRules": {
+            "type": "boolean"
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UniversityRuleVersionDto"
+            }
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "walletAddress",
+          "hasActiveScoreSource",
+          "hasOpenRules",
+          "rules",
+          "note"
+        ]
+      },
+      "CreateStudentAuxiliaryRecordDto": {
+        "type": "object",
+        "properties": {
+          "schoolId": {
+            "type": "string"
+          },
+          "schoolName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "versionId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "schoolId",
+          "schoolName",
+          "status",
+          "message"
+        ]
+      },
+      "HealthStatusDto": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "service": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ok",
+          "service",
+          "timestamp"
+        ]
+      }
+    }
+  }
+}

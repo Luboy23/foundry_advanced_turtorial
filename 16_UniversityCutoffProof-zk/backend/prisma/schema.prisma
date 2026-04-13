@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("BACKEND_DATABASE_URL")
+}
+
+model ScoreSourcePublication {
+  id                 String   @id @default(cuid())
+  scoreSourceId      String   @unique @map("score_source_id")
+  scoreSourceIdLabel String   @map("score_source_id_label")
+  sourceTitle        String   @map("source_title")
+  merkleRoot         String   @map("merkle_root")
+  maxScore           Int      @map("max_score")
+  issuer             String
+  issuedAt           DateTime @map("issued_at")
+  txHash             String?  @map("tx_hash")
+  blockNumber        Int?     @map("block_number")
+  active             Boolean  @default(true)
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@index([issuedAt])
+  @@map("score_source_publications")
+}
+
+model SchoolRuleVersion {
+  id             String   @id @default(cuid())
+  schoolId       String   @unique @map("school_id")
+  schoolIdLabel  String   @map("school_id_label")
+  familyKey      String   @map("family_key")
+  schoolName     String   @map("school_name")
+  versionId      String   @map("version_id")
+  versionNumber  Int      @map("version_number")
+  universityKey  String   @map("university_key")
+  scoreSourceId  String   @map("score_source_id")
+  cutoffScore    Int      @map("cutoff_score")
+  admin          String
+  active         Boolean
+  cutoffFrozen   Boolean  @map("cutoff_frozen")
+  updatedAt      DateTime @map("updated_at")
+  txHash         String?  @map("tx_hash")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([familyKey, versionNumber])
+  @@map("school_rule_versions")
+}
+
+model StudentApplication {
+  id              String   @id @default(cuid())
+  schoolId        String   @map("school_id")
+  schoolName      String   @map("school_name")
+  familyKey       String   @map("family_key")
+  applicant       String
+  nullifierHash   String   @map("nullifier_hash")
+  status          String
+  submittedAt     DateTime @map("submitted_at")
+  decidedAt       DateTime? @map("decided_at")
+  submittedTxHash String?  @map("submitted_tx_hash")
+  decisionTxHash  String?  @map("decision_tx_hash")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@unique([schoolId, applicant])
+  @@index([applicant])
+  @@index([familyKey, submittedAt])
+  @@map("student_applications")
+}
+
+model ChainSyncState {
+  projectionName  String   @id @map("projection_name")
+  lastSyncedBlock Int      @default(0) @map("last_synced_block")
+  lastSyncedTx    String?  @map("last_synced_tx")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("chain_sync_state")
+}
+
+model AuthorityScoreDraft {
+  id                 String   @id @default(cuid())
+  scoreSourceIdLabel String   @map("score_source_id_label")
+  sourceTitle        String   @map("source_title")
+  maxScore           Int      @map("max_score")
+  payloadJson        String   @map("payload_json")
+  createdBy          String   @map("created_by")
+  status             String   @default("draft")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+  issuanceBatches    IssuanceBatch[]
+
+  @@index([updatedAt])
+  @@map("authority_score_drafts")
+}
+
+model IssuanceBatch {
+  id                 String   @id @default(cuid())
+  draftId            String   @map("draft_id")
+  scoreSourceIdLabel String   @map("score_source_id_label")
+  filePath           String   @map("file_path")
+  credentialCount    Int      @map("credential_count")
+  createdBy          String   @map("created_by")
+  mode               String   @default("batch")
+  createdAt          DateTime @default(now()) @map("created_at")
+  draft              AuthorityScoreDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  issuanceRecords    IssuanceRecord[]
+
+  @@index([draftId])
+  @@index([createdAt])
+  @@map("issuance_batches")
+}
+
+model IssuanceRecord {
+  id                  String   @id @default(cuid())
+  batchId             String   @map("batch_id")
+  candidateLabel      String   @map("candidate_label")
+  boundStudentAddress String   @map("bound_student_address")
+  score               Int
+  fileName            String   @map("file_name")
+  createdAt           DateTime @default(now()) @map("created_at")
+  batch               IssuanceBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId])
+  @@index([createdAt])
+  @@map("issuance_records")
+}
+
+model StudentAuxiliaryRecord {
+  id            String   @id @default(cuid())
+  walletAddress String   @map("wallet_address")
+  schoolId      String   @map("school_id")
+  schoolName    String   @map("school_name")
+  status        String
+  message       String
+  versionId     String?  @map("version_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  dedupeKey     String   @unique @map("dedupe_key")
+
+  @@index([walletAddress, createdAt])
+  @@map("student_auxiliary_records")
+}
+
+model WalletChallenge {
+  walletAddress String   @id @map("wallet_address")
+  challenge     String
+  expiresAt     DateTime @map("expires_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("wallet_challenges")
+}
+
+model WalletSession {
+  sessionId      String   @id @map("session_id")
+  walletAddress  String   @map("wallet_address")
+  role           String
+  nonce          String
+  expiresAt      DateTime @map("expires_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([walletAddress, expiresAt])
+  @@map("wallet_sessions")
+}

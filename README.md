@@ -25,6 +25,7 @@
 | [13_Down-Man-On-chain](13_Down-Man-On-chain/) | ![13_Down-Man-On-chain](13_Down-Man-On-chain/docs-assets/downman-gameplay-running.png) | Phaser 下落生存上链版，支持结算自动提交、链上排行榜与历史记录。 |
 | [14_BraveMan-On-chain](14_BraveMan-On-chain/) | ![14_BraveMan-On-chain](14_BraveMan-On-chain/docs-assets/braveman-settlement-pending-signature.png) | BraveMan 三段式教学样板，结合前端实时游玩、Rust 确定性复盘与链上结算。 |
 | [15_TicTacToe-On-chain](15_TicTacToe-On-chain/) | ![15_TicTacToe-On-chain](15_TicTacToe-On-chain/docs-assets/04-gameplay-your-turn.png) | Web3 链上井字棋，支持创建/加入对局、链上落子、历史战绩与排行榜。 |
+| [16_UniversityCutoffProof-zk](16_UniversityCutoffProof-zk/) | ![16_UniversityCutoffProof-zk](16_UniversityCutoffProof-zk/docs-assets/home-role-entry.png) | 高考录取资格证明系统，支持考试院发布成绩源、大学设线审批、学生本地生成 zk 申请证明并提交申请。 |
 
 # 开发建议（工程实践清单）
 
@@ -610,6 +611,6 @@ function setBlockGasLimit(uint _gasLimit) public;
 
 - 作者：`lllu_23`
 - 联系方式：`lllu238744@gmail.com`
-- 最后一次更新时间：`2026-04-09`
+- 最后一次更新时间：`2026-04-013`
 
 搬运转载请注明出处。
