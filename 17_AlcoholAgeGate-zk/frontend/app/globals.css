@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-green: #204c3a;
+  --color-brand-amber: #bf8430;
+  --color-bg-ivory: #f5eedc;
+  --color-surface: #fffdf8;
+  --color-text-main: #1e2b25;
+  --color-text-muted: #6e766c;
+  --color-paper-white: #fffdf8;
+
+  --font-sans: "SF Pro Text", "SF Pro Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Consolas", monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--color-text-main);
+    font-family: var(--font-sans);
+    background: var(--color-bg-ivory);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply rounded-[2rem] border border-brand-green/10 bg-surface/85 shadow-sm backdrop-blur-sm;
+  }
+
+  .shelf-card {
+    @apply rounded-[2rem] border border-brand-green/10 bg-surface shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-brand-green px-6 py-3 font-semibold text-paper-white transition hover:bg-brand-green/90 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-full border-2 border-brand-green px-6 py-3 font-semibold text-brand-green transition hover:bg-brand-green hover:text-paper-white disabled:cursor-not-allowed disabled:opacity-50;
+  }
+}

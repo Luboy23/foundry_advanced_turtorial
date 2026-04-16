@@ -1,0 +1,54 @@
+{
+  "credentialSet": {
+    "setIdLabel": "ALCOHOL_AGE_2026",
+    "sourceTitle": "2026 酒水购买年龄凭证集合",
+    "version": 1,
+    "referenceDate": 1767225600,
+    "merkleDepth": 20
+  },
+  "products": [
+    {
+      "productIdLabel": "vodka",
+      "name": "经典伏特加",
+      "category": "伏特加",
+      "description": "口感干净利落、风味纯粹的经典伏特加，适合偏好清爽酒体的买家。",
+      "imageSrc": "/products/vodka.webp",
+      "priceWei": "1000000000000000000",
+      "stock": 12,
+      "metadataURI": "demo://products/vodka"
+    },
+    {
+      "productIdLabel": "jagermeister",
+      "name": "野格利口酒",
+      "category": "草本利口酒",
+      "description": "草本香气鲜明、层次饱满的野格利口酒，适合喜欢更浓郁风味的买家。",
+      "imageSrc": "/products/jagermeister.webp",
+      "priceWei": "2000000000000000000",
+      "stock": 6,
+      "metadataURI": "demo://products/jagermeister"
+    }
+  ],
+  "records": [
+    {
+      "buyerLabel": "adult-demo-buyer",
+      "identityHash": "100001",
+      "birthDate": "1136073600",
+      "secretSalt": "910001",
+      "boundBuyerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+    },
+    {
+      "buyerLabel": "minor-demo-buyer",
+      "identityHash": "100002",
+      "birthDate": "1230768000",
+      "secretSalt": "910002",
+      "boundBuyerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+    },
+    {
+      "buyerLabel": "adult-alt-buyer",
+      "identityHash": "100003",
+      "birthDate": "1104537600",
+      "secretSalt": "910003",
+      "boundBuyerAddress": "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
+    }
+  ]
+}
