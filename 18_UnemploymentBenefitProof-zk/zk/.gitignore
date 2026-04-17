@@ -1,0 +1,4 @@
+node_modules/
+build/
+data/generated/*
+!data/generated/.gitkeep

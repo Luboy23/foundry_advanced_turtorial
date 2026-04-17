@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+  --color-brand-ink: #22324a;
+  --color-bg-paper: #f6f1e8;
+  --color-brand-seal: #b6463a;
+  --color-text-muted: #5f6b7a;
+  --color-line-soft: #d7d0c4;
+  --color-surface: #fffdfc;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line-soft);
+  }
+
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  body {
+    @apply bg-bg-paper text-brand-ink font-sans;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-line-soft bg-surface p-6 shadow-[0_14px_40px_-28px_rgba(34,50,74,0.35)];
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-brand-ink px-5 py-2.5 font-medium text-surface transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-xl border border-brand-ink px-5 py-2.5 font-medium text-brand-ink transition hover:bg-brand-ink hover:text-surface disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-seal {
+    @apply inline-flex items-center justify-center rounded-xl bg-brand-seal px-5 py-2.5 font-medium text-surface transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .field-input {
+    @apply w-full rounded-xl border border-line-soft bg-surface px-4 py-3 text-base text-brand-ink outline-none transition placeholder:text-text-muted/80 focus:border-brand-ink/40 focus:ring-2 focus:ring-brand-ink/10 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .soft-table th {
+    @apply bg-bg-paper px-4 py-3 text-left text-xs font-semibold text-brand-ink;
+  }
+
+  .soft-table td {
+    @apply px-4 py-4 text-sm;
+  }
+}

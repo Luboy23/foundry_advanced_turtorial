@@ -27,6 +27,7 @@
 | [15_TicTacToe-On-chain](15_TicTacToe-On-chain/) | ![15_TicTacToe-On-chain](15_TicTacToe-On-chain/docs-assets/04-gameplay-your-turn.png) | Web3 链上井字棋，支持创建/加入对局、链上落子、历史战绩与排行榜。 |
 | [16_UniversityCutoffProof-zk](16_UniversityCutoffProof-zk/) | ![16_UniversityCutoffProof-zk](16_UniversityCutoffProof-zk/docs-assets/home-role-entry.png) | 高考录取资格证明系统，支持考试院发布成绩源、大学设线审批、学生本地生成 zk 申请证明并提交申请。 |
 | [17_AlcoholAgeGate-zk](17_AlcoholAgeGate-zk/) | ![17_AlcoholAgeGate-zk](17_AlcoholAgeGate-zk/docs-assets/home-role-entry.png) | 隐私年龄验证酒水交易平台，支持年龄验证方发布资格集合、买家本地生成 zk 年龄证明并完成酒水购买。 |
+| [18_UnemploymentBenefitProof-zk](18_UnemploymentBenefitProof-zk/) | ![18_UnemploymentBenefitProof-zk](18_UnemploymentBenefitProof-zk/docs-assets/ui-home-overview.png) | 失业一次性补助资格证明平台，支持政府发布资格名单、申请人本地生成 zk 领取证明并完成补助发放。 |
 
 # 开发建议（工程实践清单）
 
@@ -612,6 +613,6 @@ function setBlockGasLimit(uint _gasLimit) public;
 
 - 作者：`lllu_23`
 - 联系方式：`lllu238744@gmail.com`
-- 最后一次更新时间：`2026-04-16`
+- 最后一次更新时间：`2026-04-17`
 
 搬运转载请注明出处。

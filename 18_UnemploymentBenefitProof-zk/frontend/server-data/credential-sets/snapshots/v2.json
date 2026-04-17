@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "createdAt": 1775988359,
+  "publishedAt": 1776419760,
+  "publishedTxHash": "0xba98c8280a0267acd1943ec9b5a0d39af044beeb51c4a2e76e13f3a4368cb1ec",
+  "roleSyncTxHash": "0xd7934e828b2654d0d40b87a80042f70f88fb5ff7cc0e100fd130dbba01b4f65d",
+  "input": {
+    "version": 2,
+    "referenceDate": 1775952000,
+    "records": [
+      {
+        "applicantAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "identityHash": "11011001100110011001",
+        "secretSalt": "910910910910910910",
+        "applicantLabel": "eligible-applicant"
+      },
+      {
+        "applicantAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "identityHash": "11011001100110011002",
+        "secretSalt": "316894801269259776838546630675179548066",
+        "applicantLabel": "1"
+      },
+      {
+        "applicantAddress": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+        "identityHash": "11011001100110011003",
+        "secretSalt": "153008817849696553444905961322626870953",
+        "applicantLabel": "test"
+      }
+    ]
+  },
+  "set": {
+    "setIdLabel": "unemployment-credential-set",
+    "setIdBytes32": "0x756e656d706c6f796d656e742d63726564656e7469616c2d7365740000000000",
+    "sourceTitle": "失业资格审核名单",
+    "version": 2,
+    "referenceDate": 1775952000,
+    "merkleDepth": 20,
+    "merkleRoot": "5584950477310246449650565558359065361527694493207751800051245944180111368177",
+    "merkleRootHex": "0x0c58f84e9e0351ee6ab3cb2dd73be7ac5c4680491a92ed7645b5bd13f608dff1",
+    "eligibleCount": 3
+  }
+}

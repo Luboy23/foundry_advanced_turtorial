@@ -1,0 +1,15 @@
+{
+  "name": "18-unemployment-benefit-proof-zk-circuit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-zk.mjs",
+    "test": "node scripts/test-zk.mjs"
+  },
+  "dependencies": {
+    "circomlib": "2.0.5",
+    "circomlibjs": "0.1.7",
+    "ffjavascript": "0.3.1",
+    "snarkjs": "0.7.6"
+  }
+}

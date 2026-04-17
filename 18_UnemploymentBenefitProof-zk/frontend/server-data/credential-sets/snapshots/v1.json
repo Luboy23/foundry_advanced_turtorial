@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "createdAt": 1775973277,
+  "input": {
+    "version": 1,
+    "referenceDate": 1775510400,
+    "records": [
+      {
+        "applicantAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "identityHash": "11011001100110011001",
+        "secretSalt": "910910910910910910",
+        "applicantLabel": "eligible-applicant"
+      }
+    ]
+  },
+  "set": {
+    "setIdLabel": "unemployment-credential-set",
+    "setIdBytes32": "0x756e656d706c6f796d656e742d63726564656e7469616c2d7365740000000000",
+    "sourceTitle": "失业资格审核名单",
+    "version": 1,
+    "referenceDate": 1775510400,
+    "merkleDepth": 20,
+    "merkleRoot": "10614955271476607053451990767710942116875269140669633864851162359417226224021",
+    "merkleRootHex": "0x1777da0dd28426dfe279c413c2aa2b75514082c9fcbfe534fd20d616cc216195",
+    "eligibleCount": 1
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "credentialSet": {
+    "setIdLabel": "unemployment-credential-set",
+    "sourceTitle": "失业资格审核名单",
+    "programIdLabel": "unemployment-one-time-benefit",
+    "programTitle": "失业一次性补助",
+    "benefitAmountWei": "100000000000000000000",
+    "v1": {
+      "version": 1,
+      "referenceDate": 1775510400,
+      "records": [
+        {
+          "applicantLabel": "eligible-applicant",
+          "identityHash": "11011001100110011001",
+          "secretSalt": "910910910910910910",
+          "boundApplicantAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+        }
+      ]
+    },
+    "v2": {
+      "version": 2,
+      "referenceDate": 1775596800,
+      "records": [
+        {
+          "applicantLabel": "eligible-applicant",
+          "identityHash": "11011001100110011001",
+          "secretSalt": "920920920920920920",
+          "boundApplicantAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+        }
+      ]
+    }
+  }
+}

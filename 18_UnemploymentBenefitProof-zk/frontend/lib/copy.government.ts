@@ -1,0 +1,91 @@
+export const governmentCopy = {
+  pageTitle: "资格审核管理",
+  pageSubtitle: "维护资格名单并发布更新",
+  publishButton: {
+    continueLabel: "继续发布待发布名单",
+    createLabel: "生成并发布资格名单",
+    loadingLabel: "发布中..."
+  },
+  publishDialog: {
+    confirmTitle: (hasPublishedDraft: boolean) => (hasPublishedDraft ? "确认继续发布待发布名单" : "确认发布资格名单"),
+    confirmDescription: "系统会先为新增申请人开通申请资格，再发布新的资格名单摘要。",
+    versionLabel: "名单版本",
+    referenceDateLabel: "参考日期",
+    eligibleCountLabel: "符合人数",
+    pendingApplicantsLabel: "待开通资格人数",
+    summaryHashLabel: "名单摘要哈希",
+    preparingTitle: "正在准备发布名单",
+    preparingDescription: "系统正在同步新增申请人的资格并准备提交，请稍候。",
+    syncingRoleTitle: "正在开通申请资格",
+    syncingRoleDescription: (count: number) => `系统正在为 ${count} 个新增申请人开通申请资格。`,
+    publishingTitle: "正在发布资格名单",
+    publishingDescription: "系统正在提交新的资格名单摘要并同步当前状态。",
+    successTitle: "资格名单发布成功",
+    successDescription: "新的资格名单已生效，新增申请人现在可以领取资格凭证并继续申请补助。",
+    publishedVersionLabel: "发布版本",
+    publishTxHashLabel: "交易哈希",
+    roleSyncTxHashLabel: "资格开通交易哈希",
+    errorTitle: "资格名单发布失败",
+    errorDescription: "本次未完成资格名单发布。待发布名单会保留，你可以稍后继续操作。"
+  },
+  loadingState: {
+    pageSubtitle: "正在加载工作台数据",
+    loadingMessage: "正在加载工作台数据...",
+    errorMessage: "工作台数据暂时无法加载。",
+    helperText: "系统会读取已生效的资格名单和最近一次待发布名单。",
+    reloadButton: "重新加载工作台数据"
+  },
+  currentSet: {
+    sectionTitle: "当前资格名单",
+    description: "当前生效的资格名单摘要，将作为本次编辑的参考基准。",
+    published: "资格名单已发布",
+    unpublished: "当前还没有已发布名单",
+    updatedAtLabel: (time: string) => `最近更新时间：${time}`,
+    afterPublishHint: "发布后，符合条件的申请人才可继续申请补助。",
+    latestDraftLabel: (version: number, count: number) => `最近一次待发布名单：v${version}，待开通资格 ${count} 人`,
+    noDraft: "当前没有待发布名单",
+    versionBadge: (version: number) => `当前版本 v${version}`,
+    unpublishedBadge: "尚未发布"
+  },
+  draft: {
+    sectionTitle: "待发布资格名单",
+    entryBadge: "名单录入",
+    referenceDateLabel: "参考日期",
+    publishedCountLabel: (count: number) => `已发布 ${count} 条`,
+    pendingCountLabel: (count: number) => `待新增 ${count} 条`,
+    resetButton: "恢复为当前名单",
+    helperText: "这里只能新增申请地址。已发布记录不会被修改；如需放弃本次新增，请恢复为当前名单。",
+    targetVersionLabel: (version?: number) => `目标版本 ${version ? `v${version}` : "--"}`,
+    totalCountLabel: (count: number) => `共 ${count} 条`,
+    grantAccessLabel: "发布时同步开通申请资格",
+    indexColumn: "序号",
+    addressColumn: "申请钱包地址",
+    applicantLabelColumn: "申请人标签",
+    statusColumn: "状态",
+    emptyLabel: "未填写",
+    publishedLabel: "已发布",
+    pendingLabel: "待新增",
+    emptyState: "当前还没有待发布记录，请在下方新增申请钱包地址。",
+    newRecordBadge: "新增记录",
+    addressPlaceholder: "输入 0x 开头的钱包地址",
+    labelPlaceholder: "可选，例如：第一批申请人",
+    addButton: "加入名单"
+  },
+  history: {
+    sectionTitle: "更新记录",
+    timeColumn: "时间",
+    actionColumn: "操作",
+    versionColumn: "版本",
+    eligibleCountColumn: "合格人数",
+    loading: "正在同步更新记录",
+    empty: "暂无更新记录",
+    publishAction: (version: number) => (version === 1 ? "发布资格名单" : "更新资格名单")
+  },
+  summary: {
+    sectionTitle: "资格名单摘要",
+    versionLabel: "当前版本",
+    eligibleCountLabel: "符合人数",
+    summaryHashLabel: "名单摘要哈希",
+    emptyValue: "暂无"
+  }
+} as const;
