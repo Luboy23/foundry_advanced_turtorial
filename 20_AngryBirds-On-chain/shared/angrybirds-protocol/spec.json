@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "checkpointIntervalMs": 250,
+  "checkpointGapSlackMs": 120,
+  "durationDriftSlackMs": 300,
+  "runEvidenceV1FieldOrder": [
+    "sessionId",
+    "levelId",
+    "levelVersion",
+    "levelContentHash",
+    "clientBuildHash",
+    "startedAtMs",
+    "finishedAtMs",
+    "summary",
+    "launches",
+    "abilities",
+    "destroys",
+    "checkpoints"
+  ],
+  "runSummaryFieldOrder": [
+    "birdsUsed",
+    "destroyedPigs",
+    "durationMs",
+    "cleared"
+  ],
+  "launchFieldOrder": [
+    "birdIndex",
+    "birdType",
+    "launchAtMs",
+    "dragX",
+    "dragY"
+  ],
+  "abilityFieldOrder": [
+    "birdIndex",
+    "usedAtMs"
+  ],
+  "destroyFieldOrder": [
+    "entityId",
+    "entityType",
+    "atMs",
+    "cause"
+  ],
+  "checkpointFieldOrder": [
+    "atMs",
+    "birdIndex",
+    "x",
+    "y"
+  ]
+}

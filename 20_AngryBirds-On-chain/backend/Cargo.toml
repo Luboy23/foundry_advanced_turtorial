@@ -1,0 +1,26 @@
+[workspace]
+members = ["angrybirds-core", "angrybirds-api"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+license = "MIT"
+authors = ["lllu_23"]
+
+[workspace.dependencies]
+alloy = { version = "0.11.1", default-features = false, features = ["std", "reqwest", "essentials"] }
+anyhow = "1.0"
+async-trait = "0.1.89"
+axum = { version = "0.7.9", features = ["macros"] }
+dotenvy = "0.15.7"
+serde = { version = "=1.0.226", features = ["derive"] }
+serde_json = "1.0.145"
+sqlx = { version = "0.8.6", features = ["runtime-tokio-rustls", "sqlite"] }
+tokio = { version = "1.51.1", features = ["macros", "rt-multi-thread", "signal", "time"] }
+tower-http = { version = "0.6.6", features = ["cors"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt"] }
+
+[patch.crates-io]
+alloy-consensus = { path = "vendor/alloy-consensus" }

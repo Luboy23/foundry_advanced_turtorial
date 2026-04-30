@@ -28,6 +28,8 @@
 | [16_UniversityCutoffProof-zk](16_UniversityCutoffProof-zk/) | ![16_UniversityCutoffProof-zk](16_UniversityCutoffProof-zk/docs-assets/home-role-entry.png) | 高考录取资格证明系统，支持考试院发布成绩源、大学设线审批、学生本地生成 zk 申请证明并提交申请。 |
 | [17_AlcoholAgeGate-zk](17_AlcoholAgeGate-zk/) | ![17_AlcoholAgeGate-zk](17_AlcoholAgeGate-zk/docs-assets/home-role-entry.png) | 隐私年龄验证酒水交易平台，支持年龄验证方发布资格集合、买家本地生成 zk 年龄证明并完成酒水购买。 |
 | [18_UnemploymentBenefitProof-zk](18_UnemploymentBenefitProof-zk/) | ![18_UnemploymentBenefitProof-zk](18_UnemploymentBenefitProof-zk/docs-assets/ui-home-overview.png) | 失业一次性补助资格证明平台，支持政府发布资格名单、申请人本地生成 zk 领取证明并完成补助发放。 |
+| [19_CreatorRevenueCenter-On-chain](19_CreatorRevenueCenter-On-chain/) | ![19_CreatorRevenueCenter-On-chain](19_CreatorRevenueCenter-On-chain/docs-assets/creator-revenue-cover.png) | 创作者月度收益结算与链上分账中心，支持平台激活账单批次、创作者领取、协作者自动分账与 Ponder 本地索引。 |
+| [20_AngryBirds-On-chain](20_AngryBirds-On-chain/) | ![20_AngryBirds-On-chain](20_AngryBirds-On-chain/docs-assets/gameplay-level-1-overview.png) | Angry Birds 链上小游戏教学项目，结合 Phaser/Planck/Rust 后端校验证据与批量上链，支持关卡、排行榜与历史成绩。 |
 
 # 开发建议（工程实践清单）
 
@@ -613,6 +615,6 @@ function setBlockGasLimit(uint _gasLimit) public;
 
 - 作者：`lllu_23`
 - 联系方式：`lllu238744@gmail.com`
-- 最后一次更新时间：`2026-04-17`
+- 最后一次更新时间：`2026-04-30`
 
 搬运转载请注明出处。

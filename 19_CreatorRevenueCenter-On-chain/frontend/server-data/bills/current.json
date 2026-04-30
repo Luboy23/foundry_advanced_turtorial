@@ -1,0 +1,54 @@
+{
+  "monthLabel": "2026-04",
+  "batchId": "2026-04",
+  "batchIdHex": "0xd5dff1bb2cfadeb1bb6d8b97a87c4e5e408f59afe1c99d15d4948d49c7468ea0",
+  "billId": "BILL-202604-CREATOR",
+  "claimIdHex": "0x4b5e17d3f7dc0acfd8a72e27c011aae30898f74710133fed6a128d86d1218978",
+  "creatorAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+  "assetSymbol": "ETH",
+  "grossAmount": "80000000000000000000",
+  "creatorNetAmount": "48000000000000000000",
+  "grossAmountDisplay": "80.00",
+  "creatorNetAmountDisplay": "48.00",
+  "status": "claimable",
+  "breakdown": [
+    {
+      "label": "广告分成收益",
+      "amount": "64000000000000000000",
+      "amountDisplay": "64.00",
+      "description": "基于 2026-04 平台结算结果"
+    },
+    {
+      "label": "会员激励奖金",
+      "amount": "16000000000000000000",
+      "amountDisplay": "16.00",
+      "description": "基于 2026-04 互动激励汇总"
+    }
+  ],
+  "splitRuleSnapshot": [
+    {
+      "role": "creator",
+      "label": "个人所得",
+      "recipient": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+      "bps": 6000,
+      "amount": "48000000000000000000",
+      "amountDisplay": "48.00"
+    },
+    {
+      "role": "collaborator",
+      "label": "编导",
+      "recipient": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+      "bps": 2000,
+      "amount": "16000000000000000000",
+      "amountDisplay": "16.00"
+    },
+    {
+      "role": "collaborator",
+      "label": "摄影",
+      "recipient": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+      "bps": 2000,
+      "amount": "16000000000000000000",
+      "amountDisplay": "16.00"
+    }
+  ]
+}

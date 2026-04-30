@@ -1,0 +1,111 @@
+{
+  "levelId": "level-2",
+  "version": 3,
+  "world": {
+    "width": 1600,
+    "height": 900,
+    "groundY": 760,
+    "gravityY": 24,
+    "pixelsPerMeter": 30
+  },
+  "camera": {
+    "minX": 0,
+    "maxX": 1600,
+    "defaultZoom": 1
+  },
+  "slingshot": {
+    "anchorX": 236,
+    "anchorY": 582,
+    "maxDrag": 190,
+    "launchVelocityScale": 6
+  },
+  "birdQueue": ["red", "red", "red", "red"],
+  "audioMaterials": {
+    "crate-large": "stone",
+    "beam-long": "wood",
+    "beam-xl": "wood",
+    "pig-basic": "pig"
+  },
+  "pieces": [
+    {
+      "id": "block-base-left",
+      "entityType": "block",
+      "prefabKey": "crate-large",
+      "x": 952,
+      "y": 677,
+      "rotation": 0
+    },
+    {
+      "id": "block-base-right",
+      "entityType": "block",
+      "prefabKey": "crate-large",
+      "x": 1088,
+      "y": 677,
+      "rotation": 0
+    },
+    {
+      "id": "block-gate-left",
+      "entityType": "block",
+      "prefabKey": "beam-xl",
+      "x": 952,
+      "y": 533,
+      "rotation": 1.5707963267948966
+    },
+    {
+      "id": "block-gate-right",
+      "entityType": "block",
+      "prefabKey": "beam-xl",
+      "x": 1088,
+      "y": 533,
+      "rotation": 1.5707963267948966
+    },
+    {
+      "id": "block-gate-top",
+      "entityType": "block",
+      "prefabKey": "beam-long",
+      "x": 1020,
+      "y": 420,
+      "rotation": 0
+    },
+    {
+      "id": "pig-ground-left",
+      "entityType": "pig",
+      "prefabKey": "pig-basic",
+      "x": 872,
+      "y": 696,
+      "rotation": 0
+    },
+    {
+      "id": "pig-ground-center",
+      "entityType": "pig",
+      "prefabKey": "pig-basic",
+      "x": 1020,
+      "y": 696,
+      "rotation": 0
+    },
+    {
+      "id": "pig-ground-right",
+      "entityType": "pig",
+      "prefabKey": "pig-basic",
+      "x": 1168,
+      "y": 696,
+      "rotation": 0
+    },
+    {
+      "id": "pig-top-left",
+      "entityType": "pig",
+      "prefabKey": "pig-basic",
+      "x": 980,
+      "y": 387,
+      "rotation": 0
+    },
+    {
+      "id": "pig-top-right",
+      "entityType": "pig",
+      "prefabKey": "pig-basic",
+      "x": 1060,
+      "y": 387,
+      "rotation": 0
+    }
+  ]
+}

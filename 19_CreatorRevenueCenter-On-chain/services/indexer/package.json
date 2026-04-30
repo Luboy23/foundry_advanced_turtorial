@@ -1,0 +1,23 @@
+{
+  "name": "19-creator-revenue-center-on-chain-indexer",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "packageManager": "npm@11.9.0",
+  "scripts": {
+    "dev": "ponder dev",
+    "start": "ponder start",
+    "codegen": "ponder codegen",
+    "typecheck": "ponder codegen && tsc --noEmit",
+    "check": "npm run typecheck"
+  },
+  "dependencies": {
+    "hono": "^4.10.5",
+    "ponder": "0.12.21",
+    "viem": "2.47.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "5.9.3"
+  }
+}

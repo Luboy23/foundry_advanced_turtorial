@@ -1,0 +1,13 @@
+{
+  "batchId": "2026-04",
+  "batchIdHex": "0xd5dff1bb2cfadeb1bb6d8b97a87c4e5e408f59afe1c99d15d4948d49c7468ea0",
+  "monthLabel": "2026-04",
+  "status": "published",
+  "assetSymbol": "ETH",
+  "grossAmount": "80000000000000000000",
+  "grossAmountDisplay": "80.00",
+  "creatorCount": 1,
+  "collaboratorCount": 2,
+  "activeCreator": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+  "lastSyncedAt": "2026-04-28T06:39:22.432Z"
+}

@@ -1,0 +1,58 @@
+{
+  "title": "AngryBirds-On-chain",
+  "subtitle": "愤怒的小鸟",
+  "levels": [
+    {
+      "levelId": "level-0",
+      "order": 1,
+      "label": "1",
+      "title": "Outpost One",
+      "mapX": 392,
+      "mapY": 436,
+      "description": "教学据点，熟悉基础弹射与结构坍塌节奏。"
+    },
+    {
+      "levelId": "level-1",
+      "order": 2,
+      "label": "2",
+      "title": "Twin Timber",
+      "mapX": 520,
+      "mapY": 404,
+      "description": "双支撑木架据点，先敲中层横梁，再清理高位目标。"
+    },
+    {
+      "levelId": "level-2",
+      "order": 3,
+      "label": "3",
+      "title": "Gate Span",
+      "mapX": 656,
+      "mapY": 364,
+      "description": "桥门结构罩住中路目标，先打任一门柱就会连锁垮塌。"
+    },
+    {
+      "levelId": "level-3",
+      "order": 4,
+      "label": "4",
+      "title": "Watch Ridge",
+      "mapX": 804,
+      "mapY": 332,
+      "description": "偏置双塔把高低目标分开，优先敲掉桥梁支点会更省回合。"
+    },
+    {
+      "levelId": "level-4",
+      "order": 5,
+      "label": "5",
+      "title": "Crown Hold",
+      "mapX": 954,
+      "mapY": 302,
+      "description": "外侧目标已经收拢，优先敲中段支撑更容易打出连锁坍塌。"
+    }
+  ],
+  "popup": {
+    "victoryTitle": "据点净空",
+    "failureTitle": "本轮失利",
+    "submitLabel": "提交战绩",
+    "retryLabel": "重新开始",
+    "mapLabel": "返回首页"
+  }
+}

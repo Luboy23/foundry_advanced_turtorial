@@ -1,0 +1,24 @@
+<font>
+	<info face="D:\Angry Birds\Font_numbers_for_buttons\Font_numbers_for_buttons-export" size="80" />
+	<common lineHeight="80" scaleW="155" scaleH="162" pages="1" />
+	<pages>
+		<page id="0" file="D:\Angry Birds\Font_numbers_for_buttons\Font_numbers_for_buttons-export.png" />
+	</pages>
+	<chars count="13">
+		<char id="48" x="0" y="0" width="38" height="52" xoffset="0" yoffset="28" xadvance="39" /><!-- 0 -->
+		<char id="49" x="111" y="0" width="26" height="54" xoffset="0" yoffset="26" xadvance="27" /><!-- 1 -->
+		<char id="50" x="38" y="53" width="36" height="54" xoffset="0" yoffset="26" xadvance="37" /><!-- 2 -->
+		<char id="51" x="38" y="108" width="34" height="53" xoffset="0" yoffset="26" xadvance="35" /><!-- 3 -->
+		<char id="52" x="75" y="0" width="35" height="55" xoffset="0" yoffset="26" xadvance="36" /><!-- 4 -->
+		<char id="53" x="110" y="110" width="32" height="51" xoffset="0" yoffset="26" xadvance="33" /><!-- 5 -->
+		<char id="54" x="110" y="56" width="34" height="53" xoffset="0" yoffset="26" xadvance="35" /><!-- 6 -->
+		<char id="55" x="0" y="109" width="34" height="51" xoffset="0" yoffset="27" xadvance="35" /><!-- 7 -->
+		<char id="56" x="0" y="53" width="37" height="55" xoffset="0" yoffset="25" xadvance="38" /><!-- 8 -->
+		<char id="57" x="75" y="56" width="34" height="54" xoffset="0" yoffset="25" xadvance="35" /><!-- 9 -->
+		<char id="58" x="145" y="0" width="10" height="54" xoffset="0" yoffset="26" xadvance="14" /><!-- : -->
+		<char id="32" x="0" y="0" width="0" height="0" xoffset="0" yoffset="0" xadvance="20" /><!--   -->
+		<char id="9" x="0" y="0" width="0" height="0" xoffset="0" yoffset="0" xadvance="160" /><!-- 	 -->
+	</chars>
+	<kernings count="0">
+	</kernings>
+</font>

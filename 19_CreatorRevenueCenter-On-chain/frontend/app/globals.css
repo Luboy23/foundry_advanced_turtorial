@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-pink: #fb7299;
+  --color-bg-soft-pink: #fff2f6;
+  --color-text-ink: #202329;
+  --color-text-muted: #6b7280;
+  --color-line-soft: #f2d6e0;
+  --color-surface: #ffffff;
+  --color-brand-pink-hover: #ff8db1;
+  --color-success-mint: #3bb273;
+  --color-warning-peach: #f6b26b;
+
+  --shadow-soft-pink: 0 20px 45px rgba(251, 114, 153, 0.12);
+  --font-sans: "SF Pro Text", "SF Pro Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", "Consolas", monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--color-text-ink);
+    font-family: var(--font-sans);
+    background:
+      radial-gradient(circle at top right, rgba(251, 114, 153, 0.12), transparent 30%),
+      linear-gradient(180deg, #fff8fb 0%, #ffffff 35%, #fffafc 100%);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+@layer components {
+  .surface-card {
+    @apply rounded-[1.75rem] border border-line-soft bg-surface shadow-[var(--shadow-soft-pink)];
+  }
+
+  .surface-section {
+    @apply rounded-[2rem] border border-line-soft/70 bg-white/90 backdrop-blur;
+  }
+
+  .soft-pill {
+    @apply inline-flex items-center rounded-full border border-line-soft bg-bg-soft-pink px-3 py-1 text-xs font-semibold text-brand-pink;
+  }
+
+  .page-title {
+    @apply text-3xl font-black tracking-tight text-text-ink md:text-4xl;
+  }
+}

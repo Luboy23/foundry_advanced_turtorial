@@ -1,0 +1,53 @@
+{
+  "sessionId": "0xa47f81fbf92f500e62763eef0e8dd956189371ae8c76d1f2f47ee3003e7d72ee",
+  "levelId": "level-0",
+  "levelVersion": 1,
+  "levelContentHash": "0xb6d15a8f8ff5467537f4417333f7d4cbf0f4bf5a64f7f17f9e6f3e75cda53d3e",
+  "clientBuildHash": "0x291d53ec1bd9d6fe1e4e23f65c850f6842ff2616f57b57089dca2c89d4f9662e",
+  "startedAtMs": 1000,
+  "finishedAtMs": 3000,
+  "summary": {
+    "birdsUsed": 1,
+    "destroyedPigs": 1,
+    "durationMs": 2000,
+    "cleared": true
+  },
+  "launches": [
+    {
+      "birdIndex": 0,
+      "birdType": "red",
+      "launchAtMs": 1100,
+      "dragX": -120,
+      "dragY": 80
+    }
+  ],
+  "abilities": [],
+  "destroys": [
+    {
+      "entityId": "pig-0",
+      "entityType": "pig",
+      "atMs": 2500,
+      "cause": "impact"
+    }
+  ],
+  "checkpoints": [
+    {
+      "atMs": 1100,
+      "birdIndex": 0,
+      "x": 100,
+      "y": 200
+    },
+    {
+      "atMs": 1900,
+      "birdIndex": 0,
+      "x": 160,
+      "y": 220
+    },
+    {
+      "atMs": 2150,
+      "birdIndex": 0,
+      "x": 220,
+      "y": 240
+    }
+  ]
+}

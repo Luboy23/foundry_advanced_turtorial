@@ -1,0 +1,15 @@
+.DS_Store
+.env
+.env.local
+.anvil.log
+.anvil.pid
+
+contracts/broadcast
+contracts/cache
+contracts/out
+
+frontend/dist
+frontend/node_modules
+frontend/.env.local
+frontend/.vite
+

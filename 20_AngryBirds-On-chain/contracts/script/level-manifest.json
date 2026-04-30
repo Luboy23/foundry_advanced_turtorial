@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-04-30T12:10:10.944Z",
+  "levelCount": 5,
+  "levels": [
+    {
+      "levelId": "0x6c6576656c2d3000000000000000000000000000000000000000000000000000",
+      "version": 2,
+      "contentHash": "0x16152f1b0e8d67eb3fca85b3bb01b7eabebdcac2ffe197b2237b2b6156d14564",
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "levelId": "0x6c6576656c2d3100000000000000000000000000000000000000000000000000",
+      "version": 2,
+      "contentHash": "0x9040874e84a53cb09b3c7fef2012d23099cd63b4be63d62751b1a7c26b9e6593",
+      "order": 2,
+      "enabled": true
+    },
+    {
+      "levelId": "0x6c6576656c2d3200000000000000000000000000000000000000000000000000",
+      "version": 3,
+      "contentHash": "0xba13005f59d6665eb46dcdb49820a55a5a5c524ec5d32a2ce5b0973036ac3031",
+      "order": 3,
+      "enabled": true
+    },
+    {
+      "levelId": "0x6c6576656c2d3300000000000000000000000000000000000000000000000000",
+      "version": 3,
+      "contentHash": "0x70560af56764fd49f28bb641a55ef082dd8e4306c6b138f2b43e02b0af6475d4",
+      "order": 4,
+      "enabled": true
+    },
+    {
+      "levelId": "0x6c6576656c2d3400000000000000000000000000000000000000000000000000",
+      "version": 4,
+      "contentHash": "0x70ee13232be9dc144d3676bdb082df87f68d5715cc08478fa4636be07690fb8e",
+      "order": 5,
+      "enabled": true
+    }
+  ]
+}

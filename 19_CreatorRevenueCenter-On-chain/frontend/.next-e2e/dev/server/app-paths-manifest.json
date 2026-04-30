@@ -1,0 +1,9 @@
+{
+  "/api/creator/bill/current/route": "app/api/creator/bill/current/route.js",
+  "/api/creator/history/route": "app/api/creator/history/route.js",
+  "/api/creator/claim-package/route": "app/api/creator/claim-package/route.js",
+  "/api/tx/receipt/route": "app/api/tx/receipt/route.js",
+  "/collaborator/page": "app/collaborator/page.js",
+  "/page": "app/page.js",
+  "/creator/page": "app/creator/page.js"
+}
